@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node
+node_modules/
+
+# Merlin artifacts
+merlin_chat_history/
+merlin_resource_index.json
+*.zip
+
+# Secrets
+.env
+credentials.json
+token.pickle
+
+# Build outputs
+build/
+dist/

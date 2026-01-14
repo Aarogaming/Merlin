@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merlin Merlin - Web Chat</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #chat-container { width: 450px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 80vh; overflow: hidden; }
+        #chat-header { background: #6200ee; color: white; padding: 16px; text-align: center; font-size: 1.2em; font-weight: bold; }
+        #chat-history { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .message { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 0.95em; line-height: 1.4; }
+        .user-message { align-self: flex-end; background: #6200ee; color: white; border-bottom-right-radius: 4px; }
+        .merlin-message { align-self: flex-start; background: #e0e0e0; color: #333; border-bottom-left-radius: 4px; }
+        #chat-input-area { padding: 16px; border-top: 1px solid #eee; display: flex; gap: 8px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        button { background: #6200ee; color: white; border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+        button:hover { background: #3700b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #user-id-area { padding: 8px 16px; background: #fafafa; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 8px; font-size: 0.85em; }
+        #user-id-input { border: 1px solid #ddd; border-radius: 4px; padding: 4px 8px; width: 80px; }
+        #api-key-area { padding: 8px 16px; background: #fff3e0; border-bottom: 1px solid #ffe0b2; display: flex; align-items: center; gap: 8px; font-size: 0.85em; }
+        #api-key-input { border: 1px solid #ffcc80; border-radius: 4px; padding: 4px 8px; flex: 1; }
+        #voice-controls { padding: 8px 16px; background: #e8f5e9; border-bottom: 1px solid #c8e6c9; display: flex; align-items: center; gap: 8px; font-size: 0.85em; }
+        .voice-btn { background: #4caf50; border-radius: 4px; padding: 4px 8px; font-size: 0.9em; }
+        .voice-btn:hover { background: #388e3c; }
+        body.dark-mode { background-color: #121212; color: #e0e0e0; }
+        .dark-mode #chat-container { background: #1e1e1e; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .dark-mode #chat-header { background: #3700b3; }
+        .dark-mode .merlin-message { background: #333; color: #e0e0e0; }
+        .dark-mode input, .dark-mode #user-id-area, .dark-mode #api-key-area, .dark-mode #voice-controls { background: #2c2c2c; color: #e0e0e0; border-color: #444; }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-header">Merlin Merlin</div>
+        <div id="user-id-area">
+            <span>User ID:</span>
+            <input type="text" id="user-id-input" value="default">
+            <button id="load-history-btn" style="padding: 4px 8px; font-size: 0.9em;">Load History</button>
+        </div>
+        <div id="api-key-area">
+            <span>API Key:</span>
+            <input type="password" id="api-key-input" value="merlin-secret-key" placeholder="Enter API Key">
+        </div>
+        <div id="voice-controls">
+            <span>Voice:</span>
+            <button id="listen-btn" class="voice-btn">Listen (STT)</button>
+            <label><input type="checkbox" id="auto-speak-cb"> Auto-Speak (TTS)</label>
+            <button id="dark-mode-btn" style="margin-left: auto;">Toggle Dark Mode</button>
+        </div>
+        <div id="chat-history"></div>
+        <div id="drop-zone" style="padding: 16px; border: 2px dashed #ccc; margin: 16px; text-align: center; color: #999; border-radius: 8px;">
+            Drag & Drop files here to upload
+        </div>
+        <div id="chat-input-area">
+            <input type="text" id="user-input" placeholder="Type a message..." autocomplete="off">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        marked.setOptions({
+            highlight: function(code, lang) {
+                return hljs.highlightAuto(code).value;
+            }
+        });
+        const chatHistory = document.getElementById('chat-history');
+        const userInput = document.getElementById('user-input');
+        const userIdInput = document.getElementById('user-id-input');
+        const apiKeyInput = document.getElementById('api-key-input');
+        const sendBtn = document.getElementById('send-btn');
+        const loadHistoryBtn = document.getElementById('load-history-btn');
+        const listenBtn = document.getElementById('listen-btn');
+        const autoSpeakCb = document.getElementById('auto-speak-cb');
+        const darkModeBtn = document.getElementById('dark-mode-btn');
+        const dropZone = document.getElementById('drop-zone');
+
+        function addMessage(sender, text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message');
+            msgDiv.classList.add(sender === 'You' ? 'user-message' : 'merlin-message');
+            if (sender === 'Merlin') {
+                msgDiv.innerHTML = marked.parse(text);
+            } else {
+                msgDiv.textContent = text;
+            }
+            chatHistory.appendChild(msgDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        async function sendChat() {
+            const text = userInput.value.trim();
+            const userId = userIdInput.value.trim() || 'default';
+            if (!text) return;
+
+            addMessage('You', text);
+            userInput.value = '';
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+
+            try {
+                const response = await fetch('http://localhost:8000/merlin/chat', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Merlin-Key': apiKeyInput.value.trim()
+                    },
+                    body: JSON.stringify({ user_input: text, user_id: userId })
+                });
+                const data = await response.json();
+                addMessage('Merlin', data.reply);
+                if (autoSpeakCb.checked) {
+                    speakText(data.reply);
+                }
+            } catch (error) {
+                addMessage('Merlin', '[API Error: Make sure the backend is running]');
+            } finally {
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        async function loadHistory() {
+            const userId = userIdInput.value.trim() || 'default';
+            chatHistory.innerHTML = '';
+            loadHistoryBtn.disabled = true;
+
+            try {
+                const response = await fetch(`http://localhost:8000/merlin/history/${userId}`, {
+                    headers: { 'X-Merlin-Key': apiKeyInput.value.trim() }
+                });
+                const data = await response.json();
+                if (data.history) {
+                    data.history.forEach(entry => {
+                        addMessage('You', entry.user);
+                        addMessage('Merlin', entry.merlin);
+                    });
+                }
+            } catch (error) {
+                addMessage('Merlin', '[History API Error]');
+            } finally {
+                loadHistoryBtn.disabled = false;
+            }
+        }
+
+        sendBtn.addEventListener('click', sendChat);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChat();
+        });
+        async function speakText(text) {
+            try {
+                await fetch('http://localhost:8000/merlin/speak', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Merlin-Key': apiKeyInput.value.trim()
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+            } catch (error) {
+                console.error('TTS Error:', error);
+            }
+        }
+
+        listenBtn.addEventListener('click', async () => {
+            listenBtn.disabled = true;
+            listenBtn.textContent = 'Listening...';
+            addMessage('System', 'Listening for voice input...');
+            // Note: In a real web app, you'd use Web Speech API. 
+            // Here we call the backend STT for demonstration.
+            try {
+                // We need an endpoint for listen, let's assume we add it
+                const response = await fetch('http://localhost:8000/merlin/listen', {
+                    method: 'POST',
+                    headers: { 'X-Merlin-Key': apiKeyInput.value.trim() }
+                });
+                const data = await response.json();
+                if (data.text) {
+                    userInput.value = data.text;
+                    sendChat();
+                } else {
+                    addMessage('System', 'Could not recognize speech.');
+                }
+            } catch (error) {
+                addMessage('System', '[STT API Error]');
+            } finally {
+                listenBtn.disabled = false;
+                listenBtn.textContent = 'Listen (STT)';
+            }
+        });
+
+        darkModeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#6200ee';
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = '#ccc';
+        });
+
+        dropZone.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ccc';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                addMessage('System', `Uploading ${files[0].name}...`);
+                // Task 83: Implement Drag and Drop file uploading
+                // Placeholder for actual upload logic
+                setTimeout(() => {
+                    addMessage('System', `File ${files[0].name} uploaded successfully (Placeholder).`);
+                }, 1000);
+            }
+        });
+
+        loadHistoryBtn.addEventListener('click', loadHistory);
+    </script>
+</body>
+</html>
