@@ -3,6 +3,10 @@
 ## Overview
 Merlin is a modular automation and AI assistant project designed to provide intelligent task execution, integration with other systems, and extensibility for custom workflows. It serves as a core component for orchestrating automation and AI-driven features across the workspace.
 
+## Guild Workflow
+- Quest template: https://github.com/Aarogaming/AaroneousAutomationSuite/blob/main/guild/QUEST_TEMPLATE.md
+- Protocol: https://github.com/Aarogaming/AaroneousAutomationSuite/blob/main/docs/GUILD_PROTOCOL.md
+
 ## Features
 - Modular plugin architecture for extensibility
 - Integration with automation suites and external APIs
@@ -41,8 +45,8 @@ Merlin is a modular automation and AI assistant project designed to provide inte
 ## Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## Task Tracking
-- Summary board: `artifacts/handoff/ACTIVE_TASKS.md`
+## Quest Tracking
+- Summary board: `artifacts/guild/ACTIVE_TASKS.md` (legacy path, rename pending)
 - Detailed plan: `MERLIN_100_TASKS.md`
 
 ## License

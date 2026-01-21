@@ -3,12 +3,19 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 import os
+from merlin_metrics_dashboard import metrics_dashboard
+
 
 def setup_dashboard(app: FastAPI):
     # Serve static files (React build would go here)
     if os.path.exists("frontend/dist"):
-        app.mount("/dashboard", StaticFiles(directory="frontend/dist", html=True), name="dashboard")
+        app.mount(
+            "/dashboard",
+            StaticFiles(directory="frontend/dist", html=True),
+            name="dashboard",
+        )
     else:
+
         @app.get("/dashboard", response_class=HTMLResponse)
         async def dashboard_placeholder():
             return """
@@ -113,7 +120,7 @@ def setup_dashboard(app: FastAPI):
                         fetchData('/health', 'health');
                         fetchData('/merlin/system_info', 'sysinfo');
                         fetchData('/merlin/plugins', 'plugins');
-                        // Note: We need to add a GET /merlin/tasks endpoint to the API
+                        fetchData('/merlin/llm/adaptive/metrics', 'llmMetrics');
                         fetchData('/merlin/tasks', 'tasks'); 
                     </script>
                 </body>

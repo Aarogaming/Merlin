@@ -42,7 +42,7 @@ Task list: [MERLIN_100_TASKS.md](MERLIN_100_TASKS.md)
 - [x] **AAS Hub Sync**: `merlin_hub_sync.py` for task and state synchronization.
 - [ ] **Plugin Marketplace**: Discoverable and installable community plugins.
 - [ ] **Mobile Native App**: Dedicated Android and iOS clients.
-- [ ] **Cross-Repo Handoff**: Seamless task handoff between AAS, Maelstrom, and Merlin.
+- [ ] **Cross-Repo Guild**: Seamless task guild between AAS, Maelstrom, and Merlin.
 
 ## Phase 5: Autonomous Learning (2027+)
 *Focus: Self-improving AI that learns from user behavior.*

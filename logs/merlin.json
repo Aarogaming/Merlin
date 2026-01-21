@@ -1,0 +1,14 @@
+{"timestamp": "2026-01-17T20:54:31.960899", "level": "INFO", "message": "Adaptive LLM Backend: 2 models, learning: True", "module": "merlin_adaptive_llm", "funcName": "__init__", "line": 184}
+{"timestamp": "2026-01-17T20:54:59.039636", "level": "INFO", "message": "Adaptive LLM Backend: 2 models, learning: True", "module": "merlin_adaptive_llm", "funcName": "__init__", "line": 184}
+{"timestamp": "2026-01-17T20:54:59.040418", "level": "INFO", "message": "Feedback recorded for mistral: 5/5", "module": "merlin_adaptive_llm", "funcName": "provide_feedback", "line": 538}
+{"timestamp": "2026-01-17T20:54:59.040882", "level": "INFO", "message": "Feedback recorded for llama3.2: 3/5", "module": "merlin_adaptive_llm", "funcName": "provide_feedback", "line": 538}
+{"timestamp": "2026-01-17T20:55:08.480650", "level": "INFO", "message": "Loaded metrics for 2 models", "module": "merlin_adaptive_llm", "funcName": "load_metrics", "line": 238}
+{"timestamp": "2026-01-17T20:55:08.481133", "level": "INFO", "message": "Adaptive LLM Backend: 2 models, learning: True", "module": "merlin_adaptive_llm", "funcName": "__init__", "line": 184}
+{"timestamp": "2026-01-17T20:55:08.481967", "level": "INFO", "message": "Feedback recorded for mistral: 5/5", "module": "merlin_adaptive_llm", "funcName": "provide_feedback", "line": 538}
+{"timestamp": "2026-01-17T20:55:08.482503", "level": "INFO", "message": "Feedback recorded for llama3.2: 3/5", "module": "merlin_adaptive_llm", "funcName": "provide_feedback", "line": 538}
+{"timestamp": "2026-01-20T04:26:30.034057", "level": "INFO", "message": "Loaded metrics for 2 models", "module": "merlin_adaptive_llm", "funcName": "load_metrics", "line": 238}
+{"timestamp": "2026-01-20T04:26:30.035081", "level": "INFO", "message": "Adaptive LLM Backend: 4 models, learning: True", "module": "merlin_adaptive_llm", "funcName": "__init__", "line": 184}
+{"timestamp": "2026-01-20T04:26:30.037557", "level": "INFO", "message": "Initialized default model weights", "module": "merlin_predictive_selection", "funcName": "train_initial_weights", "line": 231}
+{"timestamp": "2026-01-20T04:26:30.037818", "level": "INFO", "message": "Predictive Model Selector: ML-based model selection enabled", "module": "merlin_predictive_selection", "funcName": "__init__", "line": 167}
+{"timestamp": "2026-01-20T04:26:30.040623", "level": "INFO", "message": "Cleaned up usage data older than 2025-10-22", "module": "merlin_cost_optimization", "funcName": "cleanup_old_usage", "line": 100}
+{"timestamp": "2026-01-20T04:26:30.041026", "level": "INFO", "message": "Cost Optimization Manager: 0 models, budget: $100.0", "module": "merlin_cost_optimization", "funcName": "__init__", "line": 57}

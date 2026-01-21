@@ -1,8 +1,11 @@
 import json
 import os
+import json
 from typing import List, Dict, Any, Optional
+
 from merlin_auth import get_password_hash, verify_password
 from merlin_logger import merlin_logger
+
 
 class MerlinUserManager:
     def __init__(self, users_file="merlin_users.json"):
@@ -28,14 +31,16 @@ class MerlinUserManager:
         except Exception as e:
             merlin_logger.error(f"Failed to save users: {e}")
 
-    def create_user(self, username: str, password: str, role: str = "user") -> Dict[str, Any]:
+    def create_user(
+        self, username: str, password: str, role: str = "user"
+    ) -> Dict[str, Any]:
         if self.get_user_by_username(username):
             raise ValueError("User already exists")
-            
+
         user = {
             "username": username,
             "hashed_password": get_password_hash(password),
-            "role": role
+            "role": role,
         }
         self.users.append(user)
         self._save_users()
@@ -48,10 +53,13 @@ class MerlinUserManager:
                 return user
         return None
 
-    def authenticate_user(self, username: str, password: str) -> Optional[Dict[str, Any]]:
+    def authenticate_user(
+        self, username: str, password: str
+    ) -> Optional[Dict[str, Any]]:
         user = self.get_user_by_username(username)
         if user and verify_password(password, user["hashed_password"]):
             return user
         return None
+
 
 user_manager = MerlinUserManager()

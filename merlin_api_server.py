@@ -1,5 +1,12 @@
 # Merlin REST API server for Unity/Unreal integration
-from fastapi import FastAPI, Request, HTTPException, Depends, WebSocket, WebSocketDisconnect
+from fastapi import (
+    FastAPI,
+    Request,
+    HTTPException,
+    Depends,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from fastapi.responses import JSONResponse
 from fastapi.security import APIKeyHeader
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -7,9 +14,14 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import BaseModel
+from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from merlin_emotion_chat import merlin_emotion_chat, load_chat, merlin_emotion_chat_stream
+from merlin_emotion_chat import (
+    merlin_emotion_chat,
+    load_chat,
+    merlin_emotion_chat_stream,
+)
 from merlin_system_info import get_system_info
 from merlin_file_manager import list_files, delete_file, move_file, open_file
 from merlin_command_executor import execute_command
@@ -24,8 +36,19 @@ from merlin_rag import merlin_rag
 from merlin_audit import log_audit_event
 from merlin_auth import create_access_token, verify_password, ALGORITHM, SECRET_KEY
 from merlin_user_manager import user_manager
+from merlin_llm_backends import llm_backend
+from merlin_parallel_llm import parallel_llm_backend
+from merlin_adaptive_llm import adaptive_llm_backend
+from merlin_streaming_llm import streaming_llm_backend
+from merlin_metrics_dashboard import metrics_dashboard, handle_dashboard_websocket
+from merlin_ab_testing import ab_testing_manager
+from merlin_predictive_selection import predictive_model_selector
+from merlin_cost_optimization import cost_optimization_manager
+from pydantic import BaseModel
+from fastapi.responses import FileResponse, HTMLResponse
+from pathlib import Path
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 import shutil
 import tempfile
 from fastapi.responses import FileResponse
@@ -40,6 +63,7 @@ app = FastAPI()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+
 # --- UNIVERSAL CONTEXT (Cross-Platform Sync) ---
 class UniversalContext:
     def __init__(self):
@@ -47,31 +71,42 @@ class UniversalContext:
             "last_active_platform": platform.system(),
             "current_task": "Resting",
             "perception_data": {},
-            "divine_guidance": []
+            "divine_guidance": [],
         }
+
     def update(self, data: dict):
         self.state.update(data)
-        merlin_logger.info(f"Universal Context Sync: {self.state['last_active_platform']}")
+        merlin_logger.info(
+            f"Universal Context Sync: {self.state['last_active_platform']}"
+        )
+
 
 global_context = UniversalContext()
 
 # --- END CONTEXT ---
+
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     merlin_logger.error(f"Global Error: {exc} | Path: {request.url.path}")
     return JSONResponse(
         status_code=500,
-        content={"error": "Internal Server Error", "detail": str(exc) if os.getenv("DEBUG") else "An unexpected error occurred."}
+        content={
+            "error": "Internal Server Error",
+            "detail": (
+                str(exc) if os.getenv("DEBUG") else "An unexpected error occurred."
+            ),
+        },
     )
+
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
-    merlin_logger.warning(f"HTTP Error: {exc.detail} | Status: {exc.status_code} | Path: {request.url.path}")
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"error": exc.detail}
+    merlin_logger.warning(
+        f"HTTP Error: {exc.detail} | Status: {exc.status_code} | Path: {request.url.path}"
     )
+    return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
+
 
 plugin_manager = PluginManager()
 plugin_manager.load_plugins()
@@ -85,16 +120,22 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 API_KEY_NAME = "X-Merlin-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
+
 def is_valid_api_key(api_key: str | None) -> bool:
     expected_key = os.environ.get("MERLIN_API_KEY", "merlin-secret-key")
     return api_key == expected_key
+
 
 def get_api_key(api_key: str = Depends(api_key_header)):
     if not is_valid_api_key(api_key):
         raise HTTPException(status_code=403, detail="Could not validate credentials")
     return api_key
 
-MANIFEST_PATH = Path(os.environ.get("MERLIN_MANIFEST_PATH", "merlin_genesis_manifest.json"))
+
+MANIFEST_PATH = Path(
+    os.environ.get("MERLIN_MANIFEST_PATH", "merlin_genesis_manifest.json")
+)
+
 
 def load_manifest_entries() -> list[dict]:
     if MANIFEST_PATH.exists():
@@ -105,6 +146,7 @@ def load_manifest_entries() -> list[dict]:
             merlin_logger.error(f"Failed to read manifest queue: {exc}")
     return []
 
+
 def append_manifest_entry(entry: dict) -> None:
     entries = load_manifest_entries()
     entries.append(entry)
@@ -114,8 +156,10 @@ def append_manifest_entry(entry: dict) -> None:
     except Exception as exc:
         merlin_logger.error(f"Failed to write manifest queue: {exc}")
 
+
 def ws_requires_api_key() -> bool:
     return os.environ.get("MERLIN_WS_REQUIRE_API_KEY", "true").lower() == "true"
+
 
 def get_voice():
     global voice
@@ -127,10 +171,12 @@ def get_voice():
             return None
     return voice
 
+
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     import time
     import uuid
+
     request_id = str(uuid.uuid4())
     request.state.request_id = request_id
     start_time = time.time()
@@ -140,24 +186,362 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["X-Request-ID"] = request_id
     return response
 
+
 @app.get("/health")
 async def health_check():
-    return {"status": "ok", "platform": platform.system(), "execution_mode": policy_manager.mode.value}
+    return {
+        "status": "ok",
+        "platform": platform.system(),
+        "execution_mode": policy_manager.mode.value,
+    }
+
+
+@app.get("/merlin/llm/parallel/status")
+async def parallel_llm_status(api_key: str = Depends(get_api_key)):
+    return parallel_llm_backend.get_status()
+
+
+@app.post("/merlin/llm/parallel/strategy")
+async def set_parallel_strategy(strategy: str, api_key: str = Depends(get_api_key)):
+    from merlin_parallel_llm import ParallelLLMBackend
+
+    if strategy not in ["voting", "routing", "cascade", "consensus"]:
+        raise HTTPException(status_code=400, detail="Invalid strategy")
+    os.environ["PARALLEL_STRATEGY"] = strategy
+    return {"status": "updated", "strategy": strategy}
+
+
+class FeedbackRequest(BaseModel):
+    model_name: str
+    rating: int
+    task_type: str = None
+
+
+@app.post("/merlin/llm/adaptive/feedback")
+async def provide_adaptive_feedback(
+    feedback: FeedbackRequest, api_key: str = Depends(get_api_key)
+):
+    if feedback.rating < 1 or feedback.rating > 5:
+        raise HTTPException(status_code=400, detail="Rating must be 1-5")
+    adaptive_llm_backend.provide_feedback(
+        feedback.model_name, feedback.rating, feedback.task_type
+    )
+    return {
+        "status": "feedback recorded",
+        "model": feedback.model_name,
+        "rating": feedback.rating,
+    }
+
+
+@app.get("/merlin/llm/adaptive/status")
+async def adaptive_llm_status(api_key: str = Depends(get_api_key)):
+    return adaptive_llm_backend.get_status()
+
+
+@app.get("/merlin/llm/adaptive/metrics")
+async def adaptive_llm_metrics(api_key: str = Depends(get_api_key)):
+    status = adaptive_llm_backend.get_status()
+    return {"metrics": status["metrics"]}
+
+
+@app.post("/merlin/llm/adaptive/reset")
+async def reset_adaptive_metrics(
+    model_name: str = None, api_key: str = Depends(get_api_key)
+):
+    adaptive_llm_backend.reset_metrics(model_name)
+    return {"status": "metrics reset", "model": model_name or "all"}
+
+
+class CreateABTestRequest(BaseModel):
+    name: str
+    variants: List[str]
+    weights: List[float] = None
+    duration_hours: int = 24
+
+
+@app.post("/merlin/llm/ab/create")
+async def create_ab_test(
+    request: CreateABTestRequest, api_key: str = Depends(get_api_key)
+):
+    test_id = ab_testing_manager.create_test(
+        name=request.name,
+        variants=request.variants,
+        weights=request.weights,
+        duration_hours=request.duration_hours,
+    )
+    return {"test_id": test_id, "status": "created", "name": request.name}
+
+
+@app.get("/merlin/llm/ab/tests")
+async def list_ab_tests(api_key: str = Depends(get_api_key)):
+    return {"tests": ab_testing_manager.list_active_tests()}
+
+
+@app.get("/merlin/llm/ab/test/{test_id}")
+async def get_ab_test_status(test_id: str, api_key: str = Depends(get_api_key)):
+    status = ab_testing_manager.get_test_status(test_id)
+    if not status:
+        raise HTTPException(status_code=404, detail="Test not found")
+    return status
+
+
+class RecordABTestResultRequest(BaseModel):
+    test_id: str
+    variant: str
+    user_rating: int = None
+    latency: float = None
+    success: bool = True
+
+
+@app.post("/merlin/llm/ab/result")
+async def record_ab_test_result(
+    request: RecordABTestResultRequest, api_key: str = Depends(get_api_key)
+):
+    ab_testing_manager.record_result(
+        test_id=request.test_id,
+        variant=request.variant,
+        user_rating=request.user_rating,
+        latency=request.latency,
+        success=request.success,
+    )
+    return {
+        "status": "recorded",
+        "test_id": request.test_id,
+        "variant": request.variant,
+    }
+
+
+@app.post("/merlin/llm/ab/complete/{test_id}")
+async def complete_ab_test(test_id: str, api_key: str = Depends(get_api_key)):
+    winner = ab_testing_manager.complete_test(test_id)
+    return {"status": "completed", "winner": winner}
+
+
+@app.websocket("/ws/dashboard")
+async def dashboard_websocket(websocket: WebSocket):
+    await handle_dashboard_websocket(websocket)
+
+
+# --- PREDICTIVE MODEL SELECTION ENDPOINTS ---
+
+
+class SelectModelRequest(BaseModel):
+    query: str
+
+
+@app.post("/merlin/llm/predictive/select")
+async def select_predictive_model(
+    request: SelectModelRequest, api_key: str = Depends(get_api_key)
+):
+    selected_model = predictive_model_selector.select_model(request.query)
+    explanation = predictive_model_selector.get_model_explanation(
+        selected_model, request.query
+    )
+
+    merlin_logger.info(
+        f"Predictive selection: {selected_model} for query: {request.query[:50]}"
+    )
+
+    return {
+        "selected_model": selected_model,
+        "explanation": explanation,
+        "query_preview": request.query[:100],
+    }
+
+
+class RecordPredictionFeedbackRequest(BaseModel):
+    model_name: str
+    was_successful: bool
+    latency: float = None
+    task_type: str = None
+    rating: int = None
+
+
+@app.post("/merlin/llm/predictive/feedback")
+async def record_prediction_feedback(
+    request: RecordPredictionFeedbackRequest, api_key: str = Depends(get_api_key)
+):
+    predictive_model_selector.record_feedback(
+        model_name=request.model_name,
+        was_successful=request.was_successful,
+        latency=request.latency,
+        task_type=request.task_type,
+        rating=request.rating,
+    )
+
+    return {
+        "status": "recorded",
+        "model_name": request.model_name,
+        "updated_weights": predictive_model_selector.model_weights.get(
+            request.model_name, {}
+        ),
+    }
+
+
+@app.get("/merlin/llm/predictive/status")
+async def get_predictive_status(api_key: str = Depends(get_api_key)):
+    return predictive_model_selector.get_status()
+
+
+@app.get("/merlin/llm/predictive/models")
+async def list_predictive_models(api_key: str = Depends(get_api_key)):
+    return {
+        "models": list(predictive_model_selector.model_weights.keys()),
+        "weights": predictive_model_selector.model_weights,
+        "feature_importance": predictive_model_selector.feature_importance,
+    }
+
+
+@app.post("/merlin/llm/predictive/export")
+async def export_prediction_data(api_key: str = Depends(get_api_key)):
+    return predictive_model_selector.export_model_data()
+
+
+# --- COST OPTIMIZATION ENDPOINTS ---
+
+
+class CostReportRequest(BaseModel):
+    days: int = 30
+
+
+class SetBudgetRequest(BaseModel):
+    budget_limit: float
+
+
+class SetCostThresholdsRequest(BaseModel):
+    warning_threshold: float = None
+    critical_threshold: float = None
+
+
+class ModelPricingData(BaseModel):
+    input_cost_per_1k: float
+    output_cost_per_1k: float
+    currency: str = "USD"
+    free_tier_limit: int = None
+    tier_name: str = None
+
+
+@app.post("/merlin/llm/cost/report")
+async def get_cost_report(
+    request: CostReportRequest, api_key: str = Depends(get_api_key)
+):
+    report = cost_optimization_manager.get_cost_report(request.days)
+    return report
+
+
+@app.post("/merlin/llm/cost/budget")
+async def set_monthly_budget(
+    request: SetBudgetRequest, api_key: str = Depends(get_api_key)
+):
+    cost_optimization_manager.budget_limit = request.budget_limit
+    return {"status": "updated", "new_budget_limit": request.budget_limit}
+
+
+@app.get("/merlin/llm/cost/budget")
+async def get_monthly_budget(api_key: str = Depends(get_api_key)):
+    return {
+        "budget_limit": cost_optimization_manager.budget_limit,
+        "current_month_spend": sum(
+            sum(
+                u.total_cost
+                for u in usage_list
+                if u.date.startswith(datetime.now().strftime("%Y-%m-"))
+            )
+            for usage_list in cost_optimization_manager.daily_usage.values()
+        ),
+        "percentage_used": (
+            sum(
+                sum(
+                    u.total_cost
+                    for u in usage_list
+                    if u.date.startswith(datetime.now().strftime("%Y-%m-"))
+                )
+                for usage_list in cost_optimization_manager.daily_usage.values()
+            )
+            / cost_optimization_manager.budget_limit
+            * 100
+            if cost_optimization_manager.budget_limit > 0
+            else 0
+        ),
+    }
+
+
+@app.post("/merlin/llm/cost/thresholds")
+async def set_cost_thresholds(
+    request: SetCostThresholdsRequest, api_key: str = Depends(get_api_key)
+):
+    if request.warning_threshold is not None:
+        cost_optimization_manager.cost_thresholds["warning"] = request.warning_threshold
+    if request.critical_threshold is not None:
+        cost_optimization_manager.cost_thresholds["critical"] = (
+            request.critical_threshold
+        )
+    return {
+        "status": "updated",
+        "warning_threshold": cost_optimization_manager.cost_thresholds["warning"],
+        "critical_threshold": cost_optimization_manager.cost_thresholds["critical"],
+    }
+
+
+@app.get("/merlin/llm/cost/thresholds")
+async def get_cost_thresholds(api_key: str = Depends(get_api_key)):
+    return cost_optimization_manager.cost_thresholds
+
+
+@app.get("/merlin/llm/cost/optimization")
+async def get_cost_optimization(api_key: str = Depends(get_api_key)):
+    return cost_optimization_manager.get_cost_optimization_recommendation()
+
+
+@app.post("/merlin/llm/cost/pricing")
+async def set_model_pricing(
+    request: ModelPricingData, api_key: str = Depends(get_api_key)
+):
+    pricing = {
+        "input_cost_per_1k": request.input_cost_per_1k,
+        "output_cost_per_1k": request.output_cost_per_1k,
+        "currency": request.currency,
+        "free_tier_limit": request.free_tier_limit,
+        "tier_name": request.tier_name,
+    }
+
+    return {"status": "pricing_updated", "pricing": pricing}
+
+
+@app.get("/metrics/dashboard", response_class=HTMLResponse)
+async def metrics_dashboard_page():
+    from fastapi.responses import FileResponse
+
+    dashboard_path = Path(
+        os.environ.get("MERLIN_DASHBOARD_PATH", "metrics_dashboard.html")
+    )
+    return FileResponse(dashboard_path)
+
 
 # --- GENESIS & CONTEXT ENDPOINTS ---
+
 
 @app.get("/merlin/genesis/dna")
 async def get_merlin_dna(api_key: str = Depends(get_api_key)):
     dna = {}
-    core_files = ["merlin_api_server.py", "merlin_policy.py", "merlin_agents.py", "merlin_emotion_chat.py", "merlin_watcher.py"]
+    core_files = [
+        "merlin_api_server.py",
+        "merlin_policy.py",
+        "merlin_agents.py",
+        "merlin_emotion_chat.py",
+        "merlin_watcher.py",
+    ]
     for f in core_files:
         if os.path.exists(f):
-            with open(f, 'r') as file: dna[f] = file.read()
+            with open(f, "r") as file:
+                dna[f] = file.read()
     return JSONResponse(content={"dna": dna})
+
 
 @app.get("/merlin/context")
 async def get_context(api_key: str = Depends(get_api_key)):
     return JSONResponse(content=global_context.state)
+
 
 @app.post("/merlin/context")
 async def update_context(request: Request, api_key: str = Depends(get_api_key)):
@@ -165,29 +549,37 @@ async def update_context(request: Request, api_key: str = Depends(get_api_key)):
     global_context.update(data)
     return {"status": "Context Synchronized"}
 
+
 # --- CHAT & WEBSOCKETS ---
+
 
 class ChatRequest(BaseModel):
     user_input: str
     user_id: str = "default"
+
 
 class TaskCreateRequest(BaseModel):
     title: str
     description: str = ""
     priority: str = "Medium"
 
+
 class ExecuteRequest(BaseModel):
     command: str
+
 
 class SpeakRequest(BaseModel):
     text: str
 
+
 class SearchRequest(BaseModel):
     query: str
+
 
 class ManifestRequest(BaseModel):
     filename: str
     code: str
+
 
 @app.post("/merlin/chat")
 async def chat_endpoint(request: Request, api_key: str = Depends(get_api_key)):
@@ -209,15 +601,19 @@ async def chat_endpoint(request: Request, api_key: str = Depends(get_api_key)):
     reply = merlin_emotion_chat(user_input, user_id)
     return JSONResponse(content={"reply": reply})
 
+
 @app.get("/merlin/history/{user_id}")
 async def get_history(user_id: str, api_key: str = Depends(get_api_key)):
     history = load_chat(user_id)
     return JSONResponse(content={"history": history})
 
+
 @app.websocket("/ws/chat")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    api_key = websocket.headers.get(API_KEY_NAME) or websocket.query_params.get("api_key")
+    api_key = websocket.headers.get(API_KEY_NAME) or websocket.query_params.get(
+        "api_key"
+    )
     try:
         while True:
             data = await websocket.receive_text()
@@ -240,11 +636,14 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         merlin_logger.info("WebSocket disconnected")
 
+
 # --- OTHER ENDPOINTS (Plugins, Tasks, etc) ---
+
 
 @app.get("/merlin/system_info")
 async def system_info(api_key: str = Depends(get_api_key)):
     return JSONResponse(content=get_system_info())
+
 
 @app.get("/merlin/plugins")
 async def list_plugins(format: str = "list", api_key: str = Depends(get_api_key)):
@@ -253,22 +652,32 @@ async def list_plugins(format: str = "list", api_key: str = Depends(get_api_key)
         return JSONResponse(content=plugin_info)
     return JSONResponse(content=list(plugin_info.values()))
 
+
 @app.post("/merlin/plugin/{name}")
 async def run_plugin(name: str, request: Request, api_key: str = Depends(get_api_key)):
     data = await request.json()
     return JSONResponse(content=plugin_manager.execute_plugin(name, **data))
 
+
 @app.get("/merlin/tasks")
 async def list_tasks(api_key: str = Depends(get_api_key)):
     return JSONResponse(content={"tasks": task_manager.list_tasks()})
 
+
 @app.post("/merlin/tasks")
-async def add_task(task_request: TaskCreateRequest, api_key: str = Depends(get_api_key)):
-    task = task_manager.add_task(task_request.title, task_request.description, task_request.priority)
+async def add_task(
+    task_request: TaskCreateRequest, api_key: str = Depends(get_api_key)
+):
+    task = task_manager.add_task(
+        task_request.title, task_request.description, task_request.priority
+    )
     return JSONResponse(content={"task": task})
 
+
 @app.post("/merlin/execute")
-async def execute_shell_command(execute_request: ExecuteRequest, api_key: str = Depends(get_api_key)):
+async def execute_shell_command(
+    execute_request: ExecuteRequest, api_key: str = Depends(get_api_key)
+):
     if not policy_manager.is_command_allowed(execute_request.command):
         raise HTTPException(status_code=403, detail="Command blocked by policy")
     result = execute_command(execute_request.command)
@@ -277,26 +686,37 @@ async def execute_shell_command(execute_request: ExecuteRequest, api_key: str = 
     output = result.get("stdout", "")
     if result.get("stderr"):
         output = f"{output}\n{result['stderr']}".strip()
-    return JSONResponse(content={"output": output, "returncode": result.get("returncode")})
+    return JSONResponse(
+        content={"output": output, "returncode": result.get("returncode")}
+    )
+
 
 @app.post("/merlin/speak")
 async def speak_text(request: SpeakRequest, api_key: str = Depends(get_api_key)):
     voice_instance = get_voice()
     if not voice_instance:
-        return JSONResponse(status_code=503, content={"error": "Voice subsystem unavailable"})
+        return JSONResponse(
+            status_code=503, content={"error": "Voice subsystem unavailable"}
+        )
     ok = voice_instance.speak(request.text)
     return JSONResponse(content={"ok": ok})
+
 
 @app.post("/merlin/listen")
 async def listen_for_speech(api_key: str = Depends(get_api_key)):
     voice_instance = get_voice()
     if not voice_instance:
-        return JSONResponse(status_code=503, content={"error": "Voice subsystem unavailable"})
+        return JSONResponse(
+            status_code=503, content={"error": "Voice subsystem unavailable"}
+        )
     text = voice_instance.listen()
     return JSONResponse(content={"text": text})
 
+
 @app.post("/merlin/search")
-async def search_knowledge(search_request: SearchRequest, api_key: str = Depends(get_api_key)):
+async def search_knowledge(
+    search_request: SearchRequest, api_key: str = Depends(get_api_key)
+):
     matches = merlin_rag.search(search_request.query, limit=5)
     results = []
     for match in matches:
@@ -308,44 +728,67 @@ async def search_knowledge(search_request: SearchRequest, api_key: str = Depends
         results.append(text)
     return JSONResponse(content={"results": results})
 
+
 @app.post("/merlin/genesis/manifest")
-async def submit_manifest(manifest_request: ManifestRequest, api_key: str = Depends(get_api_key)):
+async def submit_manifest(
+    manifest_request: ManifestRequest, api_key: str = Depends(get_api_key)
+):
     entry = {
         "filename": manifest_request.filename,
         "code": manifest_request.code,
-        "received_at": datetime.utcnow().isoformat()
+        "received_at": datetime.now(timezone.utc).isoformat(),
     }
     append_manifest_entry(entry)
     return JSONResponse(content={"status": "queued"})
 
+
 @app.get("/merlin/genesis/logs")
 async def get_genesis_logs(api_key: str = Depends(get_api_key)):
     return JSONResponse(content={"logs": get_recent_logs()})
+
 
 @app.get("/merlin/dynamic_components/{user_id}")
 async def get_dynamic_components(user_id: str, api_key: str = Depends(get_api_key)):
     plugin_info = plugin_manager.list_plugin_info()
     components = []
     for name, info in plugin_info.items():
-        components.append({
-            "type": "plugin",
-            "title": info.get("name", name),
-            "description": info.get("description", ""),
-            "actionCommand": name
-        })
+        components.append(
+            {
+                "type": "plugin",
+                "title": info.get("name", name),
+                "description": info.get("description", ""),
+                "actionCommand": name,
+            }
+        )
     return JSONResponse(content=components)
 
+
 @app.post("/merlin/aas/create_task")
-async def create_aas_task(task_request: TaskCreateRequest, api_key: str = Depends(get_api_key)):
-    task_id = hub_client.create_aas_task(task_request.title, task_request.description, task_request.priority)
+async def create_aas_task(
+    task_request: TaskCreateRequest, api_key: str = Depends(get_api_key)
+):
+    task_id = hub_client.create_aas_task(
+        task_request.title, task_request.description, task_request.priority
+    )
     if not task_id:
         raise HTTPException(status_code=502, detail="Failed to create AAS task")
     return JSONResponse(content={"task_id": task_id})
 
+
 @app.get("/merlin/alerts")
 async def get_alerts(api_key: str = Depends(get_api_key)):
     # Mock alerts for now, would poll AAS/System
-    return {"alerts": [{"id": "1", "message": "System stress high", "severity": "warning", "timestamp": 0}]}
+    return {
+        "alerts": [
+            {
+                "id": "1",
+                "message": "System stress high",
+                "severity": "warning",
+                "timestamp": 0,
+            }
+        ]
+    }
+
 
 if __name__ == "__main__":
     uvicorn.run("merlin_api_server:app", host="0.0.0.0", port=8000, reload=True)
