@@ -20,16 +20,9 @@ setup(
         "SpeechRecognition",
         "loguru",
         "grpcio",
-        "grpcio-tools"
+        "grpcio-tools",
     ],
-    extras_require={
-        "dev": [
-            "pytest",
-            "black",
-            "mypy",
-            "httpx"
-        ]
-    },
+    extras_require={"dev": ["pytest", "black", "mypy", "httpx"]},
     entry_points={
         "console_scripts": [
             "merlin=merlin_cli:main",
@@ -45,5 +38,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.10',
+    python_requires=">=3.10",
 )

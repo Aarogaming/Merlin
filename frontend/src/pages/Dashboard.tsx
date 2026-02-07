@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Activity, 
@@ -9,15 +9,19 @@ import {
   CheckCircle,
   AlertTriangle
 } from 'lucide-react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useDashboardStore } from '../store/dashboard';
 import { merlinApi } from '../services/api';
 import ModelPerformanceGrid from '../components/ModelPerformanceGrid';
 import MetricCard from '../components/MetricCard';
 import ConnectionStatus from '../components/ConnectionStatus';
+import SystemInfo from '../components/SystemInfo';
+import SnapshotSummary from '../components/SnapshotSummary';
+import AgentAnalytics from '../components/AgentAnalytics';
+import PluginAnalytics from '../components/PluginAnalytics';
 import toast from 'react-hot-toast';
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const {
     dashboardData,
     setDashboardData,
@@ -29,7 +33,7 @@ const Dashboard: React.FC = () => {
   } = useDashboardStore();
 
   // Fetch dashboard data
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -49,7 +53,7 @@ const Dashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setLoading, setError, setDashboardData, setConnectionStatus, updateLastUpdate]);
 
   // Initial load and periodic updates
   useEffect(() => {
@@ -59,7 +63,7 @@ const Dashboard: React.FC = () => {
       const interval = setInterval(fetchDashboardData, settings.refreshInterval);
       return () => clearInterval(interval);
     }
-  }, [settings.refreshInterval, settings.charts.realTimeUpdates]);
+  }, [fetchDashboardData, settings.charts.realTimeUpdates, settings.refreshInterval]);
 
   // Setup WebSocket for real-time updates
   useEffect(() => {
@@ -100,7 +104,7 @@ const Dashboard: React.FC = () => {
         ws.close();
       };
     }
-  }, []);
+  }, [setConnectionStatus, setDashboardData, updateLastUpdate]);
 
   // Prepare chart data
   const latencyData = dashboardData?.models ? 
@@ -245,7 +249,7 @@ const Dashboard: React.FC = () => {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {pieData.map((entry, index) => (
+                {pieData.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -308,6 +312,23 @@ const Dashboard: React.FC = () => {
 
       {/* Model Performance Grid */}
       <ModelPerformanceGrid />
+
+      {/* Gateway Snapshot Summary */}
+      <SnapshotSummary 
+        myFortressUrl={settings.myFortressUrl} 
+        refreshInterval={15000}
+        includeHomeAssistant={true}
+        includeFrigate={true}
+      />
+
+      {/* MyFortress System Info */}
+      <SystemInfo myFortressUrl={settings.myFortressUrl} refreshInterval={10000} />
+
+      {/* AI Agent Analytics */}
+      <AgentAnalytics apiUrl={settings.myFortressUrl} refreshInterval={15000} />
+
+      {/* Plugin Analytics */}
+      <PluginAnalytics />
     </motion.div>
   );
 };

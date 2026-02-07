@@ -4,6 +4,7 @@ import subprocess
 import requests
 from merlin_logger import merlin_logger
 
+
 class WizardStaff:
     def __init__(self):
         self.name = "wizard_staff"
@@ -16,12 +17,14 @@ class WizardStaff:
             "name": self.name,
             "description": self.description,
             "version": self.version,
-            "author": self.author
+            "author": self.author,
         }
 
     def execute(self, spell_type: str, target: str = ""):
         """Executes various 'spells' (automation tasks)."""
-        merlin_logger.info(f"Merlin raising his staff for spell: {spell_type} on {target}")
+        merlin_logger.info(
+            f"Merlin raising his staff for spell: {spell_type} on {target}"
+        )
 
         if spell_type == "revelio":
             # Reveal details about a project or file
@@ -42,7 +45,9 @@ class WizardStaff:
         path = os.path.join("D:/Dev library/AaroneousAutomationSuite", target)
         if os.path.exists(path):
             files = os.listdir(path)[:10]
-            return {"output": f"Revelio! I see these files in {target}: {', '.join(files)}"}
+            return {
+                "output": f"Revelio! I see these files in {target}: {', '.join(files)}"
+            }
         return {"error": "Path not found in Dev Library."}
 
     def _scourgify(self, target):
@@ -51,7 +56,9 @@ class WizardStaff:
 
     def _alohomora(self, target):
         # Open a project folder in explorer or VS Code
-        path = os.path.abspath(os.path.join("D:/Dev library/AaroneousAutomationSuite", target))
+        path = os.path.abspath(
+            os.path.join("D:/Dev library/AaroneousAutomationSuite", target)
+        )
         if os.path.exists(path):
             os.startfile(path)
             return {"output": f"Alohomora! The doors to {target} are open."}
@@ -60,6 +67,7 @@ class WizardStaff:
     def _finite_incantatem(self):
         # Command to stop processes
         return {"output": "Finite Incantatem! Stopping background incantations..."}
+
 
 def get_plugin():
     return WizardStaff()

@@ -5,6 +5,9 @@ import {
   Cpu, 
   Settings, 
   Activity,
+  ShieldCheck,
+  ListTodo,
+  Compass,
   Menu,
   X
 } from 'lucide-react';
@@ -18,8 +21,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Control Center', href: '/control-center', icon: Compass },
     { name: 'Models', href: '/models', icon: Cpu },
     { name: 'Activity', href: '/activity', icon: Activity },
+    { name: 'Tasks', href: '/tasks', icon: ListTodo },
+    { name: 'Approvals', href: '/approvals', icon: ShieldCheck },
     { name: 'Settings', href: '/settings', icon: Settings },
   ];
 

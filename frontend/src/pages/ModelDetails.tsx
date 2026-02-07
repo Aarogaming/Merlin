@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Activity, Clock, CheckCircle, Star, TrendingUp } from 'lucide-react';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useDashboardStore } from '../store/dashboard';
-import { merlinApi } from '../services/api';
-import toast from 'react-hot-toast';
 
-const ModelDetails: React.FC = () => {
+const ModelDetails = () => {
   const { modelName } = useParams<{ modelName: string }>();
   const navigate = useNavigate();
-  const { dashboardData, setConnectionStatus } = useDashboardStore();
+  const { dashboardData } = useDashboardStore();
 
   const modelData = dashboardData?.models[decodeURIComponent(modelName || '')];
 

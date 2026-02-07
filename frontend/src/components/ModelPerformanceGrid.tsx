@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -6,12 +5,11 @@ import {
   Clock, 
   CheckCircle, 
   Star,
-  TrendingUp,
   ExternalLink
 } from 'lucide-react';
 import { useDashboardStore } from '../store/dashboard';
 
-const ModelPerformanceGrid: React.FC = () => {
+const ModelPerformanceGrid = () => {
   const { dashboardData } = useDashboardStore();
 
   if (!dashboardData || Object.keys(dashboardData.models).length === 0) {
@@ -29,12 +27,6 @@ const ModelPerformanceGrid: React.FC = () => {
   const getModelStatusColor = (successRate: number) => {
     if (successRate >= 0.9) return 'text-success';
     if (successRate >= 0.7) return 'text-warning';
-    return 'text-danger';
-  };
-
-  const getLatencyColor = (latency: number) => {
-    if (latency <= 1.0) return 'text-success';
-    if (latency <= 2.0) return 'text-warning';
     return 'text-danger';
   };
 

@@ -1,0 +1,27 @@
+{
+  "schemaName": "PluginManifest",
+  "schemaVersion": "1.0.0",
+  "name": "session_builder",
+  "version": "0.1.0",
+  "description": "Build Merlin session datasets from event logs",
+  "entry": "plugin.py",
+  "type": "plugin",
+  "capabilities": [
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.session.build",
+      "version": "0.1.0"
+    }
+  ],
+  "extensions": {
+    "aas": {
+      "hive": "merlin",
+      "visibility": "global",
+      "exports": [
+        "merlin.session.build"
+      ],
+      "kernel": "merlin"
+    }
+  }
+}

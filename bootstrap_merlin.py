@@ -3,6 +3,7 @@ import sys
 import subprocess
 import shutil
 
+
 def run_command(command: list, description: str):
     print(f"--- {description} ---")
     try:
@@ -12,14 +13,17 @@ def run_command(command: list, description: str):
         print(f"Error: {description} failed with exit code {e.returncode}")
         sys.exit(1)
 
+
 def bootstrap():
-    print("="*40)
+    print("=" * 40)
     print("Merlin Merlin - Bootstrapping Script")
-    print("="*40)
+    print("=" * 40)
 
     # 1. Create virtual environment
     if not os.path.exists(".venv"):
-        run_command([sys.executable, "-m", "venv", ".venv"], "Creating virtual environment")
+        run_command(
+            [sys.executable, "-m", "venv", ".venv"], "Creating virtual environment"
+        )
     else:
         print("Virtual environment already exists.")
 
@@ -33,10 +37,15 @@ def bootstrap():
 
     # 3. Install dependencies
     if os.path.exists("requirements.txt"):
-        run_command([pip_path, "install", "-r", "requirements.txt"], "Installing requirements")
-    
+        run_command(
+            [pip_path, "install", "-r", "requirements.txt"], "Installing requirements"
+        )
+
     if os.path.exists("requirements-dev.txt"):
-        run_command([pip_path, "install", "-r", "requirements-dev.txt"], "Installing dev requirements")
+        run_command(
+            [pip_path, "install", "-r", "requirements-dev.txt"],
+            "Installing dev requirements",
+        )
 
     # 4. Setup .env
     if not os.path.exists(".env") and os.path.exists(".env.example"):
@@ -56,14 +65,15 @@ def bootstrap():
     print("\nRunning Merlin Doctor...")
     run_command([python_path, "merlin_doctor.py"], "Running environment check")
 
-    print("\n" + "="*40)
+    print("\n" + "=" * 40)
     print("Bootstrapping complete! You can now start Merlin.")
     print("To activate the venv:")
     if os.name == "nt":
         print("  .venv\\Scripts\\activate")
     else:
         print("  source .venv/bin/activate")
-    print("="*40)
+    print("=" * 40)
+
 
 if __name__ == "__main__":
     bootstrap()

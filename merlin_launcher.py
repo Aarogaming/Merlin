@@ -5,10 +5,11 @@ import time
 import argparse
 from merlin_doctor import run_doctor
 
+
 def launch_merlin(index: bool = False):
-    print("="*40)
+    print("=" * 40)
     print("Merlin Merlin - Unified Launcher")
-    print("="*40)
+    print("=" * 40)
 
     # 1. Run Doctor
     print("Step 1: Running environment check...")
@@ -29,7 +30,16 @@ def launch_merlin(index: bool = False):
     print("\nStep 3: Starting Merlin API Server...")
     try:
         # Use uvicorn directly if possible, or subprocess
-        cmd = [sys.executable, "-m", "uvicorn", "merlin_api_server:app", "--host", "0.0.0.0", "--port", "8000"]
+        cmd = [
+            sys.executable,
+            "-m",
+            "uvicorn",
+            "merlin_api_server:app",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8000",
+        ]
         print(f"Executing: {' '.join(cmd)}")
         subprocess.run(cmd)
     except KeyboardInterrupt:
@@ -37,9 +47,12 @@ def launch_merlin(index: bool = False):
     except Exception as e:
         print(f"Failed to start API server: {e}")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Merlin Merlin Launcher")
-    parser.add_argument("--index", action="store_true", help="Run resource indexer before starting")
+    parser.add_argument(
+        "--index", action="store_true", help="Run resource indexer before starting"
+    )
     args = parser.parse_args()
 
     launch_merlin(index=args.index)

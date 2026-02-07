@@ -4,6 +4,7 @@ import subprocess
 from datetime import datetime, timedelta
 from merlin_logger import merlin_logger
 
+
 class ChronomancyPlugin:
     def __init__(self):
         self.name = "chronomancy"
@@ -23,20 +24,27 @@ class ChronomancyPlugin:
                 # Run git log -n 5
                 result = subprocess.check_output(
                     ["git", "log", "-n", "5", "--pretty=format:%h - %s (%cr)"],
-                    cwd=path, shell=True, text=True
+                    cwd=path,
+                    shell=True,
+                    text=True,
                 )
-                return {"output": f"Time-Sight Retrace! Here are the last 5 ripples in the timeline of {target}:\n{result}"}
+                return {
+                    "output": f"Time-Sight Retrace! Here are the last 5 ripples in the timeline of {target}:\n{result}"
+                }
 
             elif spell_type == "divine_urgency":
                 # Check for upcoming deadlines or 'stale' projects
                 # For now, just simulated logic
-                return {"output": "I sense a deadline approaching for Project Maelstrom in 3 days. Your AAS Hub has also been dormant for 48 hours."}
+                return {
+                    "output": "I sense a deadline approaching for Project Maelstrom in 3 days. Your AAS Hub has also been dormant for 48 hours."
+                }
 
             else:
                 return {"error": f"Unknown Chronomancy spell: {spell_type}"}
 
         except Exception as e:
             return {"error": f"The timeline is clouded: {str(e)}"}
+
 
 def get_plugin():
     return ChronomancyPlugin()

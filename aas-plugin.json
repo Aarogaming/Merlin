@@ -21,6 +21,48 @@
       "name": "assistant.tools",
       "version": "1.0.0",
       "description": "Tool-use and plugin execution"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.rag",
+      "version": "1.0.0",
+      "description": "RAG search over indexed resources"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.voice",
+      "version": "1.0.0",
+      "description": "Voice utilities (TTS/STT)"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.resource_indexer",
+      "version": "1.0.0",
+      "description": "Resource scan and index operations"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.tasks",
+      "version": "1.0.0",
+      "description": "Local task management"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.tools",
+      "version": "1.0.0",
+      "description": "Plugin tool registry"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.user_manager",
+      "version": "1.0.0",
+      "description": "User management and authentication"
     }
   ],
   "interfaces": [

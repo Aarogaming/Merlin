@@ -1,10 +1,10 @@
 import { invoke } from '@tauri-apps/api/tauri';
-import { DashboardStatus, ModelRequest, ModelResponse } from '../types';
+import { DashboardStatus, ModelRequest, ModelResponse, ApprovalRequest, TaskItem, ResearchResponse } from '../types';
 
 export class MerlinApiService {
   private baseUrl: string;
 
-  constructor(baseUrl: string = 'http://localhost:8000') {
+  constructor(baseUrl = 'http://localhost:8000') {
     this.baseUrl = baseUrl;
   }
 
@@ -66,6 +66,186 @@ export class MerlinApiService {
     }
     
     return response.json();
+  }
+
+  async validateDatabase(databaseUrl: string): Promise<{ valid: boolean; error?: string }> {
+    if (!databaseUrl) {
+      return { valid: false, error: 'Database URL is required' };
+    }
+    try {
+      const response = await fetch(`${this.baseUrl}/api/onboarding/validate/database`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ databaseUrl }),
+      });
+      if (response.ok) {
+        return response.json();
+      }
+      if (response.status === 404) {
+        return { valid: true };
+      }
+      return { valid: false, error: `Database validation failed (${response.status})` };
+    } catch (error) {
+      return {
+        valid: false,
+        error: error instanceof Error ? error.message : 'Database validation failed',
+      };
+    }
+  }
+
+  async getApprovalsHttp(status = 'pending', taskId?: string): Promise<ApprovalRequest[]> {
+    const params = new URLSearchParams();
+    if (status) {
+      params.set('status', status);
+    }
+    if (taskId) {
+      params.set('task_id', taskId);
+    }
+    const query = params.toString() ? `?${params.toString()}` : '';
+    const response = await fetch(`${this.baseUrl}/approvals${query}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.approvals || [];
+  }
+
+  async requestApprovalHttp(
+    taskId: string,
+    gate: string,
+    requestedBy: string,
+    targets: string[] = [],
+    metadata: Record<string, unknown> = {}
+  ) {
+    const response = await fetch(`${this.baseUrl}/approvals/request`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        task_id: taskId,
+        gate,
+        requested_by: requestedBy,
+        targets,
+        metadata,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  }
+
+  async approveApprovalHttp(approvalId: string, decidedBy: string, note?: string) {
+    const response = await fetch(`${this.baseUrl}/approvals/${approvalId}/approve`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ decided_by: decidedBy, note }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  }
+
+  async rejectApprovalHttp(approvalId: string, decidedBy: string, note?: string) {
+    const response = await fetch(`${this.baseUrl}/approvals/${approvalId}/reject`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ decided_by: decidedBy, note }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  }
+
+  async getTasksHttp(): Promise<TaskItem[]> {
+    const response = await fetch(`${this.baseUrl}/tasks`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.tasks || [];
+  }
+
+  async getTaskHttp(taskId: string): Promise<TaskItem> {
+    const response = await fetch(`${this.baseUrl}/tasks/${taskId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.task;
+  }
+
+  async startTaskHttp(taskId: string, actor: string): Promise<{ ok: boolean; error?: string }>{
+    const response = await fetch(`${this.baseUrl}/tasks/${taskId}/start?actor=${encodeURIComponent(actor)}`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  }
+
+  async runResearchHttp(payload: {
+    query: string;
+    include_web_search?: boolean;
+    include_code_analysis?: boolean;
+    image_paths?: string[];
+    code_snippets?: string[];
+    max_sources?: number;
+    output_format?: 'markdown' | 'json';
+    use_local_vision?: boolean;
+    store_to_knowledge?: boolean;
+    metadata?: Record<string, unknown>;
+  }): Promise<ResearchResponse> {
+    const response = await fetch(`${this.baseUrl}/research`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  }
+
+  async writeFileBase64(path: string, base64Content: string, overwrite = true) {
+    const response = await fetch(`${this.baseUrl}/files/write`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        path,
+        content: base64Content,
+        mode: 'base64',
+        overwrite,
+        create_parents: true,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  }
+
+  createEventsWebSocketConnection(): WebSocket | null {
+    if (typeof window !== 'undefined') {
+      const url = new URL(this.baseUrl);
+      const protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
+      return new WebSocket(`${protocol}//${url.host}/ws/events`);
+    }
+    return null;
   }
 
   // WebSocket connection for real-time updates

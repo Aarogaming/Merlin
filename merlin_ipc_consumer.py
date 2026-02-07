@@ -18,10 +18,12 @@ COMMANDS_PROCESSING = IPC_BASE / "commands" / "processing" / "merlin"
 COMMANDS_ARCHIVE = IPC_BASE / "commands" / "archive" / "merlin"
 COMMANDS_DEADLETTER = IPC_BASE / "commands" / "deadletter"
 
+
 def ensure_dirs():
     """Ensure IPC directories exist."""
     for d in [COMMANDS_PROCESSING, COMMANDS_ARCHIVE]:
         d.mkdir(parents=True, exist_ok=True)
+
 
 def claim_message():
     """Atomically claim a message from outbox."""
@@ -34,19 +36,22 @@ def claim_message():
             continue  # Another consumer got it
     return None
 
+
 def process_message(msg_file):
     """Process a claimed message."""
     try:
-        with open(msg_file, 'r') as f:
+        with open(msg_file, "r") as f:
             msg = json.load(f)
 
-        print(f"Merlin processing: {msg.get('schemaName')} - {len(msg.get('commands', []))} commands")
+        print(
+            f"Merlin processing: {msg.get('schemaName')} - {len(msg.get('commands', []))} commands"
+        )
 
         # Simulate processing (replace with real Merlin logic)
-        for cmd in msg.get('commands', []):
-            cmd_type = cmd.get('type')
-            if cmd_type == 'delay':
-                delay = cmd.get('delayMs', 1000) / 1000
+        for cmd in msg.get("commands", []):
+            cmd_type = cmd.get("type")
+            if cmd_type == "delay":
+                delay = cmd.get("delayMs", 1000) / 1000
                 print(f"  Delaying {delay}s...")
                 time.sleep(delay)
             else:
@@ -63,11 +68,12 @@ def process_message(msg_file):
         deadletter_file = COMMANDS_DEADLETTER / msg_file.name
         try:
             shutil.move(str(msg_file), str(deadletter_file))
-            with open(error_file, 'w') as f:
+            with open(error_file, "w") as f:
                 f.write(str(e))
             print(f"Deadlettered: {deadletter_file}")
         except Exception:
             print(f"Failed to deadletter: {e}")
+
 
 def main():
     ensure_dirs()
@@ -79,6 +85,7 @@ def main():
             process_message(msg_file)
         else:
             time.sleep(1)  # Poll every second
+
 
 if __name__ == "__main__":
     main()

@@ -4,6 +4,7 @@ from merlin_hub_client import MerlinHubClient
 from merlin_logger import merlin_logger
 from merlin_tasks import task_manager
 
+
 class MerlinHubSync:
     def __init__(self):
         self.client = MerlinHubClient()
@@ -23,7 +24,7 @@ class MerlinHubSync:
                 hub_id = self.client.create_aas_task(
                     title=task["title"],
                     description=task["description"],
-                    priority=task["priority"]
+                    priority=task["priority"],
                 )
                 if hub_id:
                     task["hub_id"] = hub_id
@@ -31,7 +32,9 @@ class MerlinHubSync:
                     merlin_logger.info(f"Synced task {task['id']} to Hub as {hub_id}")
 
     def run_forever(self):
-        merlin_logger.info(f"Starting Hub Sync Service (Interval: {self.sync_interval}s)")
+        merlin_logger.info(
+            f"Starting Hub Sync Service (Interval: {self.sync_interval}s)"
+        )
         while True:
             try:
                 self.send_heartbeat()
@@ -39,6 +42,7 @@ class MerlinHubSync:
             except Exception as e:
                 merlin_logger.error(f"Sync error: {e}")
             time.sleep(self.sync_interval)
+
 
 if __name__ == "__main__":
     sync_service = MerlinHubSync()

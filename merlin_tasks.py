@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import List, Dict, Any
 from merlin_logger import merlin_logger
 
+
 class MerlinTaskManager:
     def __init__(self, tasks_file="merlin_tasks.json"):
         self.tasks_file = tasks_file
@@ -25,14 +26,16 @@ class MerlinTaskManager:
         except Exception as e:
             merlin_logger.error(f"Failed to save tasks: {e}")
 
-    def add_task(self, title: str, description: str, priority: str = "Medium") -> Dict[str, Any]:
+    def add_task(
+        self, title: str, description: str, priority: str = "Medium"
+    ) -> Dict[str, Any]:
         task = {
             "id": len(self.tasks) + 1,
             "title": title,
             "description": description,
             "priority": priority,
             "status": "Pending",
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
         self.tasks.append(task)
         self._save_tasks()
@@ -51,5 +54,6 @@ class MerlinTaskManager:
                 merlin_logger.info(f"Updated task {task_id} status to {status}")
                 return True
         return False
+
 
 task_manager = MerlinTaskManager()

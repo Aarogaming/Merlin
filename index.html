@@ -24,11 +24,20 @@
         #voice-controls { padding: 8px 16px; background: #e8f5e9; border-bottom: 1px solid #c8e6c9; display: flex; align-items: center; gap: 8px; font-size: 0.85em; }
         .voice-btn { background: #4caf50; border-radius: 4px; padding: 4px 8px; font-size: 0.9em; }
         .voice-btn:hover { background: #388e3c; }
+        #voice-mode, #voice-engine, #stt-engine { border: 1px solid #c8e6c9; border-radius: 4px; padding: 4px 8px; font-size: 0.85em; }
+        #voice-status { padding: 2px 8px; border-radius: 10px; background: #c8e6c9; color: #1b5e20; font-size: 0.8em; }
+        #voice-status.active { background: #fff9c4; color: #5d4037; }
+        #voice-status-details { color: #1b5e20; font-size: 0.75em; }
+        #stt-upload { padding: 8px 16px; background: #f1f8e9; border-bottom: 1px solid #dcedc8; display: flex; align-items: center; gap: 8px; font-size: 0.85em; flex-wrap: wrap; }
+        #stt-upload input[type="file"] { font-size: 0.85em; }
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
         .dark-mode #chat-container { background: #1e1e1e; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         .dark-mode #chat-header { background: #3700b3; }
         .dark-mode .merlin-message { background: #333; color: #e0e0e0; }
-        .dark-mode input, .dark-mode #user-id-area, .dark-mode #api-key-area, .dark-mode #voice-controls { background: #2c2c2c; color: #e0e0e0; border-color: #444; }
+        .dark-mode input, .dark-mode select, .dark-mode #user-id-area, .dark-mode #api-key-area, .dark-mode #voice-controls, .dark-mode #stt-upload { background: #2c2c2c; color: #e0e0e0; border-color: #444; }
+        .dark-mode #voice-status { background: #1b5e20; color: #e0e0e0; }
+        .dark-mode #voice-status.active { background: #5d4037; color: #f5f5f5; }
+        .dark-mode #voice-status-details { color: #c8e6c9; }
     </style>
 </head>
 <body>
@@ -47,7 +56,33 @@
             <span>Voice:</span>
             <button id="listen-btn" class="voice-btn">Listen (STT)</button>
             <label><input type="checkbox" id="auto-speak-cb"> Auto-Speak (TTS)</label>
+            <label for="voice-mode">Mode:</label>
+            <select id="voice-mode">
+                <option value="browser" selected>Browser Playback</option>
+                <option value="server">Server Speak</option>
+            </select>
+            <label for="voice-engine">TTS:</label>
+            <select id="voice-engine">
+                <option value="auto" selected>Auto</option>
+                <option value="xtts">XTTS</option>
+                <option value="piper">Piper</option>
+                <option value="pyttsx3">pyttsx3</option>
+            </select>
+            <label for="stt-engine">STT:</label>
+            <select id="stt-engine">
+                <option value="auto" selected>Auto</option>
+                <option value="google">Google</option>
+                <option value="whisper">Whisper</option>
+            </select>
+            <button id="stop-voice-btn" class="voice-btn">Stop</button>
+            <span id="voice-status">Idle</span>
+            <span id="voice-status-details"></span>
             <button id="dark-mode-btn" style="margin-left: auto;">Toggle Dark Mode</button>
+        </div>
+        <div id="stt-upload">
+            <span>STT Upload:</span>
+            <input type="file" id="stt-file-input" accept="audio/*">
+            <button id="stt-upload-btn" class="voice-btn">Transcribe</button>
         </div>
         <div id="chat-history"></div>
         <div id="drop-zone" style="padding: 16px; border: 2px dashed #ccc; margin: 16px; text-align: center; color: #999; border-radius: 8px;">
@@ -76,8 +111,64 @@
         const loadHistoryBtn = document.getElementById('load-history-btn');
         const listenBtn = document.getElementById('listen-btn');
         const autoSpeakCb = document.getElementById('auto-speak-cb');
+        const voiceModeSelect = document.getElementById('voice-mode');
+        const voiceEngineSelect = document.getElementById('voice-engine');
+        const sttEngineSelect = document.getElementById('stt-engine');
+        const stopVoiceBtn = document.getElementById('stop-voice-btn');
+        const voiceStatus = document.getElementById('voice-status');
+        const voiceStatusDetails = document.getElementById('voice-status-details');
         const darkModeBtn = document.getElementById('dark-mode-btn');
         const dropZone = document.getElementById('drop-zone');
+        const sttFileInput = document.getElementById('stt-file-input');
+        const sttUploadBtn = document.getElementById('stt-upload-btn');
+        let activeAudio = null;
+        let activeAudioUrl = null;
+
+        function setVoiceStatus(text, isActive) {
+            voiceStatus.textContent = text;
+            voiceStatus.classList.toggle('active', !!isActive);
+        }
+
+        function getSelectedEngine(selectEl) {
+            if (!selectEl) return null;
+            const value = (selectEl.value || '').trim();
+            return value && value !== 'auto' ? value : null;
+        }
+
+        async function refreshVoiceStatus() {
+            try {
+                const response = await fetch('http://localhost:8000/merlin/voice/status', {
+                    headers: { 'X-Merlin-Key': apiKeyInput.value.trim() }
+                });
+                if (!response.ok) {
+                    voiceStatusDetails.textContent = '';
+                    return;
+                }
+                const data = await response.json();
+                const ttsEngines = data?.tts?.engines || {};
+                const sttEngines = data?.stt?.engines || {};
+                const ttsAvailable = Object.keys(ttsEngines).filter((name) => ttsEngines[name]?.available);
+                const sttAvailable = Object.keys(sttEngines).filter((name) => !!sttEngines[name]);
+                const ttsLabel = ttsAvailable.length ? `TTS: ${ttsAvailable.join(', ')}` : 'TTS: unavailable';
+                const sttLabel = sttAvailable.length ? `STT: ${sttAvailable.join(', ')}` : 'STT: unavailable';
+                voiceStatusDetails.textContent = `${ttsLabel} | ${sttLabel}`;
+            } catch (error) {
+                voiceStatusDetails.textContent = '';
+            }
+        }
+
+        function stopActiveAudio() {
+            if (activeAudio) {
+                activeAudio.pause();
+                activeAudio.currentTime = 0;
+                activeAudio = null;
+            }
+            if (activeAudioUrl) {
+                URL.revokeObjectURL(activeAudioUrl);
+                activeAudioUrl = null;
+            }
+            setVoiceStatus('Idle', false);
+        }
 
         function addMessage(sender, text) {
             const msgDiv = document.createElement('div');
@@ -153,17 +244,65 @@
             if (e.key === 'Enter') sendChat();
         });
         async function speakText(text) {
+            const cleanText = (text || '').trim();
+            if (!cleanText) return;
+            stopActiveAudio();
             try {
-                await fetch('http://localhost:8000/merlin/speak', {
+                const engine = getSelectedEngine(voiceEngineSelect);
+                if (voiceModeSelect.value === 'server') {
+                    setVoiceStatus('Thinking...', true);
+                    await fetch('http://localhost:8000/merlin/speak', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Merlin-Key': apiKeyInput.value.trim()
+                        },
+                        body: JSON.stringify({ text: cleanText, engine })
+                    });
+                    setVoiceStatus('Idle', false);
+                    return;
+                }
+                setVoiceStatus('Thinking...', true);
+                const response = await fetch('http://localhost:8000/merlin/voice/synthesize', {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
                         'X-Merlin-Key': apiKeyInput.value.trim()
                     },
-                    body: JSON.stringify({ text: text })
+                    body: JSON.stringify({ text: cleanText, engine })
                 });
+                if (!response.ok) {
+                    throw new Error(`TTS request failed (${response.status})`);
+                }
+                const audioBlob = await response.blob();
+                if (!audioBlob || audioBlob.size === 0) {
+                    throw new Error('Empty audio response');
+                }
+                activeAudioUrl = URL.createObjectURL(audioBlob);
+                activeAudio = new Audio(activeAudioUrl);
+                activeAudio.onended = () => {
+                    stopActiveAudio();
+                };
+                setVoiceStatus('Speaking...', true);
+                await activeAudio.play();
             } catch (error) {
                 console.error('TTS Error:', error);
+                setVoiceStatus('TTS error', false);
+                try {
+                    setVoiceStatus('Thinking...', true);
+                    await fetch('http://localhost:8000/merlin/speak', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Merlin-Key': apiKeyInput.value.trim()
+                        },
+                        body: JSON.stringify({ text: cleanText, engine: getSelectedEngine(voiceEngineSelect) })
+                    });
+                    setVoiceStatus('Idle', false);
+                } catch (fallbackError) {
+                    console.error('TTS Fallback Error:', fallbackError);
+                    setVoiceStatus('TTS error', false);
+                }
             }
         }
 
@@ -175,7 +314,11 @@
             // Here we call the backend STT for demonstration.
             try {
                 // We need an endpoint for listen, let's assume we add it
-                const response = await fetch('http://localhost:8000/merlin/listen', {
+                const sttEngine = getSelectedEngine(sttEngineSelect);
+                const listenUrl = sttEngine
+                    ? `http://localhost:8000/merlin/listen?engine=${encodeURIComponent(sttEngine)}`
+                    : 'http://localhost:8000/merlin/listen';
+                const response = await fetch(listenUrl, {
                     method: 'POST',
                     headers: { 'X-Merlin-Key': apiKeyInput.value.trim() }
                 });
@@ -194,8 +337,46 @@
             }
         });
 
+        sttUploadBtn.addEventListener('click', async () => {
+            const file = sttFileInput.files && sttFileInput.files[0];
+            if (!file) {
+                addMessage('System', 'Select an audio file to transcribe.');
+                return;
+            }
+            addMessage('System', `Transcribing ${file.name}...`);
+            sttUploadBtn.disabled = true;
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                const sttEngine = getSelectedEngine(sttEngineSelect);
+                const transcribeUrl = sttEngine
+                    ? `http://localhost:8000/merlin/voice/transcribe?engine=${encodeURIComponent(sttEngine)}`
+                    : 'http://localhost:8000/merlin/voice/transcribe';
+                const response = await fetch(transcribeUrl, {
+                    method: 'POST',
+                    headers: { 'X-Merlin-Key': apiKeyInput.value.trim() },
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.text) {
+                    userInput.value = data.text;
+                    sendChat();
+                } else {
+                    addMessage('System', data.error || 'Transcription failed.');
+                }
+            } catch (error) {
+                addMessage('System', '[STT Upload Error]');
+            } finally {
+                sttUploadBtn.disabled = false;
+            }
+        });
+
         darkModeBtn.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
+        });
+
+        stopVoiceBtn.addEventListener('click', () => {
+            stopActiveAudio();
         });
 
         dropZone.addEventListener('dragover', (e) => {
@@ -222,6 +403,7 @@
         });
 
         loadHistoryBtn.addEventListener('click', loadHistory);
+        refreshVoiceStatus();
     </script>
 </body>
 </html>

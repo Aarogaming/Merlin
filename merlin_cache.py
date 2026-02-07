@@ -4,6 +4,7 @@ import redis
 from typing import Any, Optional
 from merlin_logger import merlin_logger
 
+
 class MerlinCache:
     def __init__(self):
         self.redis_host = os.getenv("REDIS_HOST", "localhost")
@@ -13,11 +14,17 @@ class MerlinCache:
 
     def _connect(self):
         try:
-            self.client = redis.Redis(host=self.redis_host, port=self.redis_port, decode_responses=True)
+            self.client = redis.Redis(
+                host=self.redis_host, port=self.redis_port, decode_responses=True
+            )
             self.client.ping()
-            merlin_logger.info(f"Connected to Redis at {self.redis_host}:{self.redis_port}")
+            merlin_logger.info(
+                f"Connected to Redis at {self.redis_host}:{self.redis_port}"
+            )
         except Exception as e:
-            merlin_logger.warning(f"Redis connection failed: {e}. Falling back to in-memory cache.")
+            merlin_logger.warning(
+                f"Redis connection failed: {e}. Falling back to in-memory cache."
+            )
             self.client = None
             self._memory_cache = {}
 
@@ -48,5 +55,6 @@ class MerlinCache:
                 merlin_logger.error(f"Redis delete error: {e}")
         else:
             self._memory_cache.pop(key, None)
+
 
 merlin_cache = MerlinCache()

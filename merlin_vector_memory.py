@@ -3,6 +3,7 @@ import os
 from typing import List, Dict, Any
 from merlin_logger import merlin_logger
 
+
 class MerlinVectorMemory:
     def __init__(self, collection_name="merlin_memory"):
         self.collection_name = collection_name
@@ -30,7 +31,11 @@ class MerlinVectorMemory:
         memory = {
             "text": text,
             "metadata": metadata or {},
-            "timestamp": os.path.getmtime(self.storage_file) if os.path.exists(self.storage_file) else 0
+            "timestamp": (
+                os.path.getmtime(self.storage_file)
+                if os.path.exists(self.storage_file)
+                else 0
+            ),
         }
         self.memories.append(memory)
         self._save_memories()
@@ -47,8 +52,11 @@ class MerlinVectorMemory:
                 break
         return results
 
+
 vector_memory = MerlinVectorMemory()
 
 if __name__ == "__main__":
-    vector_memory.add_memory("Merlin was updated with self-healing capabilities on Jan 12, 2026.")
+    vector_memory.add_memory(
+        "Merlin was updated with self-healing capabilities on Jan 12, 2026."
+    )
     print(vector_memory.query("self-healing"))

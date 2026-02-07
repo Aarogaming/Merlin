@@ -5,6 +5,7 @@ from typing import List, Dict, Any
 from merlin_logger import merlin_logger
 from merlin_vector_memory import vector_memory
 
+
 class MerlinRAG:
     def __init__(self, index_path="merlin_resource_index.json"):
         self.index_path = Path(index_path)
@@ -18,13 +19,15 @@ class MerlinRAG:
                     data = json.load(f)
                     # Focus on docs for RAG
                     self.documents = data.get("docs", [])
-                    merlin_logger.info(f"RAG loaded {len(self.documents)} documents from index.")
-                    
+                    merlin_logger.info(
+                        f"RAG loaded {len(self.documents)} documents from index."
+                    )
+
                     # Index documents into vector memory (simulated)
                     for doc in self.documents:
                         vector_memory.add_memory(
                             text=f"Document: {doc['path']}. Content summary: {doc.get('summary', 'No summary available')}",
-                            metadata={"path": doc["path"], "type": "doc"}
+                            metadata={"path": doc["path"], "type": "doc"},
                         )
             except Exception as e:
                 merlin_logger.error(f"RAG failed to load index: {e}")
@@ -33,5 +36,6 @@ class MerlinRAG:
         merlin_logger.info(f"RAG searching for: {query}")
         # Use vector memory for semantic search (simulated)
         return vector_memory.query(query, limit=limit)
+
 
 merlin_rag = MerlinRAG()

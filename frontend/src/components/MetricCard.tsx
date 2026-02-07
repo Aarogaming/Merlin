@@ -1,23 +1,24 @@
-import React from 'react';
-import { LucideIcon, TrendingUp, TrendingDown } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { motion } from 'framer-motion';
+import { TrendingDown, TrendingUp } from 'lucide-react';
 
 interface MetricCardProps {
   title: string;
   value: string | number;
-  icon: React.ReactNode;
+  icon: ReactNode;
   subtitle?: string;
   trend?: 'up' | 'down' | null;
   color?: 'blue' | 'green' | 'yellow' | 'purple' | 'red';
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({
+const MetricCard = ({
   title,
   value,
   icon,
   subtitle,
   trend,
   color = 'blue'
-}) => {
+}: MetricCardProps) => {
   const colorClasses = {
     blue: 'from-merlin-blue to-blue-600',
     green: 'from-success to-green-600',

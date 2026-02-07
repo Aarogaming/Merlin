@@ -61,7 +61,11 @@ def backup_chat_history():
         if BACKUP_FOLDER_ID:
             metadata["parents"] = [BACKUP_FOLDER_ID]
         media = MediaFileUpload(str(zip_path), mimetype="application/zip")
-        file = service.files().create(body=metadata, media_body=media, fields="id").execute()
+        file = (
+            service.files()
+            .create(body=metadata, media_body=media, fields="id")
+            .execute()
+        )
         print(f"Uploaded backup: {zip_path.name} (file ID: {file.get('id')})")
         return 0
     finally:

@@ -9,8 +9,8 @@ def test_resource_api_refresh_and_query(tmp_path, monkeypatch):
     index_path = tmp_path / "index.json"
     index_path.write_text(
         "{\n"
-        "  \"audio\": [{\"path\": \"song.mp3\", \"type\": \"mp3\", \"size\": 1, \"modified\": \"now\"}],\n"
-        "  \"docs\": [{\"path\": \"notes.txt\", \"type\": \"txt\", \"size\": 2, \"modified\": \"now\"}]\n"
+        '  "audio": [{"path": "song.mp3", "type": "mp3", "size": 1, "modified": "now"}],\n'
+        '  "docs": [{"path": "notes.txt", "type": "txt", "size": 2, "modified": "now"}]\n'
         "}\n",
         encoding="utf-8",
     )

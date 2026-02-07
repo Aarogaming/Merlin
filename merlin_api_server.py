@@ -6,6 +6,8 @@ from fastapi import (
     Depends,
     WebSocket,
     WebSocketDisconnect,
+    UploadFile,
+    File,
 )
 from fastapi.responses import JSONResponse
 from fastapi.security import APIKeyHeader
@@ -44,6 +46,7 @@ from merlin_metrics_dashboard import metrics_dashboard, handle_dashboard_websock
 from merlin_ab_testing import ab_testing_manager
 from merlin_predictive_selection import predictive_model_selector
 from merlin_cost_optimization import cost_optimization_manager
+import merlin_settings as settings
 from pydantic import BaseModel
 from fastapi.responses import FileResponse, HTMLResponse
 from pathlib import Path
@@ -56,12 +59,39 @@ import os
 import platform
 import ssl
 import json
+import uuid
 from pathlib import Path
+
+# Import UAF endpoints
+try:
+    from merlin_uaf_endpoints import uaf_router
+
+    UAF_ENDPOINTS_AVAILABLE = True
+except ImportError:
+    UAF_ENDPOINTS_AVAILABLE = False
+    uaf_router = None
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# Register UAF router if available
+if UAF_ENDPOINTS_AVAILABLE and uaf_router is not None:
+    app.include_router(uaf_router)
+
+
+# UAF Dashboard endpoint
+@app.get("/uaf/dashboard")
+async def serve_uaf_dashboard():
+    """Serve the UAF web dashboard."""
+    from pathlib import Path
+
+    dashboard_path = Path(__file__).parent.parent / "uaf" / "dashboard" / "index.html"
+    if dashboard_path.exists():
+        return FileResponse(dashboard_path)
+    else:
+        raise HTTPException(status_code=404, detail="Dashboard not found")
 
 
 # --- UNIVERSAL CONTEXT (Cross-Platform Sync) ---
@@ -570,6 +600,12 @@ class ExecuteRequest(BaseModel):
 
 class SpeakRequest(BaseModel):
     text: str
+    engine: str | None = None
+
+
+class VoiceSynthesizeRequest(BaseModel):
+    text: str
+    engine: str | None = None
 
 
 class SearchRequest(BaseModel):
@@ -698,18 +734,92 @@ async def speak_text(request: SpeakRequest, api_key: str = Depends(get_api_key))
         return JSONResponse(
             status_code=503, content={"error": "Voice subsystem unavailable"}
         )
-    ok = voice_instance.speak(request.text)
+    ok = voice_instance.speak(request.text, engine=request.engine)
     return JSONResponse(content={"ok": ok})
 
 
-@app.post("/merlin/listen")
-async def listen_for_speech(api_key: str = Depends(get_api_key)):
+@app.post("/merlin/voice/synthesize")
+async def synthesize_voice(
+    request: VoiceSynthesizeRequest,
+    mode: str = "file",
+    api_key: str = Depends(get_api_key),
+):
     voice_instance = get_voice()
     if not voice_instance:
         return JSONResponse(
             status_code=503, content={"error": "Voice subsystem unavailable"}
         )
-    text = voice_instance.listen()
+    output_path = voice_instance.synthesize_to_file(request.text, engine=request.engine)
+    if not output_path:
+        return JSONResponse(
+            status_code=500, content={"error": "Voice synthesis failed"}
+        )
+    output_path = Path(output_path)
+    if not output_path.exists():
+        return JSONResponse(status_code=500, content={"error": "Voice output missing"})
+    if mode == "json":
+        return JSONResponse(
+            content={"path": str(output_path), "filename": output_path.name}
+        )
+    if mode != "file":
+        raise HTTPException(status_code=400, detail="Invalid mode; use file or json")
+    return FileResponse(output_path, media_type="audio/wav", filename=output_path.name)
+
+
+@app.get("/merlin/voice/status")
+async def voice_status(api_key: str = Depends(get_api_key)):
+    voice_instance = get_voice()
+    if not voice_instance:
+        return JSONResponse(
+            status_code=503, content={"error": "Voice subsystem unavailable"}
+        )
+    return JSONResponse(content=voice_instance.status())
+
+
+@app.post("/merlin/voice/transcribe")
+async def transcribe_voice(
+    file: UploadFile = File(...),
+    engine: str | None = None,
+    api_key: str = Depends(get_api_key),
+):
+    voice_instance = get_voice()
+    if not voice_instance:
+        return JSONResponse(
+            status_code=503, content={"error": "Voice subsystem unavailable"}
+        )
+    suffix = Path(file.filename or "").suffix or ".wav"
+    upload_dir = Path(settings.MERLIN_VOICE_CACHE_DIR or "artifacts/voice") / "uploads"
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    temp_path = upload_dir / f"stt_upload_{uuid.uuid4().hex}{suffix}"
+    try:
+        with temp_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        text = voice_instance.transcribe_file(temp_path, engine=engine)
+    finally:
+        try:
+            file.file.close()
+        except Exception:
+            pass
+        if not settings.MERLIN_VOICE_KEEP_TEMP_AUDIO and temp_path.exists():
+            try:
+                temp_path.unlink()
+            except Exception:
+                pass
+    if not text:
+        return JSONResponse(status_code=500, content={"error": "Transcription failed"})
+    return JSONResponse(content={"text": text})
+
+
+@app.post("/merlin/listen")
+async def listen_for_speech(
+    engine: str | None = None, api_key: str = Depends(get_api_key)
+):
+    voice_instance = get_voice()
+    if not voice_instance:
+        return JSONResponse(
+            status_code=503, content={"error": "Voice subsystem unavailable"}
+        )
+    text = voice_instance.listen(engine=engine)
     return JSONResponse(content={"text": text})
 
 

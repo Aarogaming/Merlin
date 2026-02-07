@@ -1,0 +1,27 @@
+{
+  "schemaName": "PluginManifest",
+  "schemaVersion": "1.0.0",
+  "name": "session_streamer",
+  "version": "0.1.0",
+  "description": "Stream Merlin session events to Maelstrom IPC",
+  "entry": "plugin.py",
+  "type": "plugin",
+  "capabilities": [
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.session.stream",
+      "version": "0.1.0"
+    }
+  ],
+  "extensions": {
+    "aas": {
+      "hive": "merlin",
+      "visibility": "global",
+      "exports": [
+        "merlin.session.stream"
+      ],
+      "kernel": "merlin"
+    }
+  }
+}

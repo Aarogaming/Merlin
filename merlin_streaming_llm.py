@@ -402,9 +402,11 @@ class StreamingLLMBackend:
         for model in self.models:
             try:
                 response = requests.get(
-                    model["url"].replace("/chat/completions", "/tags")
-                    if "/chat" in model["url"]
-                    else model["url"],
+                    (
+                        model["url"].replace("/chat/completions", "/tags")
+                        if "/chat" in model["url"]
+                        else model["url"]
+                    ),
                     timeout=3,
                 )
                 results[model["name"]] = response.status_code == 200

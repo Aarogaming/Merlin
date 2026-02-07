@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -6,6 +5,10 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import ModelDetails from './pages/ModelDetails';
 import Settings from './pages/Settings';
+import Approvals from './pages/Approvals';
+import TaskDetails from './pages/TaskDetails';
+import Tasks from './pages/Tasks';
+import ControlCenter from './pages/ControlCenter';
 import './index.css';
 
 const queryClient = new QueryClient({
@@ -26,7 +29,11 @@ function App() {
           <Layout>
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/control-center" element={<ControlCenter />} />
               <Route path="/model/:modelName" element={<ModelDetails />} />
+              <Route path="/tasks" element={<Tasks />} />
+              <Route path="/approvals" element={<Approvals />} />
+              <Route path="/tasks/:taskId" element={<TaskDetails />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
           </Layout>

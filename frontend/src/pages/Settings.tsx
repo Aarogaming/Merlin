@@ -1,32 +1,43 @@
-import React from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Settings, 
+  Settings as SettingsIcon, 
   RefreshCw, 
   Bell, 
-  Database,
-  Palette,
-  Zap
+  Database
 } from 'lucide-react';
 import { useDashboardStore } from '../store/dashboard';
+import type { DashboardSettings } from '../types';
 import toast from 'react-hot-toast';
 
-const Settings: React.FC = () => {
-  const { settings, setSettings } = useDashboardStore();
-  const [isSaving, setIsSaving] = React.useState(false);
+type NestedSettingsKey = 'notifications' | 'charts';
 
-  const handleSettingChange = (key: string, value: any) => {
+const Settings = () => {
+  const { settings, setSettings } = useDashboardStore();
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSettingChange = <K extends keyof DashboardSettings>(
+    key: K,
+    value: DashboardSettings[K]
+  ) => {
     setSettings({
       ...settings,
       [key]: value,
     });
   };
 
-  const handleNestedSettingChange = (parent: string, key: string, value: any) => {
+  const handleNestedSettingChange = <
+    K extends NestedSettingsKey,
+    NK extends keyof DashboardSettings[K]
+  >(
+    parent: K,
+    key: NK,
+    value: DashboardSettings[K][NK]
+  ) => {
     setSettings({
       ...settings,
       [parent]: {
-        ...settings[parent as keyof typeof settings],
+        ...settings[parent],
         [key]: value,
       },
     });
@@ -46,7 +57,7 @@ const Settings: React.FC = () => {
   };
 
   const resetSettings = () => {
-    const defaultSettings = {
+    const defaultSettings: DashboardSettings = {
       refreshInterval: 5000,
       theme: 'dark' as const,
       notifications: {
@@ -107,7 +118,7 @@ const Settings: React.FC = () => {
       {/* General Settings */}
       <div className="card">
         <div className="flex items-center mb-6">
-          <Settings className="w-6 h-6 text-merlin-blue mr-3" />
+          <SettingsIcon className="w-6 h-6 text-merlin-blue mr-3" />
           <h2 className="text-xl font-semibold">General Settings</h2>
         </div>
 
@@ -136,7 +147,7 @@ const Settings: React.FC = () => {
             </label>
             <select
               value={settings.theme}
-              onChange={(e) => handleSettingChange('theme', e.target.value)}
+              onChange={(e) => handleSettingChange('theme', e.target.value as DashboardSettings['theme'])}
               className="w-full px-3 py-2 bg-dark-border border border-dark-border rounded-md text-dark-text focus:outline-none focus:ring-2 focus:ring-merlin-blue"
             >
               <option value="light">Light</option>

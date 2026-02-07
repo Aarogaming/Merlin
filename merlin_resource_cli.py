@@ -16,7 +16,11 @@ def load_index(path: Path) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Query Merlin resource index")
-    parser.add_argument("--index", default="merlin_resource_index.json", help="Path to resource index JSON")
+    parser.add_argument(
+        "--index",
+        default="merlin_resource_index.json",
+        help="Path to resource index JSON",
+    )
     parser.add_argument("--type", dest="rtype", default="", help="Resource type filter")
     parser.add_argument("--search", default="", help="Search string for path matches")
     parser.add_argument("--limit", type=int, default=25, help="Max results to show")

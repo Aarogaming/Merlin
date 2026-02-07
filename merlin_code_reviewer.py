@@ -4,6 +4,7 @@ from merlin_logger import merlin_logger
 import merlin_settings as settings
 import requests
 
+
 class MerlinCodeReviewer:
     def __init__(self):
         self.system_prompt = (
@@ -16,7 +17,7 @@ class MerlinCodeReviewer:
         if not os.path.exists(file_path):
             return "File not found."
 
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             code = f.read()
 
         merlin_logger.info(f"Merlin is reviewing code: {file_path}")
@@ -25,9 +26,12 @@ class MerlinCodeReviewer:
             "model": settings.OPENAI_MODEL,
             "messages": [
                 {"role": "system", "content": self.system_prompt},
-                {"role": "user", "content": f"Review this file: {os.path.basename(file_path)}\n\n```python\n{code}\n```"}
+                {
+                    "role": "user",
+                    "content": f"Review this file: {os.path.basename(file_path)}\n\n```python\n{code}\n```",
+                },
             ],
-            "temperature": 0.2
+            "temperature": 0.2,
         }
 
         try:
@@ -38,6 +42,7 @@ class MerlinCodeReviewer:
         except Exception as e:
             merlin_logger.error(f"Review Error: {e}")
             return f"My neural link failed during review: {str(e)}"
+
 
 # Singleton for system use
 code_reviewer = MerlinCodeReviewer()

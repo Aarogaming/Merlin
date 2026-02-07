@@ -1,0 +1,20 @@
+{
+  "communication": {
+    "channels": [
+      "event_bus",
+      "nats",
+      "outbox"
+    ],
+    "require_ack": false,
+    "retries": 2,
+    "heartbeat_sec": 30
+  },
+  "verification": {
+    "required": true,
+    "expect_running": true
+  },
+  "repair": {
+    "recursive": true,
+    "max_attempts": 3
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schemaName": "PluginManifest",
+  "schemaVersion": "1.0.0",
+  "name": "kernel",
+  "version": "0.1.0",
+  "description": "Merlin hive kernel plugin",
+  "entry": "plugin.py",
+  "type": "plugin",
+  "capabilities": [
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.hive.status",
+      "version": "0.1.0"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.hive.plugins",
+      "version": "0.1.0"
+    }
+  ],
+  "extensions": {
+    "aas": {
+      "hive": "merlin",
+      "visibility": "global",
+      "exports": [
+        "merlin.hive.status",
+        "merlin.hive.plugins"
+      ],
+      "kernel": true
+    }
+  }
+}
