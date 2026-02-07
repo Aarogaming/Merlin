@@ -9,6 +9,9 @@ node_modules/
 # Merlin artifacts
 merlin_chat_history/
 merlin_resource_index.json
+merlin_memory.json
+merlin_users.json
+merlin_voice_sources.json
 *.zip
 
 # Secrets
