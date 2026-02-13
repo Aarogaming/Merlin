@@ -269,6 +269,73 @@ def test_operation_envelope_voice_unavailable(monkeypatch):
     assert response.json()["payload"]["error"]["code"] == "VOICE_UNAVAILABLE"
 
 
+def test_operation_envelope_voice_listen_and_transcribe(monkeypatch):
+    class DummyVoice:
+        def listen(self, engine=None):
+            return "heard text"
+
+        def transcribe_file(self, path, engine=None):
+            return f"transcribed:{path}"
+
+    monkeypatch.setattr(api_server, "get_voice", lambda: DummyVoice())
+    client = TestClient(api_server.app)
+
+    listen_response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.voice.listen", payload={"engine": "dummy"}
+        ),
+        headers=auth_headers(),
+    )
+    assert listen_response.status_code == 200
+    assert listen_response.json()["payload"]["text"] == "heard text"
+
+    transcribe_response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.voice.transcribe",
+            payload={"file_path": "/tmp/sample.wav", "engine": "dummy"},
+        ),
+        headers=auth_headers(),
+    )
+    assert transcribe_response.status_code == 200
+    transcribe_payload = transcribe_response.json()["payload"]
+    assert transcribe_payload["text"] == "transcribed:/tmp/sample.wav"
+    assert transcribe_payload["file_path"] == "/tmp/sample.wav"
+
+
+def test_operation_envelope_voice_transcribe_contract_fixture(monkeypatch):
+    class DummyVoice:
+        def transcribe_file(self, path, engine=None):
+            return "fixture-transcribed"
+
+    monkeypatch.setattr(api_server, "get_voice", lambda: DummyVoice())
+    client = TestClient(api_server.app)
+    request_fixture = load_contract_fixture("merlin.voice.transcribe.request.json")
+    expected_fixture = load_contract_fixture(
+        "merlin.voice.transcribe.expected_response.json"
+    )
+
+    response = client.post(
+        "/merlin/operations",
+        json=request_fixture,
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["schema_name"] == expected_fixture["schema_name"]
+    assert body["schema_version"] == expected_fixture["schema_version"]
+    assert body["correlation_id"] == expected_fixture["correlation_id"]
+    assert body["trace_id"] == expected_fixture["trace_id"]
+    assert body["operation"]["name"] == expected_fixture["operation"]["name"]
+    assert body["operation"]["version"] == expected_fixture["operation"]["version"]
+    assert body["payload"]["text"] == expected_fixture["payload"]["text"]
+    assert body["payload"]["file_path"] == expected_fixture["payload"]["file_path"]
+    assert isinstance(body["message_id"], str)
+    assert isinstance(body["timestamp_utc"], str)
+
+
 def test_operation_envelope_user_create_and_authenticate(monkeypatch):
     monkeypatch.setattr(
         api_server.user_manager,

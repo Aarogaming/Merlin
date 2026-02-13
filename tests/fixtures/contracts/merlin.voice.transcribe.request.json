@@ -1,0 +1,30 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "f36a3472-e09d-460e-b1bc-a8eef7040c03",
+  "correlation_id": "1de48ce4-2d57-41fc-aecc-d9c9f49b4aa8",
+  "trace_id": "72e35016-f984-4ca9-b0eb-c74578bf6fce",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.voice.transcribe",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "voice-transcribe-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "file_path": "/tmp/fixture.wav",
+    "engine": "dummy"
+  }
+}

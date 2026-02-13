@@ -107,7 +107,7 @@ If more allowlist entries are needed, constrain by exact path/pattern and docume
 
 ## Highest-Priority Next Work
 
-1. Expand envelope ingress coverage to additional high-volume operations (transcribe/listen, selected orchestration and diagnostics flows).
+1. Expand envelope ingress coverage to additional high-volume operations (selected orchestration and diagnostics flows).
 2. Expand mypy scope to additional `merlin_*.py` modules in small batches, fixing issues as each batch is added.
 3. Add/expand tests for `merlin_adaptive_llm.py`, `merlin_ab_testing.py`, and integration-heavy modules touched by typing work.
 4. Add branch-protection requirements to enforce both CI jobs before merge (repo settings).

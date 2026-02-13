@@ -49,6 +49,8 @@ All cross-repo calls to Merlin should use `AAS.OperationEnvelope@1.0.0` and incl
   - `merlin.rag.query`
   - `merlin.voice.status`
   - `merlin.voice.synthesize`
+  - `merlin.voice.listen`
+  - `merlin.voice.transcribe`
   - `merlin.tasks.create`
   - `merlin.tasks.list`
   - `merlin.user_manager.create`

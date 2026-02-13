@@ -985,6 +985,88 @@ async def execute_operation(
             payload={"path": str(output_path), "filename": output_path.name},
         )
 
+    if envelope.operation.name == "merlin.voice.listen":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.voice.listen payload must be an object",
+                status_code=422,
+            )
+
+        raw_engine = envelope.payload.get("engine", None)
+        engine = raw_engine if isinstance(raw_engine, str) else None
+
+        voice_instance = get_voice()
+        if not voice_instance:
+            return _operation_error(
+                envelope=envelope,
+                code="VOICE_UNAVAILABLE",
+                message="Voice subsystem unavailable",
+                retryable=True,
+                status_code=503,
+            )
+
+        text = voice_instance.listen(engine=engine)
+        if not text:
+            return _operation_error(
+                envelope=envelope,
+                code="VOICE_LISTEN_FAILED",
+                message="Voice listen failed",
+                status_code=500,
+            )
+
+        return _operation_response(
+            envelope=envelope,
+            payload={"text": text},
+        )
+
+    if envelope.operation.name == "merlin.voice.transcribe":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.voice.transcribe payload must be an object",
+                status_code=422,
+            )
+
+        raw_file_path = envelope.payload.get("file_path", "")
+        raw_engine = envelope.payload.get("engine", None)
+
+        file_path = raw_file_path if isinstance(raw_file_path, str) else ""
+        engine = raw_engine if isinstance(raw_engine, str) else None
+        if not file_path.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.file_path is required",
+                status_code=422,
+            )
+
+        voice_instance = get_voice()
+        if not voice_instance:
+            return _operation_error(
+                envelope=envelope,
+                code="VOICE_UNAVAILABLE",
+                message="Voice subsystem unavailable",
+                retryable=True,
+                status_code=503,
+            )
+
+        text = voice_instance.transcribe_file(file_path, engine=engine)
+        if not text:
+            return _operation_error(
+                envelope=envelope,
+                code="VOICE_TRANSCRIBE_FAILED",
+                message="Voice transcription failed",
+                status_code=500,
+            )
+
+        return _operation_response(
+            envelope=envelope,
+            payload={"text": text, "file_path": file_path},
+        )
+
     if envelope.operation.name == "merlin.user_manager.create":
         if not isinstance(envelope.payload, dict):
             return _operation_error(
