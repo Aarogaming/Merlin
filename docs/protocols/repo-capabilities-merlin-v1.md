@@ -8,6 +8,7 @@ It is aligned with `aas-plugin.json` capability names.
 - Repo: `AaroneousAutomationSuite/Merlin`
 - Service entry: `merlin_api_server.py`
 - Primary interface: HTTP (`http://localhost:8001` in local/dev)
+- Capability manifest endpoint: `GET /merlin/operations/capabilities`
 
 ## Supported Capability Names
 

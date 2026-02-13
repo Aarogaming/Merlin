@@ -73,6 +73,26 @@ def test_health_and_chat(monkeypatch):
     assert invalid.status_code == 422
 
 
+def test_operation_capabilities_endpoint():
+    client = TestClient(api_server.app)
+
+    response = client.get(
+        "/merlin/operations/capabilities",
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["schema_name"] == "AAS.RepoCapabilityManifest"
+    assert body["schema_version"] == "1.0.0"
+    assert body["endpoint"] == "/merlin/operations"
+
+    capability_names = {cap["name"] for cap in body["capabilities"]}
+    assert "assistant.tools.execute" in capability_names
+    assert "merlin.voice.transcribe" in capability_names
+    assert "merlin.aas.create_task" in capability_names
+
+
 def test_operation_envelope_chat_request(monkeypatch):
     monkeypatch.setattr(
         api_server, "merlin_emotion_chat", lambda user_input, user_id: "ok"

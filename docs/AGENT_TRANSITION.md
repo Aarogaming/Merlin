@@ -104,6 +104,7 @@ If more allowlist entries are needed, constrain by exact path/pattern and docume
 5. Added contributor-facing runbook in `CONTRIBUTING.md` mirroring local/CI gate sequence.
 6. Added protocol baseline docs + schemas under `docs/protocols/` and `contracts/`.
 7. Added initial envelope-based operation ingress in API (`POST /merlin/operations`) for chat/tools/RAG/voice/task/user-management/diagnostics/orchestration flows.
+8. Added machine-readable operation capability manifest endpoint (`GET /merlin/operations/capabilities`).
 
 ## Highest-Priority Next Work
 

@@ -785,6 +785,46 @@ def _operation_error(
     )
 
 
+SUPPORTED_ENVELOPE_OPERATIONS: list[str] = [
+    "assistant.chat.request",
+    "assistant.tools.execute",
+    "merlin.rag.query",
+    "merlin.voice.status",
+    "merlin.voice.synthesize",
+    "merlin.voice.listen",
+    "merlin.voice.transcribe",
+    "merlin.tasks.create",
+    "merlin.tasks.list",
+    "merlin.user_manager.create",
+    "merlin.user_manager.authenticate",
+    "merlin.system_info.get",
+    "merlin.genesis.logs",
+    "merlin.aas.create_task",
+]
+
+
+@app.get("/merlin/operations/capabilities")
+async def operation_capabilities(api_key: str = Depends(get_api_key)):
+    capabilities = [
+        {
+            "name": operation_name,
+            "version": "1.0.0",
+            "stability": "stable",
+        }
+        for operation_name in SUPPORTED_ENVELOPE_OPERATIONS
+    ]
+    return JSONResponse(
+        content={
+            "schema_name": "AAS.RepoCapabilityManifest",
+            "schema_version": "1.0.0",
+            "repo": "AaroneousAutomationSuite/Merlin",
+            "service": "merlin_api_server",
+            "endpoint": "/merlin/operations",
+            "capabilities": capabilities,
+        }
+    )
+
+
 @app.post("/merlin/operations")
 async def execute_operation(
     envelope: OperationEnvelopeRequest, api_key: str = Depends(get_api_key)
