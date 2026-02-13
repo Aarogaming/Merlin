@@ -1,0 +1,31 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "bb90fdb1-f954-4f6d-9cf2-c915716a6c3a",
+  "correlation_id": "20d0b9f4-c31d-49e9-8c4e-4e43d65f4d65",
+  "trace_id": "34e2d9fa-90f4-4bc4-8198-c9f25a3d3b03",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.user_manager.create",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "user-create-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "username": "fixture-user-create",
+    "password": "fixture-password",
+    "role": "user"
+  }
+}

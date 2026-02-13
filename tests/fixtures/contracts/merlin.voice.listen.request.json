@@ -1,0 +1,29 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "554ea0e4-2506-4e17-b14e-b95f95c88701",
+  "correlation_id": "f2751f2f-2748-43cd-abf5-572ce4ebf388",
+  "trace_id": "0b50af5a-799d-414b-a6f5-84e7ddb2f65d",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.voice.listen",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "voice-listen-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "engine": "dummy"
+  }
+}

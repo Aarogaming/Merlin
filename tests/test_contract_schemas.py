@@ -72,6 +72,24 @@ def test_operation_request_fixtures_match_operation_envelope_schema():
         assert not errors, f"{request_file.name} failed schema validation: {errors}"
 
 
+def test_supported_operations_have_request_fixtures():
+    request_files = sorted(FIXTURES_DIR.glob("*.request.json"))
+    assert request_files, "No request fixtures found in tests/fixtures/contracts"
+
+    operation_names_from_fixtures = set()
+    for request_file in request_files:
+        payload = load_json(request_file)
+        operation = payload.get("operation", {})
+        operation_name = operation.get("name")
+        if isinstance(operation_name, str) and operation_name:
+            operation_names_from_fixtures.add(operation_name)
+
+    missing = sorted(
+        set(api_server.SUPPORTED_ENVELOPE_OPERATIONS) - operation_names_from_fixtures
+    )
+    assert not missing, f"Missing request fixtures for operations: {missing}"
+
+
 def test_operation_capabilities_matches_manifest_schema():
     client = TestClient(api_server.app)
     response = client.get("/merlin/operations/capabilities", headers=auth_headers())

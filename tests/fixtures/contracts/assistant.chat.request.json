@@ -1,0 +1,30 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "d75f93a6-bd85-4f8a-92b8-2be37d8efe2f",
+  "correlation_id": "923ed680-c744-4343-a65a-a2e728ce6c75",
+  "trace_id": "5a5146d1-4f5c-47af-a8f0-659551240dbd",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "assistant.chat.request",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "chat-request-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "user_input": "Hello Merlin",
+    "user_id": "fixture-user"
+  }
+}

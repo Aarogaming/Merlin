@@ -106,11 +106,12 @@ If more allowlist entries are needed, constrain by exact path/pattern and docume
 7. Added initial envelope-based operation ingress in API (`POST /merlin/operations`) for chat/tools/command/plugins/search/RAG/voice/task/user-management/diagnostics/orchestration flows.
 8. Added machine-readable operation capability manifest endpoint (`GET /merlin/operations/capabilities`).
 9. Added schema validation tests for contract fixtures and capability manifest against `contracts/*.schema.json`.
+10. Added request fixture coverage for all currently wired envelope operations and parity checks against supported-operation list.
 
 ## Highest-Priority Next Work
 
 1. Expand envelope ingress coverage to remaining endpoints and standardize payloads across all existing API operations.
-2. Add fixture coverage for all currently wired operations and validate live responses against schemas where stable.
+2. Add expected-response fixture coverage for all currently wired operations and validate live responses against schemas where stable.
 3. Expand mypy scope to additional `merlin_*.py` modules in small batches, fixing issues as each batch is added.
 4. Add/expand tests for `merlin_adaptive_llm.py`, `merlin_ab_testing.py`, and integration-heavy modules touched by typing work.
 5. Add branch-protection requirements to enforce both CI jobs before merge (repo settings).

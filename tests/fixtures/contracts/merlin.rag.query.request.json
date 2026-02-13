@@ -1,0 +1,30 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "3c12742d-34cb-4f0b-a9f4-81cf4a36b9f4",
+  "correlation_id": "80ca4d5e-4bb6-4be6-b4d2-8f5df42f5d78",
+  "trace_id": "d9a2d09f-6d63-4f81-abf4-48f4564966ee",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.rag.query",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "rag-query-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "query": "contract coverage",
+    "limit": 3
+  }
+}

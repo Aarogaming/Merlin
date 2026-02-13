@@ -1,0 +1,31 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "e0490be8-c74c-4bf0-a63d-f16a06d11156",
+  "correlation_id": "2f9973e7-a140-4df8-9959-8e409d2ef530",
+  "trace_id": "4348c5ac-0d6f-4cd9-bf09-b3cb8687bcda",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.tasks.create",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "tasks-create-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "title": "Fixture task",
+    "description": "Created from fixture",
+    "priority": "High"
+  }
+}
