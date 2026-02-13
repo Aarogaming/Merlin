@@ -103,11 +103,11 @@ If more allowlist entries are needed, constrain by exact path/pattern and docume
 4. Updated CI formatting/type/test gates to align with phased scope.
 5. Added contributor-facing runbook in `CONTRIBUTING.md` mirroring local/CI gate sequence.
 6. Added protocol baseline docs + schemas under `docs/protocols/` and `contracts/`.
-7. Added initial envelope-based operation ingress in API (`POST /merlin/operations`) for chat/tools/RAG/voice/task/user-management flows.
+7. Added initial envelope-based operation ingress in API (`POST /merlin/operations`) for chat/tools/RAG/voice/task/user-management/diagnostics/orchestration flows.
 
 ## Highest-Priority Next Work
 
-1. Expand envelope ingress coverage to additional high-volume operations (selected orchestration and diagnostics flows).
+1. Expand envelope ingress coverage to remaining high-volume operations and standardize payloads across all existing endpoints.
 2. Expand mypy scope to additional `merlin_*.py` modules in small batches, fixing issues as each batch is added.
 3. Add/expand tests for `merlin_adaptive_llm.py`, `merlin_ab_testing.py`, and integration-heavy modules touched by typing work.
 4. Add branch-protection requirements to enforce both CI jobs before merge (repo settings).

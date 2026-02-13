@@ -1,0 +1,13 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "f8f8b6b8-0134-4b4f-a421-cdcdd524012a",
+  "trace_id": "2b1f25c9-e31d-43df-bcb8-b2d2286815fb",
+  "operation": {
+    "name": "merlin.aas.create_task.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "task_id": "fixture-task-id"
+  }
+}

@@ -456,6 +456,101 @@ def test_operation_envelope_user_auth_contract_fixture(monkeypatch):
     assert isinstance(body["timestamp_utc"], str)
 
 
+def test_operation_envelope_system_info_and_genesis_logs(monkeypatch):
+    monkeypatch.setattr(api_server, "get_system_info", lambda: {"platform": "linux"})
+    monkeypatch.setattr(api_server, "get_recent_logs", lambda: [{"message": "ok"}])
+    client = TestClient(api_server.app)
+
+    system_info_response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(operation_name="merlin.system_info.get", payload={}),
+        headers=auth_headers(),
+    )
+    assert system_info_response.status_code == 200
+    assert system_info_response.json()["payload"]["system_info"]["platform"] == "linux"
+
+    logs_response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(operation_name="merlin.genesis.logs", payload={}),
+        headers=auth_headers(),
+    )
+    assert logs_response.status_code == 200
+    assert logs_response.json()["payload"]["logs"][0]["message"] == "ok"
+
+
+def test_operation_envelope_aas_create_task(monkeypatch):
+    monkeypatch.setattr(
+        api_server.hub_client,
+        "create_aas_task",
+        lambda title, description, priority: "task-123",
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.aas.create_task",
+            payload={"title": "New Task", "description": "Desc", "priority": "High"},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    assert response.json()["payload"]["task_id"] == "task-123"
+
+
+def test_operation_envelope_aas_create_task_failed(monkeypatch):
+    monkeypatch.setattr(
+        api_server.hub_client,
+        "create_aas_task",
+        lambda title, description, priority: None,
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.aas.create_task",
+            payload={"title": "New Task"},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 502
+    assert response.json()["payload"]["error"]["code"] == "AAS_TASK_CREATE_FAILED"
+
+
+def test_operation_envelope_aas_create_task_contract_fixture(monkeypatch):
+    monkeypatch.setattr(
+        api_server.hub_client,
+        "create_aas_task",
+        lambda title, description, priority: "fixture-task-id",
+    )
+    client = TestClient(api_server.app)
+    request_fixture = load_contract_fixture("merlin.aas.create_task.request.json")
+    expected_fixture = load_contract_fixture(
+        "merlin.aas.create_task.expected_response.json"
+    )
+
+    response = client.post(
+        "/merlin/operations",
+        json=request_fixture,
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["schema_name"] == expected_fixture["schema_name"]
+    assert body["schema_version"] == expected_fixture["schema_version"]
+    assert body["correlation_id"] == expected_fixture["correlation_id"]
+    assert body["trace_id"] == expected_fixture["trace_id"]
+    assert body["operation"]["name"] == expected_fixture["operation"]["name"]
+    assert body["operation"]["version"] == expected_fixture["operation"]["version"]
+    assert body["payload"]["task_id"] == expected_fixture["payload"]["task_id"]
+    assert isinstance(body["message_id"], str)
+    assert isinstance(body["timestamp_utc"], str)
+
+
 def test_operation_envelope_rag_query(monkeypatch):
     monkeypatch.setattr(
         api_server.merlin_rag,

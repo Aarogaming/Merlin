@@ -1179,6 +1179,76 @@ async def execute_operation(
             },
         )
 
+    if envelope.operation.name == "merlin.system_info.get":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.system_info.get payload must be an object",
+                status_code=422,
+            )
+        return _operation_response(
+            envelope=envelope,
+            payload={"system_info": get_system_info()},
+        )
+
+    if envelope.operation.name == "merlin.genesis.logs":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.genesis.logs payload must be an object",
+                status_code=422,
+            )
+        return _operation_response(
+            envelope=envelope,
+            payload={"logs": get_recent_logs()},
+        )
+
+    if envelope.operation.name == "merlin.aas.create_task":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.aas.create_task payload must be an object",
+                status_code=422,
+            )
+
+        raw_title = envelope.payload.get("title", "")
+        raw_description = envelope.payload.get("description", "")
+        raw_priority = envelope.payload.get("priority", "Medium")
+
+        title = raw_title if isinstance(raw_title, str) else ""
+        description = raw_description if isinstance(raw_description, str) else ""
+        priority = (
+            raw_priority
+            if isinstance(raw_priority, str) and raw_priority.strip()
+            else "Medium"
+        )
+
+        if not title.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.title is required",
+                status_code=422,
+            )
+
+        task_id = hub_client.create_aas_task(title, description, priority)
+        if not task_id:
+            return _operation_error(
+                envelope=envelope,
+                code="AAS_TASK_CREATE_FAILED",
+                message="Failed to create AAS task",
+                retryable=True,
+                status_code=502,
+            )
+
+        return _operation_response(
+            envelope=envelope,
+            payload={"task_id": task_id},
+        )
+
     if envelope.operation.name == "merlin.rag.query":
         if not isinstance(envelope.payload, dict):
             return _operation_error(

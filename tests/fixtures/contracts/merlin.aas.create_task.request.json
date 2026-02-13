@@ -1,0 +1,31 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "43e7d081-d338-4f88-9cb8-c41386d72e46",
+  "correlation_id": "f8f8b6b8-0134-4b4f-a421-cdcdd524012a",
+  "trace_id": "2b1f25c9-e31d-43df-bcb8-b2d2286815fb",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.aas.create_task",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "aas-task-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 2
+    }
+  },
+  "payload": {
+    "title": "Fixture Task",
+    "description": "Created via fixture contract test",
+    "priority": "High"
+  }
+}

@@ -55,6 +55,9 @@ All cross-repo calls to Merlin should use `AAS.OperationEnvelope@1.0.0` and incl
   - `merlin.tasks.list`
   - `merlin.user_manager.create`
   - `merlin.user_manager.authenticate`
+  - `merlin.system_info.get`
+  - `merlin.genesis.logs`
+  - `merlin.aas.create_task`
 - Current response operation shape: `<operation>.result`
 
 ## Response Expectations
