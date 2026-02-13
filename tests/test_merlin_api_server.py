@@ -571,6 +571,76 @@ def test_operation_envelope_aas_create_task_contract_fixture(monkeypatch):
     assert isinstance(body["timestamp_utc"], str)
 
 
+def test_operation_envelope_command_execute(monkeypatch):
+    monkeypatch.setattr(
+        api_server.policy_manager, "is_command_allowed", lambda command: True
+    )
+    monkeypatch.setattr(
+        api_server,
+        "execute_command",
+        lambda command: {"stdout": "ok", "stderr": "", "returncode": 0},
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.command.execute",
+            payload={"command": "echo ok"},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    payload = response.json()["payload"]
+    assert payload["output"] == "ok"
+    assert payload["returncode"] == 0
+
+
+def test_operation_envelope_command_blocked(monkeypatch):
+    monkeypatch.setattr(
+        api_server.policy_manager, "is_command_allowed", lambda command: False
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.command.execute",
+            payload={"command": "rm -rf /"},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 403
+    assert response.json()["payload"]["error"]["code"] == "COMMAND_BLOCKED"
+
+
+def test_operation_envelope_search_query_contract_fixture(monkeypatch):
+    monkeypatch.setattr(
+        api_server.merlin_rag,
+        "search",
+        lambda query, limit=5: [
+            {"text": "doc", "metadata": {"path": "docs/readme.md"}},
+            {"text": "match", "metadata": {}},
+        ],
+    )
+    client = TestClient(api_server.app)
+    request_fixture = load_contract_fixture("merlin.search.query.request.json")
+
+    response = client.post(
+        "/merlin/operations",
+        json=request_fixture,
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["operation"]["name"] == "merlin.search.query.result"
+    assert body["payload"]["count"] == 2
+    assert body["payload"]["results"][0].startswith("docs/readme.md")
+
+
 def test_operation_envelope_rag_query(monkeypatch):
     monkeypatch.setattr(
         api_server.merlin_rag,

@@ -788,7 +788,9 @@ def _operation_error(
 SUPPORTED_ENVELOPE_OPERATIONS: list[str] = [
     "assistant.chat.request",
     "assistant.tools.execute",
+    "merlin.command.execute",
     "merlin.rag.query",
+    "merlin.search.query",
     "merlin.voice.status",
     "merlin.voice.synthesize",
     "merlin.voice.listen",
@@ -1287,6 +1289,108 @@ async def execute_operation(
         return _operation_response(
             envelope=envelope,
             payload={"task_id": task_id},
+        )
+
+    if envelope.operation.name == "merlin.command.execute":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.command.execute payload must be an object",
+                status_code=422,
+            )
+
+        raw_command = envelope.payload.get("command", "")
+        command = raw_command if isinstance(raw_command, str) else ""
+        if not command.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.command is required",
+                status_code=422,
+            )
+
+        if not policy_manager.is_command_allowed(command):
+            return _operation_error(
+                envelope=envelope,
+                code="COMMAND_BLOCKED",
+                message="Command blocked by policy",
+                status_code=403,
+            )
+
+        try:
+            result = execute_command(command)
+        except Exception as exc:
+            merlin_logger.error(f"Command execution failed: {exc}")
+            return _operation_error(
+                envelope=envelope,
+                code="COMMAND_EXECUTION_ERROR",
+                message="Command execution failed",
+                retryable=True,
+                status_code=500,
+            )
+
+        if "error" in result:
+            return _operation_error(
+                envelope=envelope,
+                code="COMMAND_EXECUTION_FAILED",
+                message=str(result["error"]),
+                status_code=400,
+            )
+
+        output = result.get("stdout", "")
+        if result.get("stderr"):
+            output = f"{output}\n{result['stderr']}".strip()
+        return _operation_response(
+            envelope=envelope,
+            payload={"output": output, "returncode": result.get("returncode")},
+        )
+
+    if envelope.operation.name == "merlin.search.query":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.search.query payload must be an object",
+                status_code=422,
+            )
+
+        raw_query = envelope.payload.get("query", "")
+        raw_limit = envelope.payload.get("limit", 5)
+
+        query = raw_query if isinstance(raw_query, str) else ""
+        if not query.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.query is required",
+                status_code=422,
+            )
+
+        limit = raw_limit if isinstance(raw_limit, int) else 5
+        if limit <= 0 or limit > 20:
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.limit must be between 1 and 20",
+                status_code=422,
+            )
+
+        matches = merlin_rag.search(query, limit=limit)
+        results = []
+        for match in matches:
+            if not isinstance(match, dict):
+                results.append(str(match))
+                continue
+            text = str(match.get("text", ""))
+            metadata = match.get("metadata", {})
+            path = metadata.get("path") if isinstance(metadata, dict) else None
+            if path:
+                text = f"{path}: {text}"
+            results.append(text)
+        return _operation_response(
+            envelope=envelope,
+            payload={"results": results, "count": len(results)},
         )
 
     if envelope.operation.name == "merlin.rag.query":
