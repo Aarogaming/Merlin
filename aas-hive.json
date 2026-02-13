@@ -5,7 +5,7 @@
       "nats",
       "outbox"
     ],
-    "require_ack": false,
+    "require_ack": true,
     "retries": 2,
     "heartbeat_sec": 30
   },

@@ -1,0 +1,16 @@
+# >>> AAS SEARCH HYGIENE (managed) >>>
+**/.git/**
+**/.venv/**
+**/__pycache__/**
+**/.pytest_cache/**
+**/.ruff_cache/**
+**/build/**
+**/dist/**
+**/logs/**
+**/artifacts/**
+**/merlin_chat_history/**
+**/frontend/node_modules/**
+**/frontend/dist/**
+**/frontend/src-tauri/target/**
+
+# <<< AAS SEARCH HYGIENE (managed) <<<
