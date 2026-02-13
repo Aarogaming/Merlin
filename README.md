@@ -15,6 +15,7 @@ The canonical documentation lives in the AAS superproject:
 
 - Agent handoff/runbook: `docs/AGENT_TRANSITION.md`
 - Contributor guide: `CONTRIBUTING.md`
+- Inter-repo protocol baseline: `docs/protocols/README.md`
 
 ## Repo Map
 

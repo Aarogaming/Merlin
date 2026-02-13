@@ -5,6 +5,7 @@ Last updated: 2026-02-13
 This file is the handoff point for the next engineer/agent working in this repo.
 It focuses on current quality gates, recent hardening work, and what to do next.
 For human contributor workflow, see `CONTRIBUTING.md`.
+For inter-repo operation contracts and compatibility policy, see `docs/protocols/README.md`.
 
 ## Current Baseline
 
@@ -101,17 +102,20 @@ If more allowlist entries are needed, constrain by exact path/pattern and docume
 3. Added phased mypy config and fixed typing issues in currently scoped modules.
 4. Updated CI formatting/type/test gates to align with phased scope.
 5. Added contributor-facing runbook in `CONTRIBUTING.md` mirroring local/CI gate sequence.
+6. Added protocol baseline docs + schemas under `docs/protocols/` and `contracts/`.
 
 ## Highest-Priority Next Work
 
-1. Expand mypy scope to additional `merlin_*.py` modules in small batches, fixing issues as each batch is added.
-2. Add/expand tests for `merlin_adaptive_llm.py`, `merlin_ab_testing.py`, and integration-heavy modules touched by typing work.
-3. Add branch-protection requirements to enforce both CI jobs before merge (repo settings).
-4. Tighten dependency hygiene (`requirements*.txt`) with explicit version policy and periodic updates.
+1. Start adopting `AAS.OperationEnvelope@1.0.0` for Merlin HTTP/event edges in incremental slices.
+2. Expand mypy scope to additional `merlin_*.py` modules in small batches, fixing issues as each batch is added.
+3. Add/expand tests for `merlin_adaptive_llm.py`, `merlin_ab_testing.py`, and integration-heavy modules touched by typing work.
+4. Add branch-protection requirements to enforce both CI jobs before merge (repo settings).
+5. Tighten dependency hygiene (`requirements*.txt`) with explicit version policy and periodic updates.
 
 ## Execution Guidance for Next Agent
 
 1. Start by running full local verification commands above.
-2. Do not broaden allowlists before root-causing findings.
-3. Keep mypy expansion incremental: add files to `mypy.ini`, fix, test, then commit.
-4. Prefer CI parity when adding new local checks (same tools and invocation where practical).
+2. Review `docs/protocols/` before changing cross-repo operations or payload formats.
+3. Do not broaden allowlists before root-causing findings.
+4. Keep mypy expansion incremental: add files to `mypy.ini`, fix, test, then commit.
+5. Prefer CI parity when adding new local checks (same tools and invocation where practical).

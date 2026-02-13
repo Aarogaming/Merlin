@@ -2,6 +2,7 @@
 
 This guide mirrors the current local and CI quality gates.
 For agent-focused handoff priorities and phased hardening status, see `docs/AGENT_TRANSITION.md`.
+For inter-repo operation contracts and compatibility rules, see `docs/protocols/README.md`.
 
 ## Quick Path
 
@@ -111,3 +112,23 @@ Install hooks once per clone:
 ```bash
 pre-commit install --hook-type pre-commit --hook-type pre-push
 ```
+
+## Search Hygiene (RG Budget)
+
+To reduce `rg`/indexer CPU spikes in large workspaces, keep searches scoped and intentional.
+
+1. Prefer path-scoped searches:
+
+```bash
+rg "pattern" docs/ scripts/ tests/
+```
+
+2. Discover files before content-searching:
+
+```bash
+rg --files docs/ scripts/
+```
+
+3. Avoid wide root scans (`rg "pattern" .`) unless necessary.
+4. Keep `.rgignore` and `.ignore` as the source of truth for excluded heavy/runtime paths.
+5. For docs-only edits, search docs first (`docs/`) before scanning code paths.
