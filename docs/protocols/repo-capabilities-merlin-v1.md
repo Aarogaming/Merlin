@@ -40,6 +40,17 @@ All cross-repo calls to Merlin should use `AAS.OperationEnvelope@1.0.0` and incl
 3. Idempotency key for writes/mutations.
 4. Correlation and trace ids.
 
+## Current Implementation Slice
+
+- Envelope ingress endpoint: `POST /merlin/operations`
+- Currently wired operations:
+  - `assistant.chat.request`
+  - `assistant.tools.execute`
+  - `merlin.rag.query`
+  - `merlin.tasks.create`
+  - `merlin.tasks.list`
+- Current response operation shape: `<operation>.result`
+
 ## Response Expectations
 
 - Successful responses return the same `correlation_id`.

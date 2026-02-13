@@ -103,10 +103,11 @@ If more allowlist entries are needed, constrain by exact path/pattern and docume
 4. Updated CI formatting/type/test gates to align with phased scope.
 5. Added contributor-facing runbook in `CONTRIBUTING.md` mirroring local/CI gate sequence.
 6. Added protocol baseline docs + schemas under `docs/protocols/` and `contracts/`.
+7. Added initial envelope-based operation ingress in API (`POST /merlin/operations`) for chat/tools/RAG/task flows.
 
 ## Highest-Priority Next Work
 
-1. Start adopting `AAS.OperationEnvelope@1.0.0` for Merlin HTTP/event edges in incremental slices.
+1. Expand envelope ingress coverage to voice, user-management, and additional high-volume operations.
 2. Expand mypy scope to additional `merlin_*.py` modules in small batches, fixing issues as each batch is added.
 3. Add/expand tests for `merlin_adaptive_llm.py`, `merlin_ab_testing.py`, and integration-heavy modules touched by typing work.
 4. Add branch-protection requirements to enforce both CI jobs before merge (repo settings).

@@ -1,10 +1,52 @@
+import json
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
 import merlin_api_server as api_server
 
+FIXTURES_DIR = Path(__file__).parent / "fixtures" / "contracts"
+
 
 def auth_headers():
     return {"X-Merlin-Key": "merlin-secret-key"}
+
+
+def load_contract_fixture(filename: str):
+    with (FIXTURES_DIR / filename).open("r", encoding="utf-8") as fixture_file:
+        return json.load(fixture_file)
+
+
+def operation_envelope(
+    operation_name: str = "assistant.chat.request", payload: dict | None = None
+):
+    if payload is None:
+        payload = {"user_input": "hello", "user_id": "u1"}
+    return {
+        "schema_name": "AAS.OperationEnvelope",
+        "schema_version": "1.0.0",
+        "message_id": "5de2f11e-6ff0-4dc6-b241-3e00edbdfed5",
+        "correlation_id": "f2c95520-6e66-4a56-ae9e-5c9497ce2e8b",
+        "trace_id": "8c25874f-08f3-4948-b031-451de59c151f",
+        "timestamp_utc": "2026-02-13T02:30:00Z",
+        "source": {
+            "repo": "AaroneousAutomationSuite/Hub",
+            "component": "hub_orchestrator",
+        },
+        "target": {
+            "repo": "AaroneousAutomationSuite/Merlin",
+            "component": "merlin_api_server",
+        },
+        "operation": {
+            "name": operation_name,
+            "version": "1.0.0",
+            "timeout_ms": 30000,
+            "idempotency_key": "chat-req-2026-02-13-0001",
+            "expects_ack": True,
+            "retry": {"max_attempts": 2},
+        },
+        "payload": payload,
+    }
 
 
 def test_health_and_chat(monkeypatch):
@@ -29,6 +71,222 @@ def test_health_and_chat(monkeypatch):
         "/merlin/chat", json={"user_input": ""}, headers=auth_headers()
     )
     assert invalid.status_code == 422
+
+
+def test_operation_envelope_chat_request(monkeypatch):
+    monkeypatch.setattr(
+        api_server, "merlin_emotion_chat", lambda user_input, user_id: "ok"
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["schema_name"] == "AAS.OperationEnvelope"
+    assert body["schema_version"] == "1.0.0"
+    assert body["correlation_id"] == "f2c95520-6e66-4a56-ae9e-5c9497ce2e8b"
+    assert body["operation"]["name"] == "assistant.chat.result"
+    assert body["payload"]["reply"] == "ok"
+    assert body["payload"]["user_id"] == "u1"
+
+
+def test_operation_envelope_rejects_invalid_schema(monkeypatch):
+    monkeypatch.setattr(
+        api_server, "merlin_emotion_chat", lambda user_input, user_id: "ok"
+    )
+    client = TestClient(api_server.app)
+    envelope = operation_envelope()
+    envelope["schema_name"] = "Wrong.Schema"
+
+    response = client.post(
+        "/merlin/operations",
+        json=envelope,
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 422
+    body = response.json()
+    assert body["payload"]["error"]["code"] == "INVALID_SCHEMA"
+    assert body["payload"]["error"]["retryable"] is False
+
+
+def test_operation_envelope_rejects_unsupported_operation(monkeypatch):
+    monkeypatch.setattr(
+        api_server, "merlin_emotion_chat", lambda user_input, user_id: "ok"
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(operation_name="assistant.magic.request"),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["operation"]["name"] == "assistant.magic.result"
+    assert body["payload"]["error"]["code"] == "UNSUPPORTED_OPERATION"
+
+
+def test_operation_envelope_tools_execute(monkeypatch):
+    monkeypatch.setattr(
+        api_server.plugin_manager,
+        "execute_plugin",
+        lambda name, *args, **kwargs: {
+            "name": name,
+            "args": list(args),
+            "kwargs": kwargs,
+        },
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="assistant.tools.execute",
+            payload={"name": "demo_tool", "args": ["a"], "kwargs": {"flag": True}},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["operation"]["name"] == "assistant.tools.execute.result"
+    assert body["payload"]["name"] == "demo_tool"
+    assert body["payload"]["result"]["args"] == ["a"]
+    assert body["payload"]["result"]["kwargs"]["flag"] is True
+
+
+def test_operation_envelope_tools_execute_not_found(monkeypatch):
+    monkeypatch.setattr(
+        api_server.plugin_manager,
+        "execute_plugin",
+        lambda name, *args, **kwargs: {"error": f"Plugin {name} not found"},
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="assistant.tools.execute",
+            payload={"name": "missing_tool"},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["payload"]["error"]["code"] == "TOOL_NOT_FOUND"
+    assert "missing_tool" in body["payload"]["error"]["message"]
+
+
+def test_operation_envelope_tools_execute_contract_fixture(monkeypatch):
+    monkeypatch.setattr(
+        api_server.plugin_manager,
+        "execute_plugin",
+        lambda name, *args, **kwargs: {"ok": True},
+    )
+    client = TestClient(api_server.app)
+    request_fixture = load_contract_fixture("assistant.tools.execute.request.json")
+    expected_fixture = load_contract_fixture(
+        "assistant.tools.execute.expected_response.json"
+    )
+
+    response = client.post(
+        "/merlin/operations",
+        json=request_fixture,
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+
+    assert body["schema_name"] == expected_fixture["schema_name"]
+    assert body["schema_version"] == expected_fixture["schema_version"]
+    assert body["correlation_id"] == expected_fixture["correlation_id"]
+    assert body["trace_id"] == expected_fixture["trace_id"]
+    assert body["operation"]["name"] == expected_fixture["operation"]["name"]
+    assert body["operation"]["version"] == expected_fixture["operation"]["version"]
+    assert body["payload"]["name"] == expected_fixture["payload"]["name"]
+    assert body["payload"]["result"] == expected_fixture["payload"]["result"]
+    assert isinstance(body["message_id"], str)
+    assert isinstance(body["timestamp_utc"], str)
+
+
+def test_operation_envelope_rag_query(monkeypatch):
+    monkeypatch.setattr(
+        api_server.merlin_rag,
+        "search",
+        lambda query, limit=5: [
+            {"text": "doc", "metadata": {"path": "docs/readme.md"}},
+            {"text": f"q={query},limit={limit}", "metadata": {}},
+        ],
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.rag.query",
+            payload={"query": "policy", "limit": 2},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["operation"]["name"] == "merlin.rag.query.result"
+    assert body["payload"]["count"] == 2
+    assert body["payload"]["results"][0].startswith("docs/readme.md")
+    assert "q=policy,limit=2" in body["payload"]["results"][1]
+
+
+def test_operation_envelope_tasks_create_and_list(monkeypatch):
+    monkeypatch.setattr(
+        api_server.task_manager,
+        "add_task",
+        lambda title, description, priority: {
+            "id": 2,
+            "title": title,
+            "description": description,
+            "priority": priority,
+        },
+    )
+    monkeypatch.setattr(
+        api_server.task_manager,
+        "list_tasks",
+        lambda: [{"id": 1, "title": "existing"}],
+    )
+    client = TestClient(api_server.app)
+
+    create = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.tasks.create",
+            payload={"title": "new task", "description": "desc", "priority": "High"},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert create.status_code == 200
+    assert create.json()["payload"]["task"]["title"] == "new task"
+
+    list_tasks = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.tasks.list",
+            payload={},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert list_tasks.status_code == 200
+    assert list_tasks.json()["payload"]["tasks"][0]["title"] == "existing"
 
 
 def test_history_and_tasks(monkeypatch):

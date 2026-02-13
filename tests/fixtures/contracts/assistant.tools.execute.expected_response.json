@@ -1,0 +1,16 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "f2c95520-6e66-4a56-ae9e-5c9497ce2e8b",
+  "trace_id": "8c25874f-08f3-4948-b031-451de59c151f",
+  "operation": {
+    "name": "assistant.tools.execute.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "name": "demo_tool",
+    "result": {
+      "ok": true
+    }
+  }
+}

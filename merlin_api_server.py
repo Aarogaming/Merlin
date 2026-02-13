@@ -16,65 +16,125 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import BaseModel
-from typing import List
+from typing import Any, Callable, List, cast
+from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from merlin_emotion_chat import (
-    merlin_emotion_chat,
-    load_chat,
-    merlin_emotion_chat_stream,
-)
+import importlib
 from merlin_system_info import get_system_info
 from merlin_file_manager import list_files, delete_file, move_file, open_file
 from merlin_command_executor import execute_command
-from merlin_voice import MerlinVoice
 from merlin_logger import merlin_logger, get_recent_logs
-from merlin_plugin_manager import PluginManager
-from merlin_hub_client import MerlinHubClient
-from merlin_dashboard import setup_dashboard
 from merlin_policy import policy_manager
 from merlin_tasks import task_manager
-from merlin_rag import merlin_rag
 from merlin_audit import log_audit_event
 from merlin_auth import create_access_token, verify_password, ALGORITHM, SECRET_KEY
 from merlin_user_manager import user_manager
-from merlin_llm_backends import llm_backend
-from merlin_parallel_llm import parallel_llm_backend
-from merlin_adaptive_llm import adaptive_llm_backend
-from merlin_streaming_llm import streaming_llm_backend
-from merlin_metrics_dashboard import metrics_dashboard, handle_dashboard_websocket
-from merlin_ab_testing import ab_testing_manager
-from merlin_predictive_selection import predictive_model_selector
-from merlin_cost_optimization import cost_optimization_manager
 import merlin_settings as settings
-from pydantic import BaseModel
 from fastapi.responses import FileResponse, HTMLResponse
 from pathlib import Path
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import timedelta, datetime, timezone
 import shutil
 import tempfile
-from fastapi.responses import FileResponse
 import os
 import platform
 import ssl
 import json
 import uuid
-from pathlib import Path
+import re
 
 # Import UAF endpoints
+uaf_router: Any = None
 try:
-    from merlin_uaf_endpoints import uaf_router
+    from merlin_uaf_endpoints import uaf_router as imported_uaf_router
 
+    uaf_router = imported_uaf_router
     UAF_ENDPOINTS_AVAILABLE = True
 except ImportError:
     UAF_ENDPOINTS_AVAILABLE = False
-    uaf_router = None
+
+
+class _LazyAttr:
+    def __init__(self, module_name: str, attr_name: str):
+        self._module_name = module_name
+        self._attr_name = attr_name
+        self._resolved = None
+
+    def _get(self):
+        if self._resolved is None:
+            module = importlib.import_module(self._module_name)
+            self._resolved = getattr(module, self._attr_name)
+        return self._resolved
+
+    def __call__(self, *args, **kwargs):
+        return self._get()(*args, **kwargs)
+
+    def __getattr__(self, item):
+        return getattr(self._get(), item)
+
+
+class _LazySingleton:
+    def __init__(self, factory: Callable[[], Any]):
+        self._factory = factory
+        self._instance = None
+
+    def _get_instance(self):
+        if self._instance is None:
+            self._instance = self._factory()
+        return self._instance
+
+    def __getattr__(self, item):
+        return getattr(self._get_instance(), item)
+
+
+def _build_plugin_manager():
+    module = importlib.import_module("merlin_plugin_manager")
+    manager = module.PluginManager()
+    manager.load_plugins()
+    return manager
+
+
+def _build_hub_client():
+    module = importlib.import_module("merlin_hub_client")
+    return module.MerlinHubClient()
+
+
+merlin_emotion_chat = _LazyAttr("merlin_emotion_chat", "merlin_emotion_chat")
+load_chat = _LazyAttr("merlin_emotion_chat", "load_chat")
+merlin_emotion_chat_stream = _LazyAttr(
+    "merlin_emotion_chat", "merlin_emotion_chat_stream"
+)
+merlin_rag = _LazyAttr("merlin_rag", "merlin_rag")
+parallel_llm_backend = _LazyAttr("merlin_parallel_llm", "parallel_llm_backend")
+adaptive_llm_backend = _LazyAttr("merlin_adaptive_llm", "adaptive_llm_backend")
+ab_testing_manager = _LazyAttr("merlin_ab_testing", "ab_testing_manager")
+predictive_model_selector = _LazyAttr(
+    "merlin_predictive_selection", "predictive_model_selector"
+)
+cost_optimization_manager = _LazyAttr(
+    "merlin_cost_optimization", "cost_optimization_manager"
+)
+handle_dashboard_websocket = _LazyAttr(
+    "merlin_metrics_dashboard", "handle_dashboard_websocket"
+)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if not getattr(app.state, "bootstrap_ready", False):
+        importlib.import_module("merlin_dashboard").setup_dashboard(app)
+        Instrumentator().instrument(app).expose(app)
+        app.state.bootstrap_ready = True
+    yield
+
 
 limiter = Limiter(key_func=get_remote_address)
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(
+    RateLimitExceeded, cast(Callable[..., Any], _rate_limit_exceeded_handler)
+)
 
 # Register UAF router if available
 if UAF_ENDPOINTS_AVAILABLE and uaf_router is not None:
@@ -138,12 +198,9 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
 
 
-plugin_manager = PluginManager()
-plugin_manager.load_plugins()
-hub_client = MerlinHubClient()
+plugin_manager = _LazySingleton(_build_plugin_manager)
+hub_client = _LazySingleton(_build_hub_client)
 voice = None
-setup_dashboard(app)
-Instrumentator().instrument(app).expose(app)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -195,7 +252,8 @@ def get_voice():
     global voice
     if voice is None:
         try:
-            voice = MerlinVoice()
+            voice_cls = importlib.import_module("merlin_voice").MerlinVoice
+            voice = voice_cls()
         except Exception as exc:
             merlin_logger.error(f"Voice init failed: {exc}")
             return None
@@ -244,7 +302,7 @@ async def set_parallel_strategy(strategy: str, api_key: str = Depends(get_api_ke
 class FeedbackRequest(BaseModel):
     model_name: str
     rating: int
-    task_type: str = None
+    task_type: str | None = None
 
 
 @app.post("/merlin/llm/adaptive/feedback")
@@ -276,7 +334,7 @@ async def adaptive_llm_metrics(api_key: str = Depends(get_api_key)):
 
 @app.post("/merlin/llm/adaptive/reset")
 async def reset_adaptive_metrics(
-    model_name: str = None, api_key: str = Depends(get_api_key)
+    model_name: str | None = None, api_key: str = Depends(get_api_key)
 ):
     adaptive_llm_backend.reset_metrics(model_name)
     return {"status": "metrics reset", "model": model_name or "all"}
@@ -285,7 +343,7 @@ async def reset_adaptive_metrics(
 class CreateABTestRequest(BaseModel):
     name: str
     variants: List[str]
-    weights: List[float] = None
+    weights: List[float] | None = None
     duration_hours: int = 24
 
 
@@ -318,8 +376,8 @@ async def get_ab_test_status(test_id: str, api_key: str = Depends(get_api_key)):
 class RecordABTestResultRequest(BaseModel):
     test_id: str
     variant: str
-    user_rating: int = None
-    latency: float = None
+    user_rating: int | None = None
+    latency: float | None = None
     success: bool = True
 
 
@@ -382,9 +440,9 @@ async def select_predictive_model(
 class RecordPredictionFeedbackRequest(BaseModel):
     model_name: str
     was_successful: bool
-    latency: float = None
-    task_type: str = None
-    rating: int = None
+    latency: float | None = None
+    task_type: str | None = None
+    rating: int | None = None
 
 
 @app.post("/merlin/llm/predictive/feedback")
@@ -439,23 +497,28 @@ class SetBudgetRequest(BaseModel):
 
 
 class SetCostThresholdsRequest(BaseModel):
-    warning_threshold: float = None
-    critical_threshold: float = None
+    warning_threshold: float | None = None
+    critical_threshold: float | None = None
 
 
 class ModelPricingData(BaseModel):
     input_cost_per_1k: float
     output_cost_per_1k: float
     currency: str = "USD"
-    free_tier_limit: int = None
-    tier_name: str = None
+    free_tier_limit: int | None = None
+    tier_name: str | None = None
+
+
+def _cost_manager() -> Any:
+    return cast(Any, cost_optimization_manager)
 
 
 @app.post("/merlin/llm/cost/report")
 async def get_cost_report(
     request: CostReportRequest, api_key: str = Depends(get_api_key)
 ):
-    report = cost_optimization_manager.get_cost_report(request.days)
+    manager = _cost_manager()
+    report = manager.get_cost_report(request.days)
     return report
 
 
@@ -463,21 +526,23 @@ async def get_cost_report(
 async def set_monthly_budget(
     request: SetBudgetRequest, api_key: str = Depends(get_api_key)
 ):
-    cost_optimization_manager.budget_limit = request.budget_limit
+    manager = _cost_manager()
+    manager.budget_limit = request.budget_limit
     return {"status": "updated", "new_budget_limit": request.budget_limit}
 
 
 @app.get("/merlin/llm/cost/budget")
 async def get_monthly_budget(api_key: str = Depends(get_api_key)):
+    manager = _cost_manager()
     return {
-        "budget_limit": cost_optimization_manager.budget_limit,
+        "budget_limit": manager.budget_limit,
         "current_month_spend": sum(
             sum(
                 u.total_cost
                 for u in usage_list
                 if u.date.startswith(datetime.now().strftime("%Y-%m-"))
             )
-            for usage_list in cost_optimization_manager.daily_usage.values()
+            for usage_list in manager.daily_usage.values()
         ),
         "percentage_used": (
             sum(
@@ -486,11 +551,11 @@ async def get_monthly_budget(api_key: str = Depends(get_api_key)):
                     for u in usage_list
                     if u.date.startswith(datetime.now().strftime("%Y-%m-"))
                 )
-                for usage_list in cost_optimization_manager.daily_usage.values()
+                for usage_list in manager.daily_usage.values()
             )
-            / cost_optimization_manager.budget_limit
+            / manager.budget_limit
             * 100
-            if cost_optimization_manager.budget_limit > 0
+            if manager.budget_limit > 0
             else 0
         ),
     }
@@ -500,27 +565,28 @@ async def get_monthly_budget(api_key: str = Depends(get_api_key)):
 async def set_cost_thresholds(
     request: SetCostThresholdsRequest, api_key: str = Depends(get_api_key)
 ):
+    manager = _cost_manager()
     if request.warning_threshold is not None:
-        cost_optimization_manager.cost_thresholds["warning"] = request.warning_threshold
+        manager.cost_thresholds["warning"] = request.warning_threshold
     if request.critical_threshold is not None:
-        cost_optimization_manager.cost_thresholds["critical"] = (
-            request.critical_threshold
-        )
+        manager.cost_thresholds["critical"] = request.critical_threshold
     return {
         "status": "updated",
-        "warning_threshold": cost_optimization_manager.cost_thresholds["warning"],
-        "critical_threshold": cost_optimization_manager.cost_thresholds["critical"],
+        "warning_threshold": manager.cost_thresholds["warning"],
+        "critical_threshold": manager.cost_thresholds["critical"],
     }
 
 
 @app.get("/merlin/llm/cost/thresholds")
 async def get_cost_thresholds(api_key: str = Depends(get_api_key)):
-    return cost_optimization_manager.cost_thresholds
+    manager = _cost_manager()
+    return manager.cost_thresholds
 
 
 @app.get("/merlin/llm/cost/optimization")
 async def get_cost_optimization(api_key: str = Depends(get_api_key)):
-    return cost_optimization_manager.get_cost_optimization_recommendation()
+    manager = _cost_manager()
+    return manager.get_cost_optimization_recommendation()
 
 
 @app.post("/merlin/llm/cost/pricing")
@@ -617,6 +683,327 @@ class ManifestRequest(BaseModel):
     code: str
 
 
+class OperationEndpoint(BaseModel):
+    repo: str
+    component: str
+    agent_runtime: str | None = None
+    editor: str | None = None
+
+
+class OperationRetry(BaseModel):
+    max_attempts: int = 0
+
+
+class OperationSpec(BaseModel):
+    name: str
+    version: str
+    timeout_ms: int
+    idempotency_key: str | None = None
+    expects_ack: bool | None = None
+    retry: OperationRetry | None = None
+
+
+class OperationEnvelopeRequest(BaseModel):
+    schema_name: str
+    schema_version: str
+    message_id: str
+    correlation_id: str | None = None
+    causation_id: str | None = None
+    trace_id: str
+    timestamp_utc: datetime
+    source: OperationEndpoint
+    target: OperationEndpoint
+    operation: OperationSpec
+    payload: Any
+    metadata: dict[str, Any] | None = None
+
+
+def _is_semver(value: str) -> bool:
+    return bool(re.fullmatch(r"\d+\.\d+\.\d+", value))
+
+
+def _response_operation_name(operation_name: str) -> str:
+    if operation_name.endswith(".request"):
+        return f"{operation_name[:-8]}.result"
+    return f"{operation_name}.result"
+
+
+def _operation_response(
+    envelope: OperationEnvelopeRequest,
+    payload: dict[str, Any],
+    status_code: int = 200,
+) -> JSONResponse:
+    response_body = {
+        "schema_name": "AAS.OperationEnvelope",
+        "schema_version": "1.0.0",
+        "message_id": str(uuid.uuid4()),
+        "correlation_id": envelope.correlation_id or envelope.message_id,
+        "causation_id": envelope.message_id,
+        "trace_id": envelope.trace_id,
+        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "source": {
+            "repo": "AaroneousAutomationSuite/Merlin",
+            "component": "merlin_api_server",
+        },
+        "target": {
+            "repo": envelope.source.repo,
+            "component": envelope.source.component,
+        },
+        "operation": {
+            "name": _response_operation_name(envelope.operation.name),
+            "version": envelope.operation.version,
+            "timeout_ms": envelope.operation.timeout_ms,
+        },
+        "payload": payload,
+    }
+    return JSONResponse(status_code=status_code, content=response_body)
+
+
+def _operation_error(
+    envelope: OperationEnvelopeRequest,
+    code: str,
+    message: str,
+    retryable: bool = False,
+    status_code: int = 400,
+) -> JSONResponse:
+    return _operation_response(
+        envelope=envelope,
+        payload={
+            "error": {
+                "code": code,
+                "message": message,
+                "retryable": retryable,
+            }
+        },
+        status_code=status_code,
+    )
+
+
+@app.post("/merlin/operations")
+async def execute_operation(
+    envelope: OperationEnvelopeRequest, api_key: str = Depends(get_api_key)
+):
+    if envelope.schema_name != "AAS.OperationEnvelope":
+        return _operation_error(
+            envelope=envelope,
+            code="INVALID_SCHEMA",
+            message="schema_name must be AAS.OperationEnvelope",
+            status_code=422,
+        )
+    if envelope.schema_version != "1.0.0":
+        return _operation_error(
+            envelope=envelope,
+            code="INVALID_SCHEMA_VERSION",
+            message="schema_version must be 1.0.0",
+            status_code=422,
+        )
+    if not _is_semver(envelope.operation.version):
+        return _operation_error(
+            envelope=envelope,
+            code="INVALID_OPERATION_VERSION",
+            message="operation.version must use semver (X.Y.Z)",
+            status_code=422,
+        )
+    if envelope.operation.timeout_ms <= 0:
+        return _operation_error(
+            envelope=envelope,
+            code="INVALID_TIMEOUT",
+            message="operation.timeout_ms must be greater than zero",
+            status_code=422,
+        )
+
+    if envelope.operation.name == "assistant.chat.request":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="assistant.chat.request payload must be an object",
+                status_code=422,
+            )
+
+        raw_user_input = envelope.payload.get("user_input", "")
+        raw_user_id = envelope.payload.get("user_id", "default")
+
+        user_input = raw_user_input if isinstance(raw_user_input, str) else ""
+        user_id = raw_user_id if isinstance(raw_user_id, str) else "default"
+
+        if not user_input.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.user_input is required",
+                status_code=422,
+            )
+
+        reply = merlin_emotion_chat(user_input, user_id)
+        return _operation_response(
+            envelope=envelope,
+            payload={"reply": reply, "user_id": user_id},
+        )
+
+    if envelope.operation.name == "assistant.tools.execute":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="assistant.tools.execute payload must be an object",
+                status_code=422,
+            )
+
+        raw_name = envelope.payload.get("name", "")
+        raw_args = envelope.payload.get("args", [])
+        raw_kwargs = envelope.payload.get("kwargs", {})
+
+        tool_name = raw_name if isinstance(raw_name, str) else ""
+        if not tool_name.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.name is required",
+                status_code=422,
+            )
+        if not isinstance(raw_args, list):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.args must be an array when provided",
+                status_code=422,
+            )
+        if not isinstance(raw_kwargs, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.kwargs must be an object when provided",
+                status_code=422,
+            )
+
+        try:
+            result = plugin_manager.execute_plugin(tool_name, *raw_args, **raw_kwargs)
+        except Exception as exc:
+            merlin_logger.error(f"Tool execution failed: {tool_name}: {exc}")
+            return _operation_error(
+                envelope=envelope,
+                code="TOOL_EXECUTION_ERROR",
+                message=f"Tool execution failed: {tool_name}",
+                status_code=500,
+            )
+
+        if isinstance(result, dict) and "error" in result:
+            return _operation_error(
+                envelope=envelope,
+                code="TOOL_NOT_FOUND",
+                message=str(result.get("error", f"Tool {tool_name} not found")),
+                status_code=404,
+            )
+
+        return _operation_response(
+            envelope=envelope,
+            payload={"name": tool_name, "result": result},
+        )
+
+    if envelope.operation.name == "merlin.rag.query":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.rag.query payload must be an object",
+                status_code=422,
+            )
+
+        raw_query = envelope.payload.get("query", "")
+        raw_limit = envelope.payload.get("limit", 5)
+
+        query = raw_query if isinstance(raw_query, str) else ""
+        if not query.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.query is required",
+                status_code=422,
+            )
+
+        limit = raw_limit if isinstance(raw_limit, int) else 5
+        if limit <= 0 or limit > 20:
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.limit must be between 1 and 20",
+                status_code=422,
+            )
+
+        matches = merlin_rag.search(query, limit=limit)
+        results = []
+        for match in matches:
+            if not isinstance(match, dict):
+                results.append(str(match))
+                continue
+            text = str(match.get("text", ""))
+            metadata = match.get("metadata", {})
+            path = metadata.get("path") if isinstance(metadata, dict) else None
+            if path:
+                text = f"{path}: {text}"
+            results.append(text)
+
+        return _operation_response(
+            envelope=envelope,
+            payload={"results": results, "count": len(results)},
+        )
+
+    if envelope.operation.name == "merlin.tasks.list":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.tasks.list payload must be an object",
+                status_code=422,
+            )
+        return _operation_response(
+            envelope=envelope,
+            payload={"tasks": task_manager.list_tasks()},
+        )
+
+    if envelope.operation.name == "merlin.tasks.create":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.tasks.create payload must be an object",
+                status_code=422,
+            )
+
+        raw_title = envelope.payload.get("title", "")
+        raw_description = envelope.payload.get("description", "")
+        raw_priority = envelope.payload.get("priority", "Medium")
+
+        title = raw_title if isinstance(raw_title, str) else ""
+        description = raw_description if isinstance(raw_description, str) else ""
+        priority = (
+            raw_priority
+            if isinstance(raw_priority, str) and raw_priority.strip()
+            else "Medium"
+        )
+
+        if not title.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.title is required",
+                status_code=422,
+            )
+
+        task = task_manager.add_task(title, description, priority)
+        return _operation_response(
+            envelope=envelope,
+            payload={"task": task},
+        )
+
+    return _operation_error(
+        envelope=envelope,
+        code="UNSUPPORTED_OPERATION",
+        message=f"Unsupported operation: {envelope.operation.name}",
+    )
+
+
 @app.post("/merlin/chat")
 async def chat_endpoint(request: Request, api_key: str = Depends(get_api_key)):
     content_type = request.headers.get("content-type", "")
@@ -628,8 +1015,10 @@ async def chat_endpoint(request: Request, api_key: str = Depends(get_api_key)):
         user_id = payload.get("user_id", "default")
     elif "multipart/form-data" in content_type:
         form = await request.form()
-        user_input = form.get("user_input", "")
-        user_id = form.get("user_id", "default")
+        raw_user_input = form.get("user_input", "")
+        raw_user_id = form.get("user_id", "default")
+        user_input = raw_user_input if isinstance(raw_user_input, str) else ""
+        user_id = raw_user_id if isinstance(raw_user_id, str) else "default"
     else:
         raise HTTPException(status_code=415, detail="Unsupported content type")
     if not user_input:
