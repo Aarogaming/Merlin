@@ -218,6 +218,177 @@ def test_operation_envelope_tools_execute_contract_fixture(monkeypatch):
     assert isinstance(body["timestamp_utc"], str)
 
 
+def test_operation_envelope_voice_status_and_synthesize(monkeypatch, tmp_path):
+    class DummyVoice:
+        def status(self):
+            return {"tts": {"primary": "dummy"}, "stt": {"primary": "dummy"}}
+
+        def synthesize_to_file(self, text, engine=None):
+            output = tmp_path / "voice.wav"
+            output.write_bytes(b"RIFFDATA")
+            return str(output)
+
+    monkeypatch.setattr(api_server, "get_voice", lambda: DummyVoice())
+    client = TestClient(api_server.app)
+
+    status_response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(operation_name="merlin.voice.status", payload={}),
+        headers=auth_headers(),
+    )
+
+    assert status_response.status_code == 200
+    assert status_response.json()["payload"]["status"]["tts"]["primary"] == "dummy"
+
+    synth_response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.voice.synthesize",
+            payload={"text": "hello world", "engine": "dummy"},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert synth_response.status_code == 200
+    synth_payload = synth_response.json()["payload"]
+    assert synth_payload["filename"] == "voice.wav"
+    assert synth_payload["path"].endswith("voice.wav")
+
+
+def test_operation_envelope_voice_unavailable(monkeypatch):
+    monkeypatch.setattr(api_server, "get_voice", lambda: None)
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(operation_name="merlin.voice.status", payload={}),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 503
+    assert response.json()["payload"]["error"]["code"] == "VOICE_UNAVAILABLE"
+
+
+def test_operation_envelope_user_create_and_authenticate(monkeypatch):
+    monkeypatch.setattr(
+        api_server.user_manager,
+        "create_user",
+        lambda username, password, role="user": {"username": username, "role": role},
+    )
+    monkeypatch.setattr(
+        api_server.user_manager,
+        "authenticate_user",
+        lambda username, password: {
+            "username": username,
+            "role": "admin",
+            "hashed_password": "x",
+        },
+    )
+    monkeypatch.setattr(
+        api_server,
+        "create_access_token",
+        lambda data, expires_delta=None: "token-123",
+    )
+    client = TestClient(api_server.app)
+
+    create_response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.user_manager.create",
+            payload={"username": "alice", "password": "pw", "role": "admin"},
+        ),
+        headers=auth_headers(),
+    )
+    assert create_response.status_code == 200
+    assert create_response.json()["payload"]["user"]["username"] == "alice"
+
+    auth_response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.user_manager.authenticate",
+            payload={"username": "alice", "password": "pw"},
+        ),
+        headers=auth_headers(),
+    )
+    assert auth_response.status_code == 200
+    auth_payload = auth_response.json()["payload"]
+    assert auth_payload["access_token"] == "token-123"
+    assert auth_payload["token_type"] == "bearer"
+    assert auth_payload["role"] == "admin"
+
+
+def test_operation_envelope_user_create_conflict(monkeypatch):
+    def _raise_exists(username, password, role="user"):
+        raise ValueError("User already exists")
+
+    monkeypatch.setattr(api_server.user_manager, "create_user", _raise_exists)
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.user_manager.create",
+            payload={"username": "alice", "password": "pw"},
+        ),
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 409
+    body = response.json()
+    assert body["payload"]["error"]["code"] == "USER_EXISTS"
+
+
+def test_operation_envelope_user_auth_contract_fixture(monkeypatch):
+    monkeypatch.setattr(
+        api_server.user_manager,
+        "authenticate_user",
+        lambda username, password: {
+            "username": username,
+            "role": "admin",
+            "hashed_password": "x",
+        },
+    )
+    monkeypatch.setattr(
+        api_server,
+        "create_access_token",
+        lambda data, expires_delta=None: "fixture-token",
+    )
+    client = TestClient(api_server.app)
+    request_fixture = load_contract_fixture(
+        "merlin.user_manager.authenticate.request.json"
+    )
+    expected_fixture = load_contract_fixture(
+        "merlin.user_manager.authenticate.expected_response.json"
+    )
+
+    response = client.post(
+        "/merlin/operations",
+        json=request_fixture,
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["schema_name"] == expected_fixture["schema_name"]
+    assert body["schema_version"] == expected_fixture["schema_version"]
+    assert body["correlation_id"] == expected_fixture["correlation_id"]
+    assert body["trace_id"] == expected_fixture["trace_id"]
+    assert body["operation"]["name"] == expected_fixture["operation"]["name"]
+    assert body["operation"]["version"] == expected_fixture["operation"]["version"]
+    assert (
+        body["payload"]["access_token"] == expected_fixture["payload"]["access_token"]
+    )
+    assert body["payload"]["token_type"] == expected_fixture["payload"]["token_type"]
+    assert body["payload"]["username"] == expected_fixture["payload"]["username"]
+    assert body["payload"]["role"] == expected_fixture["payload"]["role"]
+    assert (
+        body["payload"]["expires_in_minutes"]
+        == expected_fixture["payload"]["expires_in_minutes"]
+    )
+    assert isinstance(body["message_id"], str)
+    assert isinstance(body["timestamp_utc"], str)
+
+
 def test_operation_envelope_rag_query(monkeypatch):
     monkeypatch.setattr(
         api_server.merlin_rag,

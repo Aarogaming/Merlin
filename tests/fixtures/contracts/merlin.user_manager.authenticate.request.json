@@ -1,0 +1,30 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "e632a3f7-1e5e-40e4-b8e8-b150b0fa5ca0",
+  "correlation_id": "be4e95f9-65d8-448f-9a28-9f65853ca4be",
+  "trace_id": "c5595e38-e050-4ada-b6d2-d97851d6f9c6",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.user_manager.authenticate",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "auth-req-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "username": "fixture_user",
+    "password": "fixture_pw"
+  }
+}

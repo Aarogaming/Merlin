@@ -28,7 +28,13 @@ from merlin_logger import merlin_logger, get_recent_logs
 from merlin_policy import policy_manager
 from merlin_tasks import task_manager
 from merlin_audit import log_audit_event
-from merlin_auth import create_access_token, verify_password, ALGORITHM, SECRET_KEY
+from merlin_auth import (
+    create_access_token,
+    verify_password,
+    ALGORITHM,
+    SECRET_KEY,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+)
 from merlin_user_manager import user_manager
 import merlin_settings as settings
 from fastapi.responses import FileResponse, HTMLResponse
@@ -899,6 +905,196 @@ async def execute_operation(
         return _operation_response(
             envelope=envelope,
             payload={"name": tool_name, "result": result},
+        )
+
+    if envelope.operation.name == "merlin.voice.status":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.voice.status payload must be an object",
+                status_code=422,
+            )
+
+        voice_instance = get_voice()
+        if not voice_instance:
+            return _operation_error(
+                envelope=envelope,
+                code="VOICE_UNAVAILABLE",
+                message="Voice subsystem unavailable",
+                retryable=True,
+                status_code=503,
+            )
+
+        return _operation_response(
+            envelope=envelope,
+            payload={"status": voice_instance.status()},
+        )
+
+    if envelope.operation.name == "merlin.voice.synthesize":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.voice.synthesize payload must be an object",
+                status_code=422,
+            )
+
+        raw_text = envelope.payload.get("text", "")
+        raw_engine = envelope.payload.get("engine", None)
+
+        text = raw_text if isinstance(raw_text, str) else ""
+        engine = raw_engine if isinstance(raw_engine, str) else None
+        if not text.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.text is required",
+                status_code=422,
+            )
+
+        voice_instance = get_voice()
+        if not voice_instance:
+            return _operation_error(
+                envelope=envelope,
+                code="VOICE_UNAVAILABLE",
+                message="Voice subsystem unavailable",
+                retryable=True,
+                status_code=503,
+            )
+
+        output_path = voice_instance.synthesize_to_file(text, engine=engine)
+        if not output_path:
+            return _operation_error(
+                envelope=envelope,
+                code="VOICE_SYNTHESIS_FAILED",
+                message="Voice synthesis failed",
+                status_code=500,
+            )
+        output_path = Path(output_path)
+        if not output_path.exists():
+            return _operation_error(
+                envelope=envelope,
+                code="VOICE_OUTPUT_MISSING",
+                message="Voice output file missing after synthesis",
+                status_code=500,
+            )
+
+        return _operation_response(
+            envelope=envelope,
+            payload={"path": str(output_path), "filename": output_path.name},
+        )
+
+    if envelope.operation.name == "merlin.user_manager.create":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.user_manager.create payload must be an object",
+                status_code=422,
+            )
+
+        raw_username = envelope.payload.get("username", "")
+        raw_password = envelope.payload.get("password", "")
+        raw_role = envelope.payload.get("role", "user")
+
+        username = raw_username if isinstance(raw_username, str) else ""
+        password = raw_password if isinstance(raw_password, str) else ""
+        role = raw_role if isinstance(raw_role, str) and raw_role.strip() else "user"
+
+        if not username.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.username is required",
+                status_code=422,
+            )
+        if not password:
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.password is required",
+                status_code=422,
+            )
+
+        try:
+            user = user_manager.create_user(username, password, role=role)
+        except ValueError as exc:
+            return _operation_error(
+                envelope=envelope,
+                code="USER_EXISTS",
+                message=str(exc),
+                status_code=409,
+            )
+        except Exception as exc:
+            merlin_logger.error(f"User creation failed for {username}: {exc}")
+            return _operation_error(
+                envelope=envelope,
+                code="USER_CREATE_FAILED",
+                message="User creation failed",
+                status_code=500,
+            )
+
+        return _operation_response(
+            envelope=envelope,
+            payload={"user": user},
+        )
+
+    if envelope.operation.name == "merlin.user_manager.authenticate":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.user_manager.authenticate payload must be an object",
+                status_code=422,
+            )
+
+        raw_username = envelope.payload.get("username", "")
+        raw_password = envelope.payload.get("password", "")
+
+        username = raw_username if isinstance(raw_username, str) else ""
+        password = raw_password if isinstance(raw_password, str) else ""
+
+        if not username.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.username is required",
+                status_code=422,
+            )
+        if not password:
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.password is required",
+                status_code=422,
+            )
+
+        auth_user = user_manager.authenticate_user(username, password)
+        if not auth_user:
+            return _operation_error(
+                envelope=envelope,
+                code="AUTH_FAILED",
+                message="Invalid username or password",
+                status_code=401,
+            )
+
+        role = str(auth_user.get("role", "user"))
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": username, "role": role},
+            expires_delta=access_token_expires,
+        )
+
+        return _operation_response(
+            envelope=envelope,
+            payload={
+                "access_token": access_token,
+                "token_type": "bearer",
+                "username": username,
+                "role": role,
+                "expires_in_minutes": ACCESS_TOKEN_EXPIRE_MINUTES,
+            },
         )
 
     if envelope.operation.name == "merlin.rag.query":

@@ -1,0 +1,17 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "be4e95f9-65d8-448f-9a28-9f65853ca4be",
+  "trace_id": "c5595e38-e050-4ada-b6d2-d97851d6f9c6",
+  "operation": {
+    "name": "merlin.user_manager.authenticate.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "access_token": "fixture-token",
+    "token_type": "bearer",
+    "username": "fixture_user",
+    "role": "admin",
+    "expires_in_minutes": 60
+  }
+}
