@@ -105,14 +105,16 @@ If more allowlist entries are needed, constrain by exact path/pattern and docume
 6. Added protocol baseline docs + schemas under `docs/protocols/` and `contracts/`.
 7. Added initial envelope-based operation ingress in API (`POST /merlin/operations`) for chat/tools/RAG/voice/task/user-management/diagnostics/orchestration flows.
 8. Added machine-readable operation capability manifest endpoint (`GET /merlin/operations/capabilities`).
+9. Added schema validation tests for contract fixtures and capability manifest against `contracts/*.schema.json`.
 
 ## Highest-Priority Next Work
 
-1. Expand envelope ingress coverage to remaining high-volume operations and standardize payloads across all existing endpoints.
-2. Expand mypy scope to additional `merlin_*.py` modules in small batches, fixing issues as each batch is added.
-3. Add/expand tests for `merlin_adaptive_llm.py`, `merlin_ab_testing.py`, and integration-heavy modules touched by typing work.
-4. Add branch-protection requirements to enforce both CI jobs before merge (repo settings).
-5. Tighten dependency hygiene (`requirements*.txt`) with explicit version policy and periodic updates.
+1. Expand envelope ingress coverage to remaining endpoints and standardize payloads across all existing API operations.
+2. Add fixture coverage for all currently wired operations and validate live responses against schemas where stable.
+3. Expand mypy scope to additional `merlin_*.py` modules in small batches, fixing issues as each batch is added.
+4. Add/expand tests for `merlin_adaptive_llm.py`, `merlin_ab_testing.py`, and integration-heavy modules touched by typing work.
+5. Add branch-protection requirements to enforce both CI jobs before merge (repo settings).
+6. Tighten dependency hygiene (`requirements*.txt`) with explicit version policy and periodic updates.
 
 ## Execution Guidance for Next Agent
 

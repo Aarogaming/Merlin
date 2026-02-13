@@ -1,0 +1,7 @@
+-r requirements.txt
+pytest
+black
+mypy
+httpx
+types-requests
+jsonschema
