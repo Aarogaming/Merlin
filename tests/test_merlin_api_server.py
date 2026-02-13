@@ -571,6 +571,91 @@ def test_operation_envelope_aas_create_task_contract_fixture(monkeypatch):
     assert isinstance(body["timestamp_utc"], str)
 
 
+def test_operation_envelope_plugins_list_and_execute(monkeypatch):
+    monkeypatch.setattr(
+        api_server.plugin_manager,
+        "list_plugin_info",
+        lambda: {"demo": {"name": "Demo", "description": "d", "category": "general"}},
+    )
+    monkeypatch.setattr(
+        api_server.plugin_manager,
+        "execute_plugin",
+        lambda name, *args, **kwargs: {"ok": True, "name": name},
+    )
+    client = TestClient(api_server.app)
+
+    list_response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.plugins.list",
+            payload={"format": "list"},
+        ),
+        headers=auth_headers(),
+    )
+    assert list_response.status_code == 200
+    list_payload = list_response.json()["payload"]
+    assert list_payload["format"] == "list"
+    assert list_payload["plugins"][0]["name"] == "Demo"
+
+    execute_response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.plugins.execute",
+            payload={"name": "demo", "args": ["a"], "kwargs": {"flag": True}},
+        ),
+        headers=auth_headers(),
+    )
+    assert execute_response.status_code == 200
+    execute_payload = execute_response.json()["payload"]
+    assert execute_payload["name"] == "demo"
+    assert execute_payload["result"]["ok"] is True
+
+
+def test_operation_envelope_plugins_execute_not_found(monkeypatch):
+    monkeypatch.setattr(
+        api_server.plugin_manager,
+        "execute_plugin",
+        lambda name, *args, **kwargs: {"error": f"Plugin {name} not found"},
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.plugins.execute",
+            payload={"name": "missing"},
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 404
+    assert response.json()["payload"]["error"]["code"] == "PLUGIN_NOT_FOUND"
+
+
+def test_operation_envelope_genesis_manifest_contract_fixture(monkeypatch):
+    recorded = {}
+
+    def _record(entry):
+        recorded.update(entry)
+
+    monkeypatch.setattr(api_server, "append_manifest_entry", _record)
+    client = TestClient(api_server.app)
+    request_fixture = load_contract_fixture("merlin.genesis.manifest.request.json")
+
+    response = client.post(
+        "/merlin/operations",
+        json=request_fixture,
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["operation"]["name"] == "merlin.genesis.manifest.result"
+    assert body["payload"]["status"] == "queued"
+    assert body["payload"]["filename"] == request_fixture["payload"]["filename"]
+    assert recorded["filename"] == request_fixture["payload"]["filename"]
+    assert "received_at" in recorded
+
+
 def test_operation_envelope_command_execute(monkeypatch):
     monkeypatch.setattr(
         api_server.policy_manager, "is_command_allowed", lambda command: True

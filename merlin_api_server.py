@@ -789,6 +789,8 @@ SUPPORTED_ENVELOPE_OPERATIONS: list[str] = [
     "assistant.chat.request",
     "assistant.tools.execute",
     "merlin.command.execute",
+    "merlin.plugins.list",
+    "merlin.plugins.execute",
     "merlin.rag.query",
     "merlin.search.query",
     "merlin.voice.status",
@@ -801,6 +803,7 @@ SUPPORTED_ENVELOPE_OPERATIONS: list[str] = [
     "merlin.user_manager.authenticate",
     "merlin.system_info.get",
     "merlin.genesis.logs",
+    "merlin.genesis.manifest",
     "merlin.aas.create_task",
 ]
 
@@ -1289,6 +1292,128 @@ async def execute_operation(
         return _operation_response(
             envelope=envelope,
             payload={"task_id": task_id},
+        )
+
+    if envelope.operation.name == "merlin.plugins.list":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.plugins.list payload must be an object",
+                status_code=422,
+            )
+
+        raw_format = envelope.payload.get("format", "list")
+        output_format = raw_format if isinstance(raw_format, str) else "list"
+        if output_format not in {"list", "map"}:
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.format must be one of: list, map",
+                status_code=422,
+            )
+
+        plugin_info = plugin_manager.list_plugin_info()
+        plugins = plugin_info if output_format == "map" else list(plugin_info.values())
+        return _operation_response(
+            envelope=envelope,
+            payload={"plugins": plugins, "format": output_format},
+        )
+
+    if envelope.operation.name == "merlin.plugins.execute":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.plugins.execute payload must be an object",
+                status_code=422,
+            )
+
+        raw_name = envelope.payload.get("name", "")
+        raw_args = envelope.payload.get("args", [])
+        raw_kwargs = envelope.payload.get("kwargs", {})
+
+        plugin_name = raw_name if isinstance(raw_name, str) else ""
+        if not plugin_name.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.name is required",
+                status_code=422,
+            )
+        if not isinstance(raw_args, list):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.args must be an array when provided",
+                status_code=422,
+            )
+        if not isinstance(raw_kwargs, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.kwargs must be an object when provided",
+                status_code=422,
+            )
+
+        try:
+            result = plugin_manager.execute_plugin(plugin_name, *raw_args, **raw_kwargs)
+        except Exception as exc:
+            merlin_logger.error(f"Plugin execution failed: {plugin_name}: {exc}")
+            return _operation_error(
+                envelope=envelope,
+                code="PLUGIN_EXECUTION_ERROR",
+                message=f"Plugin execution failed: {plugin_name}",
+                status_code=500,
+            )
+
+        if isinstance(result, dict) and "error" in result:
+            error_message = str(result.get("error", f"Plugin {plugin_name} failed"))
+            not_found = "not found" in error_message.lower()
+            return _operation_error(
+                envelope=envelope,
+                code="PLUGIN_NOT_FOUND" if not_found else "PLUGIN_EXECUTION_FAILED",
+                message=error_message,
+                status_code=404 if not_found else 400,
+            )
+
+        return _operation_response(
+            envelope=envelope,
+            payload={"name": plugin_name, "result": result},
+        )
+
+    if envelope.operation.name == "merlin.genesis.manifest":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.genesis.manifest payload must be an object",
+                status_code=422,
+            )
+
+        raw_filename = envelope.payload.get("filename", "")
+        raw_code = envelope.payload.get("code", "")
+
+        filename = raw_filename if isinstance(raw_filename, str) else ""
+        code = raw_code if isinstance(raw_code, str) else ""
+        if not filename.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.filename is required",
+                status_code=422,
+            )
+
+        append_manifest_entry(
+            {
+                "filename": filename,
+                "code": code,
+                "received_at": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+        return _operation_response(
+            envelope=envelope,
+            payload={"status": "queued", "filename": filename},
         )
 
     if envelope.operation.name == "merlin.command.execute":

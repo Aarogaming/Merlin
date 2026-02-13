@@ -1,0 +1,30 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "8b053cb2-ad3b-4f9f-b8d2-9fb0676327f3",
+  "correlation_id": "da5eab62-f5da-4fa0-84f0-de953c1df254",
+  "trace_id": "ec0af3f0-746d-4f65-b07b-077875ec7fd8",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.genesis.manifest",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "manifest-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "filename": "fixture.py",
+    "code": "print('fixture')"
+  }
+}
