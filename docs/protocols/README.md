@@ -15,6 +15,11 @@ Use these docs when integrating from the SuperProject, Hub, Orchestrator, or IDE
 2. `repo-capabilities-merlin-v1.md`
 3. `compatibility-policy.md`
 
+## Related Entry Points
+
+- `README.md` (repo root)
+- `docs/GATE_GOVERNANCE_POINTER.md`
+
 ## Machine-Readable Schemas
 
 Schemas live in `contracts/`:
