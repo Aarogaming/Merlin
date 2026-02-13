@@ -11,6 +11,11 @@ The canonical documentation lives in the AAS superproject:
 - Start here: https://github.com/Aarogaming/AaroneousAutomationSuite/blob/master/docs/START_HERE.md
 - Docs index: https://github.com/Aarogaming/AaroneousAutomationSuite/blob/master/docs/INDEX.md
 
+## Transition Docs
+
+- Agent handoff/runbook: `docs/AGENT_TRANSITION.md`
+- Contributor guide: `CONTRIBUTING.md`
+
 ## Repo Map
 
 - `frontend/`: Desktop UI package (see `frontend/README.md`)
