@@ -789,12 +789,22 @@ async def add_process_time_header(request: Request, call_next):
             )
             audit_details.setdefault("request_id", request_id)
         audit_details["status_code"] = response.status_code
-        log_audit_event(
-            action="operation.dispatch",
-            details=audit_details,
-            user="api_server",
-            request_id=request_id,
-        )
+        try:
+            log_audit_event(
+                action="operation.dispatch",
+                details=audit_details,
+                user="api_server",
+                request_id=request_id,
+            )
+        except TypeError:
+            legacy_details = dict(audit_details)
+            legacy_details.pop("request_id", None)
+            log_audit_event(
+                action="operation.dispatch",
+                details=legacy_details,
+                user="api_server",
+                request_id=request_id,
+            )
 
     client = getattr(request, "client", None)
     client_ip = getattr(client, "host", "unknown")
