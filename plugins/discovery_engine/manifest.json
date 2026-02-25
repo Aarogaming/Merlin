@@ -1,0 +1,73 @@
+{
+  "schemaName": "PluginManifest",
+  "schemaVersion": "1.0.0",
+  "name": "discovery_engine",
+  "version": "0.1.0",
+  "description": "Policy-gated offline-first discovery pipeline for AAS (Library + Guild + Merlin composition)",
+  "entry": "plugin.py",
+  "type": "plugin",
+  "permissions": [
+    "read",
+    "write"
+  ],
+  "capabilities": [
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.discovery.run",
+      "version": "0.1.0"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.discovery.queue.status",
+      "version": "0.1.0"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.discovery.queue.drain",
+      "version": "0.1.0"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.discovery.queue.purge_deadletter",
+      "version": "0.1.0"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.discovery.queue.pause",
+      "version": "0.1.0"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.discovery.queue.resume",
+      "version": "0.1.0"
+    },
+    {
+      "schemaName": "Capability",
+      "schemaVersion": "1.0.0",
+      "name": "merlin.knowledge.search",
+      "version": "0.1.0"
+    }
+  ],
+  "extensions": {
+    "aas": {
+      "hive": "merlin",
+      "visibility": "global",
+      "exports": [
+        "merlin.discovery.run",
+        "merlin.discovery.queue.status",
+        "merlin.discovery.queue.drain",
+        "merlin.discovery.queue.purge_deadletter",
+        "merlin.discovery.queue.pause",
+        "merlin.discovery.queue.resume",
+        "merlin.knowledge.search"
+      ],
+      "kernel": "merlin"
+    }
+  }
+}

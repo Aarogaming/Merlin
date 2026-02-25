@@ -194,7 +194,30 @@ except ImportError:
         }
 
 
-from merlin_routing_contract import normalize_rag_citations
+try:
+    from merlin_routing_contract import normalize_rag_citations
+except ImportError:
+
+    def normalize_rag_citations(matches: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        citations: list[dict[str, Any]] = []
+        for index, item in enumerate(matches, start=1):
+            if not isinstance(item, dict):
+                continue
+            metadata = item.get("metadata", {})
+            metadata = metadata if isinstance(metadata, dict) else {}
+            citation: dict[str, Any] = {
+                "source_id": str(metadata.get("source_id") or f"src_{index}"),
+            }
+            path = metadata.get("path")
+            if isinstance(path, str) and path.strip():
+                citation["path"] = path
+            text = str(item.get("text", "")).strip()
+            if text:
+                citation["excerpt"] = text[:280]
+            citations.append(citation)
+        return citations
+
+
 from merlin_audit import log_audit_event, build_request_audit_metadata
 from merlin_auth import (
     create_access_token,
