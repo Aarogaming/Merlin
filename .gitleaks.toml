@@ -1,0 +1,8 @@
+[allowlist]
+description = "Ignore non-secret fixture/document examples that resemble API keys."
+paths = [
+  '''^AB_TESTING_COMPLETE\.md$''',
+  '''^PARALLEL_LLM_README\.md$''',
+  '''^tests/fixtures/contracts/merlin\.voice\.synthesize\.request\.json$''',
+  '''^tests/fixtures/contracts/merlin\.voice\.transcribe\.request\.json$''',
+]

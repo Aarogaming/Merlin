@@ -1,0 +1,24 @@
+# Runtime dependency manifest (scanned weekly by CI dependency_audit job).
+fastapi
+uvicorn
+pydantic
+requests
+beautifulsoup4
+psutil
+redis
+prometheus-fastapi-instrumentator
+slowapi
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+pyttsx3
+SpeechRecognition
+loguru
+grpcio
+grpcio-tools
+numpy
+keyboard
+slack-bolt
+google-auth
+google-auth-oauthlib
+google-api-python-client
