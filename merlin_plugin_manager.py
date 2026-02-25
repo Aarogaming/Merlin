@@ -88,7 +88,9 @@ def _ensure_task_manager_compatibility() -> None:
                 setattr(self, "_cancellation_hooks", hooks)
             hooks[task_id] = hook
 
-        setattr(MerlinTaskManager, "register_cancellation_hook", _register_cancellation_hook)
+        setattr(
+            MerlinTaskManager, "register_cancellation_hook", _register_cancellation_hook
+        )
 
     if not hasattr(MerlinTaskManager, "clear_cancellation_hook"):
 
@@ -1410,9 +1412,7 @@ class PluginManager:
                     and registered_cancel_hook is not None
                     and callable(register_cancellation_hook)
                 ):
-                    register_cancellation_hook(
-                        task_id, registered_cancel_hook
-                    )
+                    register_cancellation_hook(task_id, registered_cancel_hook)
                 try:
                     if self.execution_mode == "process":
                         result = self._execute_plugin_process_mode(
