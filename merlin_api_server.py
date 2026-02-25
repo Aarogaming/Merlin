@@ -123,21 +123,118 @@ try:
 except ImportError:
     from merlin_policy import policy_manager
 
+    _FALLBACK_VALID_MATURITY_TIERS: frozenset[str] = frozenset(
+        {"M0", "M1", "M2", "M3", "M4"}
+    )
+    _FALLBACK_DEFAULT_REQUIRED_TIERS: frozenset[str] = frozenset({"M1"})
+    _FALLBACK_HIGH_RISK_OPERATION_CLASSES: dict[str, frozenset[str]] = {
+        "command_execution": frozenset({"merlin.command.execute"}),
+        "tool_execution": frozenset(
+            {
+                "assistant.tools.execute",
+                "merlin.plugins.execute",
+            }
+        ),
+        "state_mutation": frozenset(
+            {
+                "merlin.context.update",
+                "merlin.discovery.run",
+                "merlin.discovery.queue.drain",
+                "merlin.discovery.queue.pause",
+                "merlin.discovery.queue.resume",
+                "merlin.discovery.queue.purge_deadletter",
+                "merlin.seed.control",
+                "merlin.tasks.create",
+                "merlin.user_manager.create",
+                "merlin.genesis.manifest",
+                "merlin.aas.create_task",
+                "merlin.research.manager.session.create",
+                "merlin.research.manager.session.signal.add",
+            }
+        ),
+    }
+
+    def _fallback_parse_required_tiers() -> frozenset[str]:
+        raw_value = os.environ.get("MERLIN_MENTOR_PASS_REQUIRED_TIERS")
+        if raw_value is None:
+            return _FALLBACK_DEFAULT_REQUIRED_TIERS
+        normalized_tokens = [
+            token.strip().upper() for token in raw_value.split(",") if token.strip()
+        ]
+        if not normalized_tokens:
+            return frozenset()
+        if "*" in normalized_tokens:
+            return _FALLBACK_VALID_MATURITY_TIERS
+        return frozenset(
+            token
+            for token in normalized_tokens
+            if token in _FALLBACK_VALID_MATURITY_TIERS
+        )
+
+    def _fallback_mentor_pass_approved(metadata: Any) -> bool:
+        if not isinstance(metadata, dict):
+            return False
+        mentor_pass = metadata.get("mentor_pass")
+        if isinstance(mentor_pass, dict):
+            approved = mentor_pass.get("approved")
+            if isinstance(approved, bool):
+                return approved
+            if isinstance(approved, str):
+                if approved.strip().lower() in {"1", "true", "yes", "on", "approved"}:
+                    return True
+            passed = mentor_pass.get("passed")
+            if isinstance(passed, bool):
+                return passed
+            if isinstance(passed, str):
+                if passed.strip().lower() in {"1", "true", "yes", "on", "passed"}:
+                    return True
+            status = mentor_pass.get("status")
+            if isinstance(status, str):
+                if status.strip().lower() in {"approved", "pass", "passed", "granted"}:
+                    return True
+            return False
+        if isinstance(mentor_pass, bool):
+            return mentor_pass
+        if isinstance(mentor_pass, str):
+            return mentor_pass.strip().lower() in {
+                "1",
+                "true",
+                "yes",
+                "on",
+                "approved",
+                "pass",
+                "passed",
+            }
+        return False
+
+    def _fallback_classify_operation(operation_name: str) -> list[str]:
+        normalized = str(operation_name or "").strip()
+        if not normalized:
+            return []
+        return sorted(
+            class_name
+            for class_name, operations in _FALLBACK_HIGH_RISK_OPERATION_CLASSES.items()
+            if normalized in operations
+        )
+
     def evaluate_operation_mentor_pass(
         operation_name: str,
         metadata: Any,
         *,
         maturity_tier: str,
     ) -> dict[str, Any]:
-        _ = (operation_name, metadata)
         active_tier = str(maturity_tier or "").strip().upper() or "M0"
+        operation_classes = _fallback_classify_operation(operation_name)
+        required_tiers = _fallback_parse_required_tiers()
+        required = bool(operation_classes) and active_tier in required_tiers
+        approved = _fallback_mentor_pass_approved(metadata)
         return {
-            "required": False,
-            "approved": False,
-            "blocked": False,
-            "operation_classes": [],
+            "required": required,
+            "approved": approved,
+            "blocked": required and not approved,
+            "operation_classes": operation_classes,
             "maturity_tier": active_tier,
-            "required_tiers": [],
+            "required_tiers": sorted(required_tiers),
         }
 
 
