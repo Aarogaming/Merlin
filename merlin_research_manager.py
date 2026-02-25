@@ -10,7 +10,12 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
 
-from merlin_audit import log_read_only_rejection
+try:
+    from merlin_audit import log_read_only_rejection
+except (ImportError, AttributeError):  # pragma: no cover - standalone fallback
+
+    def log_read_only_rejection(*_args: Any, **_kwargs: Any) -> None:
+        return None
 from merlin_tasks import task_manager
 from merlin_utils import stable_claim_hash
 
