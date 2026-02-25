@@ -2924,10 +2924,6 @@ async def execute_operation(
                     status_code=504,
                 )
             if result_code == "PLUGIN_PROCESS_SERIALIZATION_ERROR":
-                _dependency_circuit_record_failure(
-                    envelope.operation.name,
-                    reason="PLUGIN_PROCESS_SERIALIZATION_ERROR",
-                )
                 return _operation_error(
                     envelope=envelope,
                     code="PLUGIN_PROCESS_SERIALIZATION_ERROR",
@@ -3511,10 +3507,6 @@ async def execute_operation(
                     status_code=504,
                 )
             if result_code == "PLUGIN_PROCESS_SERIALIZATION_ERROR":
-                _dependency_circuit_record_failure(
-                    envelope.operation.name,
-                    reason="PLUGIN_PROCESS_SERIALIZATION_ERROR",
-                )
                 return _operation_error(
                     envelope=envelope,
                     code="PLUGIN_PROCESS_SERIALIZATION_ERROR",
