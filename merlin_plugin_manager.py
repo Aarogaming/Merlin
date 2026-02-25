@@ -24,7 +24,33 @@ except ImportError:
     from merlin_policy import policy_manager
 
     PLUGIN_PERMISSION_TIERS = {"read", "write", "network", "exec"}
-from merlin_self_healing import RestartBudget
+try:
+    from merlin_self_healing import RestartBudget
+except ImportError:
+
+    class RestartBudget:
+        def __init__(self, max_attempts: int = 2):
+            self.max_attempts = max(0, int(max_attempts))
+            self._attempts: dict[str, int] = {}
+
+        def attempts(self, key: str) -> int:
+            return int(self._attempts.get(key, 0))
+
+        def can_attempt(self, key: str) -> bool:
+            return int(self._attempts.get(key, 0)) < self.max_attempts
+
+        def record_attempt(self, key: str) -> int:
+            next_attempt = int(self._attempts.get(key, 0)) + 1
+            self._attempts[key] = next_attempt
+            return next_attempt
+
+        def reset(self, key: str) -> None:
+            self._attempts.pop(key, None)
+
+        def clear(self) -> None:
+            self._attempts.clear()
+
+
 from merlin_tasks import task_manager
 
 PLUGIN_MANIFEST_SCHEMA_NAME = "PluginManifest"

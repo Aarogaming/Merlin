@@ -141,7 +141,31 @@ except ImportError:
         }
 
 
-from merlin_self_healing import EndpointCircuitBreaker
+try:
+    from merlin_self_healing import EndpointCircuitBreaker
+except ImportError:
+
+    class EndpointCircuitBreaker:
+        def __init__(
+            self,
+            failure_threshold: int = 3,
+            recovery_timeout_seconds: float = 30.0,
+        ):
+            _ = (failure_threshold, recovery_timeout_seconds)
+
+        def allow_request(self, dependency_key: str) -> bool:
+            _ = dependency_key
+            return True
+
+        def record_success(self, dependency_key: str) -> None:
+            _ = dependency_key
+
+        def record_failure(
+            self, dependency_key: str, reason: str | None = None
+        ) -> None:
+            _ = (dependency_key, reason)
+
+
 from merlin_tasks import task_manager
 from merlin_quality_gates import (
     ingest_planner_fallback_telemetry,
