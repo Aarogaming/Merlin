@@ -272,7 +272,40 @@ except ImportError:
 
 from merlin_user_manager import user_manager
 import merlin_settings as settings
-from merlin_seed_access import build_seed_access
+
+try:
+    from merlin_seed_access import build_seed_access
+except ImportError:
+
+    class _FallbackSeedAccessController:
+        def __init__(self, workspace_root: str | None = None):
+            self.workspace_root = workspace_root
+
+        def status(self, **kwargs: Any) -> dict[str, Any]:
+            _ = kwargs
+            return {
+                "schema_name": "AAS.Merlin.SeedStatus",
+                "schema_version": "1.0.0",
+                "state": "unavailable",
+                "reason": "seed_access_unavailable",
+                "workspace_root": self.workspace_root,
+            }
+
+        def control(self, **kwargs: Any) -> dict[str, Any]:
+            action = str(kwargs.get("action", "")).strip().lower()
+            return {
+                "schema_name": "AAS.Merlin.SeedControlResult",
+                "schema_version": "1.0.0",
+                "action": action,
+                "decision": "blocked",
+                "status": "blocked",
+                "reason": "seed_access_unavailable",
+            }
+
+    def build_seed_access(*, workspace_root: str | None = None) -> Any:
+        return _FallbackSeedAccessController(workspace_root=workspace_root)
+
+
 from fastapi.responses import FileResponse, HTMLResponse
 from pathlib import Path
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
