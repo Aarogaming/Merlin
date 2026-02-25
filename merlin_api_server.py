@@ -448,6 +448,7 @@ import os
 import platform
 import ssl
 import json
+import hashlib
 import uuid
 import re
 import time
@@ -1896,7 +1897,17 @@ def _idempotency_cache_key(envelope: OperationEnvelopeRequest) -> str | None:
     key = _idempotency_key_for_envelope(envelope)
     if key is None:
         return None
-    return f"{envelope.operation.name}::{key}"
+    try:
+        payload_text = json.dumps(
+            envelope.payload,
+            ensure_ascii=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        )
+    except (TypeError, ValueError):
+        payload_text = str(envelope.payload)
+    payload_fingerprint = hashlib.sha256(payload_text.encode("utf-8")).hexdigest()[:16]
+    return f"{envelope.operation.name}::{key}::{payload_fingerprint}"
 
 
 def _mask_idempotency_key(key: str) -> str:
@@ -1965,7 +1976,9 @@ def _operation_replay_diagnostics_rows() -> list[dict[str, Any]]:
         _purge_idempotency_cache(now)
         for cache_key in sorted(_IDEMPOTENCY_RESPONSE_CACHE.keys()):
             cache_entry = _IDEMPOTENCY_RESPONSE_CACHE[cache_key]
-            operation_name, _, idempotency_key = cache_key.partition("::")
+            cache_parts = cache_key.split("::", 2)
+            operation_name = cache_parts[0] if cache_parts else ""
+            idempotency_key = cache_parts[1] if len(cache_parts) > 1 else ""
             stored_at = float(cache_entry.get("stored_at", 0.0))
             rows.append(
                 {
