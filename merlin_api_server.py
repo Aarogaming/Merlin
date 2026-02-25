@@ -1845,6 +1845,8 @@ def _remember_idempotency_response(
     response_body: dict[str, Any],
     status_code: int,
 ) -> None:
+    if status_code >= 400:
+        return
     cache_key = _idempotency_cache_key(envelope)
     if cache_key is None:
         return
