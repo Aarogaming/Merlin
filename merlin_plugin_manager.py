@@ -1335,6 +1335,16 @@ class PluginManager:
                     override=timeout_override,
                 )
                 registered_cancel_hook: Callable[[], None] | None = None
+                register_cancellation_hook = getattr(
+                    task_manager,
+                    "register_cancellation_hook",
+                    None,
+                )
+                clear_cancellation_hook = getattr(
+                    task_manager,
+                    "clear_cancellation_hook",
+                    None,
+                )
 
                 if self.execution_mode == "process":
                     registered_cancel_hook = lambda: self._reset_process_executor(
@@ -1344,8 +1354,12 @@ class PluginManager:
                 elif callable(cancel_hook):
                     registered_cancel_hook = cancel_hook
 
-                if task_id is not None and registered_cancel_hook is not None:
-                    task_manager.register_cancellation_hook(
+                if (
+                    task_id is not None
+                    and registered_cancel_hook is not None
+                    and callable(register_cancellation_hook)
+                ):
+                    register_cancellation_hook(
                         task_id, registered_cancel_hook
                     )
                 try:
@@ -1406,8 +1420,8 @@ class PluginManager:
                         }
                     raise
                 finally:
-                    if task_id is not None:
-                        task_manager.clear_cancellation_hook(task_id)
+                    if task_id is not None and callable(clear_cancellation_hook):
+                        clear_cancellation_hook(task_id)
             return {"error": f"Plugin {name} does not expose execute"}
         return {"error": f"Plugin {name} not found"}
 
