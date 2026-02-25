@@ -51,7 +51,58 @@ except ImportError:
             self._attempts.clear()
 
 
-from merlin_tasks import task_manager
+from merlin_tasks import MerlinTaskManager, task_manager
+
+
+def _ensure_task_manager_compatibility() -> None:
+    if not hasattr(MerlinTaskManager, "get_task"):
+
+        def _get_task(self: MerlinTaskManager, task_id: int) -> dict[str, Any] | None:
+            if isinstance(task_id, bool):
+                return None
+            if not isinstance(task_id, int):
+                return None
+            for task in getattr(self, "tasks", []):
+                if not isinstance(task, dict):
+                    continue
+                if task.get("id") == task_id:
+                    return task
+            return None
+
+        setattr(MerlinTaskManager, "get_task", _get_task)
+
+    if not hasattr(MerlinTaskManager, "register_cancellation_hook"):
+
+        def _register_cancellation_hook(
+            self: MerlinTaskManager,
+            task_id: int,
+            hook: Callable[[], None],
+        ) -> None:
+            if isinstance(task_id, bool) or not isinstance(task_id, int):
+                return
+            if not callable(hook):
+                return
+            hooks = getattr(self, "_cancellation_hooks", None)
+            if not isinstance(hooks, dict):
+                hooks = {}
+                setattr(self, "_cancellation_hooks", hooks)
+            hooks[task_id] = hook
+
+        setattr(MerlinTaskManager, "register_cancellation_hook", _register_cancellation_hook)
+
+    if not hasattr(MerlinTaskManager, "clear_cancellation_hook"):
+
+        def _clear_cancellation_hook(self: MerlinTaskManager, task_id: int) -> None:
+            if isinstance(task_id, bool) or not isinstance(task_id, int):
+                return
+            hooks = getattr(self, "_cancellation_hooks", None)
+            if isinstance(hooks, dict):
+                hooks.pop(task_id, None)
+
+        setattr(MerlinTaskManager, "clear_cancellation_hook", _clear_cancellation_hook)
+
+
+_ensure_task_manager_compatibility()
 
 PLUGIN_MANIFEST_SCHEMA_NAME = "PluginManifest"
 PLUGIN_MANIFEST_SCHEMA_VERSION = "1.0.0"
