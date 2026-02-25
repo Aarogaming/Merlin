@@ -729,6 +729,7 @@ async def add_process_time_header(request: Request, call_next):
 
     operation_name: str | None = None
     operation_request_payload: dict[str, Any] | None = None
+    body_bytes: bytes = b""
     is_operation_request = (
         request.method == "POST" and request.url.path == "/merlin/operations"
     )
@@ -736,6 +737,7 @@ async def add_process_time_header(request: Request, call_next):
     if is_operation_request:
         try:
             body = await request.body()
+            body_bytes = body
             if _requires_legacy_request_body_replay():
                 _install_request_body_replay(request, body)
             if body:
@@ -767,12 +769,25 @@ async def add_process_time_header(request: Request, call_next):
             status_code=response.status_code,
             latency_ms=process_time * 1000.0,
         )
-        audit_details = build_request_audit_metadata(
-            route=request.url.path,
-            decision_version=OPERATION_AUDIT_DECISION_VERSION,
-            request_id=request_id,
-            operation_name=operation_name or "__unknown__",
-        )
+        try:
+            audit_details = build_request_audit_metadata(
+                route=request.url.path,
+                decision_version=OPERATION_AUDIT_DECISION_VERSION,
+                request_id=request_id,
+                operation_name=operation_name or "__unknown__",
+            )
+        except TypeError:
+            audit_details = build_request_audit_metadata(
+                request=request,
+                body_bytes=body_bytes,
+                operation_name=operation_name or "__unknown__",
+                response_status=response.status_code,
+            )
+            audit_details.setdefault("route", request.url.path)
+            audit_details.setdefault(
+                "decision_version", OPERATION_AUDIT_DECISION_VERSION
+            )
+            audit_details.setdefault("request_id", request_id)
         audit_details["status_code"] = response.status_code
         log_audit_event(
             action="operation.dispatch",
