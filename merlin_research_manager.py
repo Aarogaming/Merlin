@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 import os
 import re
@@ -17,7 +18,13 @@ except (ImportError, AttributeError):  # pragma: no cover - standalone fallback
     def log_read_only_rejection(*_args: Any, **_kwargs: Any) -> None:
         return None
 from merlin_tasks import task_manager
-from merlin_utils import stable_claim_hash
+try:
+    from merlin_utils import stable_claim_hash
+except (ImportError, AttributeError):  # pragma: no cover - standalone fallback
+
+    def stable_claim_hash(text: str) -> str:
+        normalized = " ".join(str(text or "").strip().lower().split())
+        return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
 
 DEFAULT_STORAGE_ROOT = Path("artifacts") / "research_manager"
 SESSION_SCHEMA_VERSION = "1.0.0"
