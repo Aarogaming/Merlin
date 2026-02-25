@@ -218,7 +218,27 @@ except ImportError:
         return citations
 
 
-from merlin_audit import log_audit_event, build_request_audit_metadata
+try:
+    from merlin_audit import log_audit_event, build_request_audit_metadata
+except ImportError:
+    from merlin_audit import log_audit_event
+
+    def build_request_audit_metadata(
+        *,
+        request: Any,
+        body_bytes: bytes,
+        operation_name: str | None = None,
+        response_status: int | None = None,
+    ) -> dict[str, Any]:
+        _ = (request, body_bytes)
+        metadata: dict[str, Any] = {}
+        if operation_name:
+            metadata["operation_name"] = str(operation_name)
+        if response_status is not None:
+            metadata["response_status"] = int(response_status)
+        return metadata
+
+
 from merlin_auth import (
     create_access_token,
     verify_password,
