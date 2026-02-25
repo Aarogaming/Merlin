@@ -245,9 +245,31 @@ from merlin_auth import (
     ALGORITHM,
     SECRET_KEY,
     ACCESS_TOKEN_EXPIRE_MINUTES,
-    parse_api_key_collection,
-    load_api_key_collection_from_file,
 )
+
+try:
+    from merlin_auth import parse_api_key_collection, load_api_key_collection_from_file
+except ImportError:
+
+    def parse_api_key_collection(raw_value: Any) -> set[str]:
+        if raw_value is None:
+            return set()
+        text = str(raw_value).replace("\n", ",")
+        return {token.strip() for token in text.split(",") if token.strip()}
+
+    def load_api_key_collection_from_file(path_value: Any) -> set[str]:
+        if path_value is None:
+            return set()
+        path = Path(str(path_value).strip())
+        if not path.exists() or not path.is_file():
+            return set()
+        try:
+            content = path.read_text(encoding="utf-8")
+        except OSError:
+            return set()
+        return parse_api_key_collection(content)
+
+
 from merlin_user_manager import user_manager
 import merlin_settings as settings
 from merlin_seed_access import build_seed_access
