@@ -1,0 +1,22 @@
+{
+  "selected_model": "dms",
+  "prompt_size_bucket": "long",
+  "dms_used": true,
+  "dms_candidate": true,
+  "dms_attempted": true,
+  "fallback_reason": null,
+  "fallback_reason_code": null,
+  "fallback_detail": null,
+  "fallback_stage": null,
+  "fallback_retryable": null,
+  "ab_variant": "dms",
+  "router_backend": "adaptive",
+  "router_policy_version": "cp2-2026-02-15",
+  "router_rule_version": "cp2-2026-02-15",
+  "routing_telemetry_schema": "1.0.0",
+  "maturity_tier": "M0",
+  "maturity_policy_version": "mdmm-2026-02-22",
+  "routing_trace_id": "rt_2c4fced0c933f4e5",
+  "routing_trace_fingerprint": "2c4fced0c933f4e54c11c247a4ecef0e5ce8c958fef1e26bdc9d44a81d723332",
+  "routing_trace_scheme": "sha256-v1"
+}
