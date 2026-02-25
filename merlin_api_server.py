@@ -167,10 +167,33 @@ except ImportError:
 
 
 from merlin_tasks import task_manager
-from merlin_quality_gates import (
-    ingest_planner_fallback_telemetry,
-    register_planner_fallback_telemetry_sink,
-)
+
+try:
+    from merlin_quality_gates import (
+        ingest_planner_fallback_telemetry,
+        register_planner_fallback_telemetry_sink,
+    )
+except ImportError:
+
+    def register_planner_fallback_telemetry_sink(
+        sink: Callable[[dict[str, Any]], dict[str, Any]],
+    ) -> None:
+        _ = sink
+
+    def ingest_planner_fallback_telemetry(
+        *,
+        session_id: str,
+        metadata: dict[str, Any],
+        source: str,
+    ) -> dict[str, Any]:
+        _ = (metadata, source)
+        return {
+            "ingested": False,
+            "reason": "quality_gate_unavailable",
+            "session_id": session_id,
+        }
+
+
 from merlin_routing_contract import normalize_rag_citations
 from merlin_audit import log_audit_event, build_request_audit_metadata
 from merlin_auth import (
