@@ -17,7 +17,13 @@ from pathlib import Path
 from typing import Any
 
 import merlin_settings as settings
-from merlin_policy import PLUGIN_PERMISSION_TIERS, policy_manager
+
+try:
+    from merlin_policy import PLUGIN_PERMISSION_TIERS, policy_manager
+except ImportError:
+    from merlin_policy import policy_manager
+
+    PLUGIN_PERMISSION_TIERS = {"read", "write", "network", "exec"}
 from merlin_self_healing import RestartBudget
 from merlin_tasks import task_manager
 

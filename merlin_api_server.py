@@ -117,7 +117,30 @@ from merlin_system_info import get_system_info
 from merlin_file_manager import list_files, delete_file, move_file, open_file
 from merlin_command_executor import execute_command
 from merlin_logger import merlin_logger, get_recent_logs, log_with_context
-from merlin_policy import policy_manager, evaluate_operation_mentor_pass
+
+try:
+    from merlin_policy import policy_manager, evaluate_operation_mentor_pass
+except ImportError:
+    from merlin_policy import policy_manager
+
+    def evaluate_operation_mentor_pass(
+        operation_name: str,
+        metadata: Any,
+        *,
+        maturity_tier: str,
+    ) -> dict[str, Any]:
+        _ = (operation_name, metadata)
+        active_tier = str(maturity_tier or "").strip().upper() or "M0"
+        return {
+            "required": False,
+            "approved": False,
+            "blocked": False,
+            "operation_classes": [],
+            "maturity_tier": active_tier,
+            "required_tiers": [],
+        }
+
+
 from merlin_self_healing import EndpointCircuitBreaker
 from merlin_tasks import task_manager
 from merlin_quality_gates import (

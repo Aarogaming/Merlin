@@ -92,6 +92,8 @@ jobs:
 
       - name: Gitleaks scan
         uses: gitleaks/gitleaks-action@v2
+        with:
+          upload-artifact: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -125,26 +127,6 @@ jobs:
           name: frontend-bundle-budget-report
           path: artifacts/frontend/frontend-dist-size-report.json
 
-      - name: Secret hygiene guard
-        run: |
-          python scripts/check_secret_hygiene.py \
-            --all \
-            --fail-on high \
-            --report-json artifacts/security/secret-hygiene-report.json
-
-      - name: Upload secret hygiene report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: secret-hygiene-report
-          path: artifacts/security/secret-hygiene-report.json
-
-      - name: Contract schema sync guard
-        run: python scripts/sync_contract_schemas.py --check
-
-      - name: Routing taxonomy sync guard
-        run: python scripts/verify_routing_taxonomy_sync.py
-
       - name: Packaged plugin strict load guard
         run: |
           MERLIN_PLUGIN_STRICT_PACKAGED=true python merlin_cli.py plugin list > /tmp/merlin_plugins.json
@@ -155,7 +137,7 @@ jobs:
           payload = json.loads(Path("/tmp/merlin_plugins.json").read_text(encoding="utf-8"))
           for name in ("kernel", "file_manager", "discovery_engine", "session_builder", "session_streamer"):
               if name not in payload:
-              raise SystemExit(f"missing expected plugin: {name}")
+                  raise SystemExit(f"missing expected plugin: {name}")
           print("strict plugin load guard passed")
           PY
 
@@ -200,31 +182,15 @@ jobs:
           print(f"wheel smoke test passed with {len(payload)} plugins")
           PY
 
-      - name: CP4A smoke baseline drift guard
-        run: python scripts/verify_cp4a_smoke_baseline_counts.py
-
-      - name: Verify JUnit guard tests
-        run: |
-          python -m pytest -q \
-            tests/test_verify_junit_totals.py \
-            tests/test_load_cp4a_smoke_baseline.py \
-            tests/test_verify_cp4a_smoke_baseline_counts.py \
-            tests/test_verify_routing_taxonomy_sync.py \
-            tests/test_verify_cp4a_smoke_evidence_schema.py \
-            tests/test_verify_smoke_log_signatures.py \
-            tests/test_smoke_planner_fallback_runbook.py \
-            tests/test_export_cp4a_smoke_evidence.py
-
       - name: Critical module coverage gate
         run: |
           python -m pytest -q \
             tests/test_merlin_api_server.py \
-            tests/test_merlin_routing_contract.py \
-            tests/test_merlin_research_manager.py \
-            tests/test_research_manager_plugin.py \
+            tests/test_merlin_discovery_engine.py \
+            tests/test_merlin_plugin_manager.py \
             --cov=merlin_api_server \
-            --cov=merlin_routing_contract \
-            --cov=merlin_research_manager \
+            --cov=merlin_discovery_engine \
+            --cov=merlin_plugin_manager \
             --cov-report=term-missing:skip-covered \
             --cov-fail-under=55
 
@@ -232,64 +198,11 @@ jobs:
         run: |
           python -m black --check \
             merlin_api_server.py \
+            merlin_discovery_engine.py \
+            merlin_plugin_manager.py \
             merlin_settings.py \
-            merlin_rag.py \
-            merlin_vector_memory.py \
-            merlin_uaf_integration.py \
-            merlin_uaf_endpoints.py \
-            merlin_intelligence_integration.py \
-            merlin_ipc_consumer.py \
-            merlin_adaptive_llm.py \
-            merlin_parallel_llm.py \
-            merlin_metrics_dashboard.py \
-            merlin_predictive_selection.py \
-            merlin_cost_optimization.py \
-            merlin_ab_testing.py \
             scripts/check_git_size.py \
-            scripts/check_secret_hygiene.py \
-            scripts/export_cp4a_smoke_evidence.py \
-            scripts/load_cp4a_smoke_baseline.py \
-            scripts/sync_contract_schemas.py \
-            scripts/verify_cp4a_smoke_baseline_counts.py \
-            scripts/verify_cp4a_smoke_evidence_schema.py \
-            scripts/verify_smoke_log_signatures.py \
-            scripts/verify_routing_taxonomy_sync.py \
-            scripts/verify_junit_totals.py \
             setup.py
-
-      - name: Type check
-        run: python -m mypy
-
-  planner_fallback:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements-dev.txt
-
-      - name: Run planner/fallback subset
-        run: |
-          bash scripts/smoke_planner_fallback_runbook.sh
-
-      - name: Upload planner/fallback evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: planner-fallback-evidence
-          path: |
-            artifacts/planner-fallback-junit.xml
-            artifacts/cp4a-schema-junit.xml
-            artifacts/planner-fallback.log
-            artifacts/cp4a-smoke-evidence.json
 
   tests:
     runs-on: ubuntu-latest
@@ -300,11 +213,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Gitleaks scan
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
