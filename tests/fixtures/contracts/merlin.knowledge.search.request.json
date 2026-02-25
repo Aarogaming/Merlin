@@ -1,0 +1,31 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "67c40454-a565-43f6-a0f9-91266f6143be",
+  "correlation_id": "af4d5237-60af-47fd-bf3d-a32104dc2467",
+  "trace_id": "0de46ce5-b6d0-4dbc-bb98-b90a4e7fc531",
+  "timestamp_utc": "2026-02-24T12:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.knowledge.search",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "merlin-knowledge-search-2026-02-24-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "query": "policy",
+    "limit": 5,
+    "out": "./artifacts/discovery_contract"
+  }
+}

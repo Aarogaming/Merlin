@@ -1451,7 +1451,7 @@ class PluginManager:
                         "error": (
                             "Plugin "
                             + name
-                            + " process serialization failed: "
+                            + " pickle serialization failed: "
                             + str(serialization_error)
                         ),
                         "code": "PLUGIN_PROCESS_SERIALIZATION_ERROR",

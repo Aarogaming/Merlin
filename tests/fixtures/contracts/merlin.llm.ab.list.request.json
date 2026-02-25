@@ -1,0 +1,27 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "bc416ec6-8f05-4b95-94e0-d37e7e8dcf7d",
+  "correlation_id": "4de5bcce-d7e7-4321-a34d-0118f0ff67b3",
+  "trace_id": "d1a8a48a-09d4-4173-a064-f5c1ed87f6e6",
+  "timestamp_utc": "2026-02-14T09:00:01Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.llm.ab.list",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "llm-ab-list-2026-02-14-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {}
+}

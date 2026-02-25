@@ -1,0 +1,47 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "3ae1c980-87a8-4a2a-8e4c-1622b6fd01a1",
+  "correlation_id": "f85e3204-19b5-4fdd-ac2b-c5d03dd4672f",
+  "trace_id": "0be34f2f-45e4-4bf2-95d3-d4b2022f8f4e",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.research.manager.session.create",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "research-manager-session-create-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "objective": "Fixture research objective",
+    "constraints": [
+      "repo-local-only"
+    ],
+    "tags": [
+      "fixture-tag"
+    ],
+    "impact": 0.7,
+    "uncertainty": 0.4,
+    "time_horizon": "mid_term",
+    "linked_task_ids": [
+      11,
+      42
+    ],
+    "planner_artifacts": [
+      "docs/planning/COMPOSITION_MAELSTROM_CP4A_PROMPTS_2026-02-15.md",
+      "docs/research/CHIMERA_V2_CP4A_PLANNER_READINESS_STATUS_2026-02-15.md"
+    ],
+    "horizon_days": 14
+  }
+}

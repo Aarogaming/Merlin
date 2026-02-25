@@ -1,0 +1,27 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "2ac10863-8f0f-4421-b29e-ef390dff2d07",
+  "correlation_id": "801f1512-fa6d-4d38-9d8f-efbcaabb3bb0",
+  "trace_id": "2b677d35-b1c6-424a-89e0-4ccda1b17cfd",
+  "timestamp_utc": "2026-02-14T09:00:14Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.llm.cost.thresholds.get",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "llm-cost-thresholds-get-2026-02-14-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {}
+}

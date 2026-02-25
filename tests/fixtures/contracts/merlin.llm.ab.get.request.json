@@ -1,0 +1,29 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "f2e6f1f1-8c2c-41f0-9e7f-b6373b1c1af6",
+  "correlation_id": "7f373601-8e8e-4f22-a378-e0e435d4dc01",
+  "trace_id": "37bd9db8-b11d-4eea-81b7-9f8087bc27e2",
+  "timestamp_utc": "2026-02-14T09:00:02Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.llm.ab.get",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "llm-ab-get-2026-02-14-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "test_id": "fixture-ab-test-id"
+  }
+}

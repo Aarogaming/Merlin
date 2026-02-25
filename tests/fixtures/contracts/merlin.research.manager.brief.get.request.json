@@ -1,0 +1,29 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "8d7d7c8e-c013-4122-84f1-fee8c8fb7505",
+  "correlation_id": "7a4306f3-8e46-4f80-ab53-c1f4331760f9",
+  "trace_id": "51c900f8-fd28-4f28-9ffb-15cb3dc2d4b5",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.research.manager.brief.get",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "research-manager-brief-get-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "session_id": "fixture-session-id"
+  }
+}

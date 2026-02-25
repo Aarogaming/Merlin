@@ -1,0 +1,36 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "4d8e2b3a-6f9b-4e62-9e56-6cbba2f75e11",
+  "correlation_id": "a9b77f1f-c29a-4a95-a91a-3f2cc485f2d1",
+  "trace_id": "d9a5e3f3-1a2e-4718-b74a-a88e8e42ee17",
+  "timestamp_utc": "2026-02-24T12:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.discovery.run",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "merlin-discovery-run-2026-02-24-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "profile": "public",
+    "out": "./artifacts/discovery_contract",
+    "seeds_file": "./tests/fixtures/discovery/seeds.public.json",
+    "fixture_feed": "./knowledge/feeds/_fixtures/local_fixture.jsonl",
+    "top_k": 1,
+    "min_score": 0.01,
+    "allow_live_automation": true,
+    "publisher_mode": "stage_only"
+  }
+}

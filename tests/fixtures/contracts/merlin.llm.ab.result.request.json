@@ -1,0 +1,33 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "d9cb31f6-2f0b-4be5-bdf0-0d2b47ec8ac8",
+  "correlation_id": "4fe40ea9-fd19-4531-8412-12fbf2944f3f",
+  "trace_id": "6478de73-83d3-46a5-98f6-5b1ba2b75e53",
+  "timestamp_utc": "2026-02-14T09:00:03Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.llm.ab.result",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "llm-ab-result-2026-02-14-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "test_id": "fixture-ab-test-id",
+    "variant": "routing",
+    "user_rating": 5,
+    "latency": 0.4,
+    "success": true
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "4f75f45a-7a4b-4a4d-8ce0-c9c596bcb95f",
+  "correlation_id": "cb165dfa-cf73-446e-8d31-e3689118e7f2",
+  "trace_id": "8ab9f8f9-8009-4a43-bfe8-e6e0f152ed17",
+  "timestamp_utc": "2026-02-14T09:00:11Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.llm.cost.budget.set",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "llm-cost-budget-set-2026-02-14-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "budget_limit": 250.0
+  }
+}

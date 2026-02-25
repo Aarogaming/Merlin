@@ -1,0 +1,35 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "2552f73d-fe84-4d58-85d2-7514012f2700",
+  "correlation_id": "ff7d113b-5800-48b4-ab26-3d8e6b12da8b",
+  "trace_id": "f3bc80ca-903a-4e99-b706-fb2e48e3247e",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.research.manager.session.signal.add",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "research-manager-session-signal-add-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "session_id": "fixture-session-id",
+    "source": "routing-smoke",
+    "claim": "Fallback and telemetry checks are passing.",
+    "confidence": 0.9,
+    "supports": [
+      "h_execution_success"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "39484b4e-0598-43f9-8f32-dadf357cb145",
+  "correlation_id": "69c946f4-78d5-4fef-a706-ba639ab56c57",
+  "trace_id": "945e1fc2-296b-45b2-801a-cd11f577c264",
+  "timestamp_utc": "2026-02-14T08:00:05Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.llm.adaptive.reset",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "llm-adaptive-reset-2026-02-14-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "model_name": "fixture-model"
+  }
+}

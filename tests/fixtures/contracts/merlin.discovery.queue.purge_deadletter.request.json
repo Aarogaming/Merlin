@@ -1,0 +1,29 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "72f40cf6-8125-4ccf-b4e8-4fe1e19cb337",
+  "correlation_id": "2c4f77d4-e599-49d8-a1b4-e5a4a34c0e67",
+  "trace_id": "df77181e-3f86-4c98-9a6f-a6ffea37ef6e",
+  "timestamp_utc": "2026-02-24T12:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.discovery.queue.purge_deadletter",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "merlin-discovery-queue-purge-2026-02-24-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "out": "./artifacts/discovery_contract"
+  }
+}

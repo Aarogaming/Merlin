@@ -1,0 +1,38 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "3f2f0e1f-cae8-49a2-9d95-3db10e7f4a01",
+  "correlation_id": "6f2af636-4ee1-4121-b5dd-e9bf42f7f7ba",
+  "trace_id": "f4c3f2bc-5f9a-4a84-a51e-66dfef6fbb52",
+  "timestamp_utc": "2026-02-14T09:00:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.llm.ab.create",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "llm-ab-create-2026-02-14-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "name": "Fixture AB",
+    "variants": [
+      "routing",
+      "voting"
+    ],
+    "weights": [
+      0.6,
+      0.4
+    ],
+    "duration_hours": 24
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "267b0dd8-9354-4ef6-b9d7-c527bd39345b",
+  "correlation_id": "d8dc50e2-cbfc-4366-a38a-d4af368f9f7c",
+  "trace_id": "a2c8ef53-eb73-49b8-8d42-f09f1d1b6d0b",
+  "timestamp_utc": "2026-02-14T09:00:05Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.llm.predictive.select",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "llm-predictive-select-2026-02-14-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "query": "optimize this python code"
+  }
+}
