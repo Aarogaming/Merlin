@@ -247,20 +247,110 @@ except ImportError:
             self,
             failure_threshold: int = 3,
             recovery_timeout_seconds: float = 30.0,
+            *,
+            time_fn: Callable[[], float] | None = None,
         ):
-            _ = (failure_threshold, recovery_timeout_seconds)
+            self.failure_threshold = max(1, int(failure_threshold))
+            self.recovery_timeout_seconds = max(0.0, float(recovery_timeout_seconds))
+            self._time_fn = time_fn or time.time
+            self._lock = Lock()
+            self._state: dict[str, dict[str, Any]] = {}
 
         def allow_request(self, dependency_key: str) -> bool:
-            _ = dependency_key
-            return True
+            key = str(dependency_key or "").strip()
+            if not key:
+                return True
+            now = float(self._time_fn())
+            with self._lock:
+                state = self._state.setdefault(
+                    key,
+                    {
+                        "state": "closed",
+                        "failure_count": 0,
+                        "opened_at": None,
+                        "last_failure_reason": None,
+                    },
+                )
+                if state["state"] != "open":
+                    return True
+                opened_at = state.get("opened_at")
+                if not isinstance(opened_at, (int, float)):
+                    opened_at = now
+                    state["opened_at"] = opened_at
+                if (now - float(opened_at)) >= self.recovery_timeout_seconds:
+                    state["state"] = "half_open"
+                    return True
+                return False
 
         def record_success(self, dependency_key: str) -> None:
-            _ = dependency_key
+            key = str(dependency_key or "").strip()
+            if not key:
+                return
+            with self._lock:
+                state = self._state.setdefault(
+                    key,
+                    {
+                        "state": "closed",
+                        "failure_count": 0,
+                        "opened_at": None,
+                        "last_failure_reason": None,
+                    },
+                )
+                state["state"] = "closed"
+                state["failure_count"] = 0
+                state["opened_at"] = None
+                state["last_failure_reason"] = None
 
         def record_failure(
             self, dependency_key: str, reason: str | None = None
         ) -> None:
-            _ = (dependency_key, reason)
+            key = str(dependency_key or "").strip()
+            if not key:
+                return
+            now = float(self._time_fn())
+            with self._lock:
+                state = self._state.setdefault(
+                    key,
+                    {
+                        "state": "closed",
+                        "failure_count": 0,
+                        "opened_at": None,
+                        "last_failure_reason": None,
+                    },
+                )
+                if state["state"] == "half_open":
+                    state["failure_count"] = self.failure_threshold
+                else:
+                    state["failure_count"] = int(state.get("failure_count", 0)) + 1
+                state["last_failure_reason"] = reason
+                if int(state["failure_count"]) >= self.failure_threshold:
+                    state["state"] = "open"
+                    state["opened_at"] = now
+
+        def get_state(self, dependency_key: str) -> dict[str, Any]:
+            key = str(dependency_key or "").strip()
+            if not key:
+                return {
+                    "state": "closed",
+                    "failure_count": 0,
+                    "opened_at": None,
+                    "last_failure_reason": None,
+                }
+            with self._lock:
+                state = self._state.get(key)
+                if state is None:
+                    return {
+                        "state": "closed",
+                        "failure_count": 0,
+                        "opened_at": None,
+                        "last_failure_reason": None,
+                    }
+                return {
+                    "state": str(state.get("state", "closed")),
+                    "failure_count": int(state.get("failure_count", 0)),
+                    "opened_at": state.get("opened_at"),
+                    "last_failure_reason": state.get("last_failure_reason"),
+                }
 
 
 from merlin_tasks import task_manager
