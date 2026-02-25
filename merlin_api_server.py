@@ -174,11 +174,13 @@ try:
         register_planner_fallback_telemetry_sink,
     )
 except ImportError:
+    _planner_fallback_sinks: list[Callable[[dict[str, Any]], dict[str, Any]]] = []
 
     def register_planner_fallback_telemetry_sink(
         sink: Callable[[dict[str, Any]], dict[str, Any]],
     ) -> None:
-        _ = sink
+        if callable(sink):
+            _planner_fallback_sinks.append(sink)
 
     def ingest_planner_fallback_telemetry(
         *,
@@ -186,12 +188,45 @@ except ImportError:
         metadata: dict[str, Any],
         source: str,
     ) -> dict[str, Any]:
-        _ = (metadata, source)
-        return {
+        payload: dict[str, Any] = dict(metadata) if isinstance(metadata, dict) else {}
+        payload["session_id"] = session_id
+        payload["source"] = source
+
+        if not _planner_fallback_sinks:
+            return {
+                "ingested": False,
+                "reason": "quality_gate_unavailable",
+                "session_id": session_id,
+            }
+
+        result: dict[str, Any] = {
             "ingested": False,
-            "reason": "quality_gate_unavailable",
+            "reason": "fallback_sink_no_ingest",
             "session_id": session_id,
         }
+        for sink in list(_planner_fallback_sinks):
+            try:
+                sink_result = sink(dict(payload))
+            except Exception as error:
+                result = {
+                    "ingested": False,
+                    "reason": "fallback_sink_error",
+                    "error": str(error),
+                    "session_id": session_id,
+                }
+                continue
+            if isinstance(sink_result, dict):
+                sink_result.setdefault("session_id", session_id)
+                result = sink_result
+                if sink_result.get("ingested") is True:
+                    return sink_result
+            else:
+                result = {
+                    "ingested": False,
+                    "reason": "fallback_sink_invalid_result",
+                    "session_id": session_id,
+                }
+        return result
 
 
 try:
