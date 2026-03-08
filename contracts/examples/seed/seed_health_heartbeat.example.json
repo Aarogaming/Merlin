@@ -1,0 +1,76 @@
+{
+  "schema_name": "AAS.Merlin.SeedHealthHeartbeat",
+  "schema_version": "1.0.0",
+  "event_id": "hb_7f13605d25d64050934fa30de5171f2c",
+  "event_type": "merlin.seed.health.heartbeat",
+  "workspace_root": "/mnt/c/Dev library/AaroneousAutomationSuite",
+  "state": "healthy",
+  "severity": "ok",
+  "policy_decision": "allowed",
+  "next_action": "observe",
+  "recommended_control_action": "none",
+  "checks": {
+    "policy_allowed": true,
+    "status_stale": false,
+    "worker_active": true,
+    "progress_complete": false
+  },
+  "progress": {
+    "target_rounds": 50000,
+    "completed_rounds": 5712,
+    "remaining_rounds": 44288,
+    "completion_percent": 11.42
+  },
+  "worker": {
+    "active": true,
+    "count": 2
+  },
+  "staleness": {
+    "status_age_seconds": 18.0,
+    "stale_after_seconds": 3600.0,
+    "is_stale": false
+  },
+  "health_snapshot": {
+    "schema_name": "AAS.Merlin.SeedHealth",
+    "schema_version": "1.0.0",
+    "workspace_root": "/mnt/c/Dev library/AaroneousAutomationSuite",
+    "state": "healthy",
+    "severity": "ok",
+    "policy_decision": "allowed",
+    "next_action": "observe",
+    "recommended_control_action": "none",
+    "checks": {
+      "policy_allowed": true,
+      "status_stale": false,
+      "worker_active": true,
+      "progress_complete": false
+    },
+    "progress": {
+      "target_rounds": 50000,
+      "completed_rounds": 5712,
+      "remaining_rounds": 44288,
+      "completion_percent": 11.42
+    },
+    "worker": {
+      "active": true,
+      "count": 2
+    },
+    "staleness": {
+      "status_age_seconds": 18.0,
+      "stale_after_seconds": 3600.0,
+      "is_stale": false
+    },
+    "guidance": {
+      "schema_name": "AAS.Merlin.SeedGuidance",
+      "schema_version": "1.0.0",
+      "state": "healthy",
+      "next_action": "observe",
+      "recommendations": []
+    },
+    "status_snapshot_updated_at": "2026-02-25T18:00:00Z",
+    "updated_at": "2026-02-25T18:00:18Z"
+  },
+  "heartbeat_file": "/mnt/c/Dev library/AaroneousAutomationSuite/artifacts/diagnostics/merlin_seed_health_heartbeat.jsonl",
+  "persisted": true,
+  "emitted_at": "2026-02-25T18:00:18Z"
+}

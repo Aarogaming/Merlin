@@ -1,0 +1,19 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "76e4f636-69a6-45f2-b45d-d76ad86ebb89",
+  "trace_id": "bde09d87-b8f5-449e-ab83-0e2a58d1871f",
+  "operation": {
+    "name": "merlin.seed.watchdog.tick.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "watchdog": {
+      "schema_name": "AAS.Merlin.SeedWatchdogTick",
+      "decision": {
+        "recommended_control_action": "none",
+        "outcome_status": "noop"
+      }
+    }
+  }
+}

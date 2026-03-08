@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "seed_watchdog_runtime_status.schema.json",
+  "title": "AAS Merlin Seed Watchdog Runtime Status",
+  "description": "Runtime process and telemetry status for continuous seed watchdog control.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "workspace_root",
+    "policy",
+    "paths",
+    "process",
+    "telemetry",
+    "health",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Merlin.SeedWatchdogRuntimeStatus"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "workspace_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "allow_live_automation",
+        "allow_live_automation_default",
+        "reason"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "allowed",
+            "stubbed"
+          ]
+        },
+        "allow_live_automation": {
+          "type": "boolean"
+        },
+        "allow_live_automation_default": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_file",
+        "merged_jsonl",
+        "merged_parquet",
+        "log_file",
+        "watchdog_log_file",
+        "append_jsonl",
+        "output_json",
+        "heartbeat_file"
+      ],
+      "properties": {
+        "status_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "merged_jsonl": {
+          "type": "string",
+          "minLength": 1
+        },
+        "merged_parquet": {
+          "type": "string",
+          "minLength": 1
+        },
+        "log_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "watchdog_log_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "append_jsonl": {
+          "type": "string",
+          "minLength": 1
+        },
+        "output_json": {
+          "type": "string",
+          "minLength": 1
+        },
+        "heartbeat_file": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "active",
+        "count",
+        "rows"
+      ],
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "pid",
+              "command"
+            ],
+            "properties": {
+              "pid": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "command": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "telemetry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "append_jsonl_exists",
+        "append_jsonl_line_count",
+        "append_jsonl_mtime_utc",
+        "output_json_exists",
+        "output_json_mtime_utc",
+        "output_json_read_error",
+        "last_tick",
+        "last_report_summary"
+      ],
+      "properties": {
+        "append_jsonl_exists": {
+          "type": "boolean"
+        },
+        "append_jsonl_line_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "append_jsonl_mtime_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "output_json_exists": {
+          "type": "boolean"
+        },
+        "output_json_mtime_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "output_json_read_error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "last_tick": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "last_report_summary": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "health": {
+      "$ref": "seed_health.schema.json"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

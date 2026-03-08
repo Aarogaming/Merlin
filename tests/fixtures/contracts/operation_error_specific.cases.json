@@ -1,0 +1,724 @@
+{
+  "cases": [
+    {
+      "case_id": "assistant_chat_missing_user_input",
+      "operation_name": "assistant.chat.request",
+      "request_fixture": "assistant.chat.request.json",
+      "payload": {
+        "user_input": "",
+        "user_id": "fixture-user"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.user_input is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "assistant_tools_not_found",
+      "operation_name": "assistant.tools.execute",
+      "request_fixture": "assistant.tools.execute.request.json",
+      "payload": {
+        "name": "missing_tool"
+      },
+      "setup": "assistant_tools_not_found",
+      "expected_status": 404,
+      "expected_error": {
+        "code": "TOOL_NOT_FOUND",
+        "message": "Plugin missing_tool not found",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "assistant_tools_exception",
+      "operation_name": "assistant.tools.execute",
+      "request_fixture": "assistant.tools.execute.request.json",
+      "payload": {
+        "name": "demo_tool"
+      },
+      "setup": "assistant_tools_exception",
+      "expected_status": 500,
+      "expected_error": {
+        "code": "TOOL_EXECUTION_ERROR",
+        "message": "Tool execution failed: demo_tool",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "command_blocked",
+      "operation_name": "merlin.command.execute",
+      "request_fixture": "merlin.command.execute.request.json",
+      "payload": {
+        "command": "rm -rf /"
+      },
+      "setup": "command_blocked",
+      "expected_status": 403,
+      "expected_error": {
+        "code": "COMMAND_BLOCKED",
+        "message": "Command blocked by policy",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "command_execution_failed",
+      "operation_name": "merlin.command.execute",
+      "request_fixture": "merlin.command.execute.request.json",
+      "payload": {
+        "command": "echo fail"
+      },
+      "setup": "command_execution_failed",
+      "expected_status": 400,
+      "expected_error": {
+        "code": "COMMAND_EXECUTION_FAILED",
+        "message": "boom",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "command_execution_exception",
+      "operation_name": "merlin.command.execute",
+      "request_fixture": "merlin.command.execute.request.json",
+      "setup": "command_execution_exception",
+      "expected_status": 500,
+      "expected_error": {
+        "code": "COMMAND_EXECUTION_ERROR",
+        "message": "Command execution failed",
+        "retryable": true
+      }
+    },
+    {
+      "case_id": "plugins_list_invalid_format",
+      "operation_name": "merlin.plugins.list",
+      "request_fixture": "merlin.plugins.list.request.json",
+      "payload": {
+        "format": "invalid"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.format must be one of: list, map",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "plugins_execute_not_found",
+      "operation_name": "merlin.plugins.execute",
+      "request_fixture": "merlin.plugins.execute.request.json",
+      "payload": {
+        "name": "missing"
+      },
+      "setup": "plugins_execute_not_found",
+      "expected_status": 404,
+      "expected_error": {
+        "code": "PLUGIN_NOT_FOUND",
+        "message": "Plugin missing not found",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "plugins_execute_failed_generic",
+      "operation_name": "merlin.plugins.execute",
+      "request_fixture": "merlin.plugins.execute.request.json",
+      "setup": "plugins_execute_failed_generic",
+      "expected_status": 400,
+      "expected_error": {
+        "code": "PLUGIN_EXECUTION_FAILED",
+        "message": "Plugin demo failed",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "plugins_execute_exception",
+      "operation_name": "merlin.plugins.execute",
+      "request_fixture": "merlin.plugins.execute.request.json",
+      "setup": "plugins_execute_exception",
+      "expected_status": 500,
+      "expected_error": {
+        "code": "PLUGIN_EXECUTION_ERROR",
+        "message": "Plugin execution failed: demo",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_create_read_only",
+      "operation_name": "merlin.research.manager.session.create",
+      "request_fixture": "merlin.research.manager.session.create.request.json",
+      "setup": "research_manager_read_only",
+      "expected_status": 403,
+      "expected_error": {
+        "code": "RESEARCH_MANAGER_READ_ONLY",
+        "message": "Research manager is read-only",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_signal_add_read_only",
+      "operation_name": "merlin.research.manager.session.signal.add",
+      "request_fixture": "merlin.research.manager.session.signal.add.request.json",
+      "setup": "research_manager_read_only",
+      "expected_status": 403,
+      "expected_error": {
+        "code": "RESEARCH_MANAGER_READ_ONLY",
+        "message": "Research manager is read-only",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_create_missing_objective",
+      "operation_name": "merlin.research.manager.session.create",
+      "request_fixture": "merlin.research.manager.session.create.request.json",
+      "payload": {
+        "objective": "",
+        "constraints": [
+          "repo-local-only"
+        ],
+        "horizon_days": 14
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.objective is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_get_missing_session_id",
+      "operation_name": "merlin.research.manager.session.get",
+      "request_fixture": "merlin.research.manager.session.get.request.json",
+      "payload": {},
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.session_id is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_get_invalid_session_id",
+      "operation_name": "merlin.research.manager.session.get",
+      "request_fixture": "merlin.research.manager.session.get.request.json",
+      "payload": {
+        "session_id": "../bad"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "session_id contains invalid characters; allowed: A-Z, a-z, 0-9, _, -",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_brief_invalid_session_id",
+      "operation_name": "merlin.research.manager.brief.get",
+      "request_fixture": "merlin.research.manager.brief.get.request.json",
+      "payload": {
+        "session_id": "../bad"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "session_id contains invalid characters; allowed: A-Z, a-z, 0-9, _, -",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "context_update_invalid_data_type",
+      "operation_name": "merlin.context.update",
+      "request_fixture": "merlin.context.update.request.json",
+      "payload": {
+        "data": "not-an-object"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.data must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "discovery_run_invalid_profile",
+      "operation_name": "merlin.discovery.run",
+      "request_fixture": "merlin.discovery.run.request.json",
+      "payload": {
+        "profile": "invalid-profile"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.profile must be one of: public, experimental",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "discovery_queue_status_invalid_out_type",
+      "operation_name": "merlin.discovery.queue.status",
+      "request_fixture": "merlin.discovery.queue.status.request.json",
+      "payload": {
+        "out": 123
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.out must be a string when provided",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "knowledge_search_invalid_limit",
+      "operation_name": "merlin.knowledge.search",
+      "request_fixture": "merlin.knowledge.search.request.json",
+      "payload": {
+        "query": "policy",
+        "limit": 0
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.limit must be between 1 and 200",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "seed_status_invalid_tail_lines",
+      "operation_name": "merlin.seed.status",
+      "request_fixture": "merlin.seed.status.request.json",
+      "payload": {
+        "tail_lines": 0
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.tail_lines must be an integer greater than zero",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "seed_control_blocked_by_policy",
+      "operation_name": "merlin.seed.control",
+      "request_fixture": "merlin.seed.control.request.json",
+      "payload": {
+        "action": "start",
+        "allow_live_automation": false
+      },
+      "expected_status": 403,
+      "expected_error": {
+        "code": "SEED_CONTROL_BLOCKED",
+        "message": "live automation disabled (ALLOW_LIVE_AUTOMATION=false)",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "seed_control_invalid_dry_run_type",
+      "operation_name": "merlin.seed.control",
+      "request_fixture": "merlin.seed.control.request.json",
+      "payload": {
+        "action": "start",
+        "dry_run": "yes"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.dry_run must be a boolean when provided",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "seed_watchdog_control_blocked_by_policy",
+      "operation_name": "merlin.seed.watchdog.control",
+      "request_fixture": "merlin.seed.watchdog.control.request.json",
+      "payload": {
+        "action": "start",
+        "allow_live_automation": false
+      },
+      "expected_status": 403,
+      "expected_error": {
+        "code": "SEED_WATCHDOG_CONTROL_BLOCKED",
+        "message": "live automation disabled (ALLOW_LIVE_AUTOMATION=false)",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "seed_watchdog_control_invalid_max_iterations",
+      "operation_name": "merlin.seed.watchdog.control",
+      "request_fixture": "merlin.seed.watchdog.control.request.json",
+      "payload": {
+        "action": "start",
+        "max_iterations": -1
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.max_iterations must be an integer greater than or equal to zero",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "dynamic_components_invalid_user_id_type",
+      "operation_name": "merlin.dynamic_components.list",
+      "request_fixture": "merlin.dynamic_components.list.request.json",
+      "payload": {
+        "user_id": 123
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.user_id must be a string when provided",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "history_get_missing_user_id",
+      "operation_name": "merlin.history.get",
+      "request_fixture": "merlin.history.get.request.json",
+      "payload": {},
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.user_id is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_parallel_strategy_invalid_strategy",
+      "operation_name": "merlin.llm.parallel.strategy",
+      "request_fixture": "merlin.llm.parallel.strategy.request.json",
+      "payload": {
+        "strategy": "invalid"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.strategy must be one of: voting, routing, cascade, consensus",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_adaptive_feedback_invalid_rating",
+      "operation_name": "merlin.llm.adaptive.feedback",
+      "request_fixture": "merlin.llm.adaptive.feedback.request.json",
+      "payload": {
+        "model_name": "fixture-model",
+        "rating": 9
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.rating must be an integer between 1 and 5",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_adaptive_reset_invalid_model_name_type",
+      "operation_name": "merlin.llm.adaptive.reset",
+      "request_fixture": "merlin.llm.adaptive.reset.request.json",
+      "payload": {
+        "model_name": 123
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.model_name must be a string when provided",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_ab_create_invalid_duration",
+      "operation_name": "merlin.llm.ab.create",
+      "request_fixture": "merlin.llm.ab.create.request.json",
+      "payload": {
+        "name": "Fixture AB",
+        "variants": [
+          "routing",
+          "voting"
+        ],
+        "duration_hours": 0
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.duration_hours must be greater than zero",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_ab_get_missing_test_id",
+      "operation_name": "merlin.llm.ab.get",
+      "request_fixture": "merlin.llm.ab.get.request.json",
+      "payload": {},
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.test_id is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_ab_result_missing_variant",
+      "operation_name": "merlin.llm.ab.result",
+      "request_fixture": "merlin.llm.ab.result.request.json",
+      "payload": {
+        "test_id": "fixture-ab-test-id",
+        "variant": ""
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.variant is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_ab_complete_missing_test_id",
+      "operation_name": "merlin.llm.ab.complete",
+      "request_fixture": "merlin.llm.ab.complete.request.json",
+      "payload": {},
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.test_id is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_predictive_select_missing_query",
+      "operation_name": "merlin.llm.predictive.select",
+      "request_fixture": "merlin.llm.predictive.select.request.json",
+      "payload": {
+        "query": ""
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.query is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_predictive_feedback_missing_was_successful",
+      "operation_name": "merlin.llm.predictive.feedback",
+      "request_fixture": "merlin.llm.predictive.feedback.request.json",
+      "payload": {
+        "model_name": "fixture-model"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.was_successful is required and must be a boolean",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_cost_report_invalid_days",
+      "operation_name": "merlin.llm.cost.report",
+      "request_fixture": "merlin.llm.cost.report.request.json",
+      "payload": {
+        "days": 0
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.days must be greater than zero",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_cost_budget_set_invalid_limit",
+      "operation_name": "merlin.llm.cost.budget.set",
+      "request_fixture": "merlin.llm.cost.budget.set.request.json",
+      "payload": {
+        "budget_limit": 0
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.budget_limit must be greater than zero",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_cost_thresholds_set_missing_values",
+      "operation_name": "merlin.llm.cost.thresholds.set",
+      "request_fixture": "merlin.llm.cost.thresholds.set.request.json",
+      "payload": {},
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.warning_threshold or payload.critical_threshold is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "llm_cost_pricing_set_negative_input_cost",
+      "operation_name": "merlin.llm.cost.pricing.set",
+      "request_fixture": "merlin.llm.cost.pricing.set.request.json",
+      "payload": {
+        "input_cost_per_1k": -0.1,
+        "output_cost_per_1k": 0.2
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.input_cost_per_1k must be non-negative",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "search_query_invalid_limit",
+      "operation_name": "merlin.search.query",
+      "request_fixture": "merlin.search.query.request.json",
+      "payload": {
+        "query": "policy",
+        "limit": 0
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.limit must be between 1 and 20",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "rag_query_invalid_limit",
+      "operation_name": "merlin.rag.query",
+      "request_fixture": "merlin.rag.query.request.json",
+      "payload": {
+        "query": "policy",
+        "limit": 0
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.limit must be between 1 and 20",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "voice_status_unavailable",
+      "operation_name": "merlin.voice.status",
+      "request_fixture": "merlin.voice.status.request.json",
+      "setup": "voice_unavailable",
+      "expected_status": 503,
+      "expected_error": {
+        "code": "VOICE_UNAVAILABLE",
+        "message": "Voice subsystem unavailable",
+        "retryable": true
+      }
+    },
+    {
+      "case_id": "voice_synthesize_failed",
+      "operation_name": "merlin.voice.synthesize",
+      "request_fixture": "merlin.voice.synthesize.request.json",
+      "setup": "voice_synthesize_failed",
+      "expected_status": 500,
+      "expected_error": {
+        "code": "VOICE_SYNTHESIS_FAILED",
+        "message": "Voice synthesis failed",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "voice_synthesize_output_missing",
+      "operation_name": "merlin.voice.synthesize",
+      "request_fixture": "merlin.voice.synthesize.request.json",
+      "setup": "voice_synthesize_output_missing",
+      "expected_status": 500,
+      "expected_error": {
+        "code": "VOICE_OUTPUT_MISSING",
+        "message": "Voice output file missing after synthesis",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "voice_listen_failed",
+      "operation_name": "merlin.voice.listen",
+      "request_fixture": "merlin.voice.listen.request.json",
+      "setup": "voice_listen_failed",
+      "expected_status": 500,
+      "expected_error": {
+        "code": "VOICE_LISTEN_FAILED",
+        "message": "Voice listen failed",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "voice_transcribe_failed",
+      "operation_name": "merlin.voice.transcribe",
+      "request_fixture": "merlin.voice.transcribe.request.json",
+      "setup": "voice_transcribe_failed",
+      "expected_status": 500,
+      "expected_error": {
+        "code": "VOICE_TRANSCRIBE_FAILED",
+        "message": "Voice transcription failed",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "tasks_create_missing_title",
+      "operation_name": "merlin.tasks.create",
+      "request_fixture": "merlin.tasks.create.request.json",
+      "payload": {
+        "title": "",
+        "description": "Created from fixture",
+        "priority": "High"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.title is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "user_create_exists",
+      "operation_name": "merlin.user_manager.create",
+      "request_fixture": "merlin.user_manager.create.request.json",
+      "setup": "user_create_exists",
+      "expected_status": 409,
+      "expected_error": {
+        "code": "USER_EXISTS",
+        "message": "User already exists",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "user_auth_failed",
+      "operation_name": "merlin.user_manager.authenticate",
+      "request_fixture": "merlin.user_manager.authenticate.request.json",
+      "setup": "user_auth_failed",
+      "expected_status": 401,
+      "expected_error": {
+        "code": "AUTH_FAILED",
+        "message": "Invalid username or password",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "genesis_manifest_missing_filename",
+      "operation_name": "merlin.genesis.manifest",
+      "request_fixture": "merlin.genesis.manifest.request.json",
+      "payload": {
+        "filename": "",
+        "code": "print('fixture')"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.filename is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "aas_create_task_failed",
+      "operation_name": "merlin.aas.create_task",
+      "request_fixture": "merlin.aas.create_task.request.json",
+      "setup": "aas_create_task_failed",
+      "expected_status": 502,
+      "expected_error": {
+        "code": "AAS_TASK_CREATE_FAILED",
+        "message": "Failed to create AAS task",
+        "retryable": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "2c4f77d4-e599-49d8-a1b4-e5a4a34c0e67",
+  "trace_id": "df77181e-3f86-4c98-9a6f-a6ffea37ef6e",
+  "operation": {
+    "name": "merlin.discovery.queue.purge_deadletter.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "purge_deadletter": {
+      "schema_name": "AAS.Discovery.QueuePurgeDeadletter",
+      "status": {
+        "schema_name": "AAS.Discovery.QueueStatus"
+      }
+    }
+  }
+}

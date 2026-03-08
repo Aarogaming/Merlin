@@ -1,0 +1,111 @@
+{
+  "schema_name": "AAS.ReleaseChecklistReport",
+  "schema_version": "1.0.0",
+  "generated_at": "2026-02-19T15:19:04.573330+00:00",
+  "root_dir": "/mnt/c/Dev library/AaroneousAutomationSuite/Merlin",
+  "run_commands": true,
+  "summary": {
+    "total_checks": 8,
+    "failed_required": 0,
+    "ok": true
+  },
+  "checks": [
+    {
+      "type": "path",
+      "category": "contracts",
+      "label": "operation envelope schema",
+      "path": "contracts/aas.operation-envelope.v1.schema.json",
+      "required": true,
+      "ok": true,
+      "details": "present"
+    },
+    {
+      "type": "path",
+      "category": "contracts",
+      "label": "routing metadata schema",
+      "path": "contracts/assistant.chat.routing-metadata.v1.schema.json",
+      "required": true,
+      "ok": true,
+      "details": "present"
+    },
+    {
+      "type": "path",
+      "category": "protocol_docs",
+      "label": "operation envelope protocol doc",
+      "path": "docs/protocols/operation-envelope-v1.md",
+      "required": true,
+      "ok": true,
+      "details": "present"
+    },
+    {
+      "type": "path",
+      "category": "protocol_docs",
+      "label": "capability protocol doc",
+      "path": "docs/protocols/repo-capabilities-merlin-v1.md",
+      "required": true,
+      "ok": true,
+      "details": "present"
+    },
+    {
+      "type": "path",
+      "category": "tests",
+      "label": "contract schema tests",
+      "path": "tests/test_contract_schemas.py",
+      "required": true,
+      "ok": true,
+      "details": "present"
+    },
+    {
+      "type": "path",
+      "category": "tests",
+      "label": "operation expected response tests",
+      "path": "tests/test_operation_expected_responses.py",
+      "required": true,
+      "ok": true,
+      "details": "present"
+    },
+    {
+      "type": "command",
+      "category": "validation_commands",
+      "label": "/usr/bin/python3 scripts/sync_contract_schemas.py --precommit",
+      "required": true,
+      "ok": true,
+      "details": "returncode=0"
+    },
+    {
+      "type": "command",
+      "category": "validation_commands",
+      "label": "/usr/bin/python3 -m pytest -q -s tests/test_sync_contract_schemas.py",
+      "required": true,
+      "ok": true,
+      "details": "returncode=0"
+    }
+  ],
+  "command_results": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "scripts/sync_contract_schemas.py",
+        "--precommit"
+      ],
+      "ok": true,
+      "returncode": 0,
+      "stdout": "contract-schema-sync: PASS\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-m",
+        "pytest",
+        "-q",
+        "-s",
+        "tests/test_sync_contract_schemas.py"
+      ],
+      "ok": true,
+      "returncode": 0,
+      "stdout": ".....\n=============================== warnings summary ===============================\ntests/test_sync_contract_schemas.py::test_sync_check_passes_when_schemas_are_in_sync\n  /usr/lib/python3/dist-packages/fastapi/openapi/models.py:55: DeprecationWarning: `general_plain_validator_function` is deprecated, use `with_info_plain_validator_function` instead.\n    return general_plain_validator_function(cls._validate)\n\ntests/test_sync_contract_schemas.py::test_sync_check_passes_when_schemas_are_in_sync\ntests/test_sync_contract_schemas.py::test_sync_check_passes_when_schemas_are_in_sync\ntests/test_sync_contract_schemas.py::test_sync_check_passes_when_schemas_are_in_sync\n  /home/aaroneous/.local/lib/python3.12/site-packages/pydantic_core/core_schema.py:4408: DeprecationWarning: `general_plain_validator_function` is deprecated, use `with_info_plain_validator_function` instead.\n    warnings.warn(\n\ntests/test_sync_contract_schemas.py::test_sync_check_passes_when_schemas_are_in_sync\ntests/test_sync_contract_schemas.py::test_sync_check_passes_when_schemas_are_in_sync\n  /usr/lib/python3/dist-packages/fastapi/datastructures.py:52: DeprecationWarning: `general_plain_validator_function` is deprecated, use `with_info_plain_validator_function` instead.\n    return general_plain_validator_function(cls._validate)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n5 passed, 6 warnings in 1.38s\n",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,9 +1,26 @@
 import json
 import os
 from datetime import datetime
+from typing import Any
 from merlin_logger import log_with_context
 
 AUDIT_LOG_FILE = "logs/audit.json"
+
+
+def build_request_audit_metadata(
+    route: str,
+    decision_version: str,
+    request_id: str | None,
+    operation_name: str | None = None,
+) -> dict:
+    metadata = {
+        "request_id": request_id,
+        "route": route,
+        "decision_version": decision_version,
+    }
+    if operation_name:
+        metadata["operation_name"] = operation_name
+    return metadata
 
 
 def log_audit_event(
@@ -18,8 +35,13 @@ def log_audit_event(
     }
 
     # Log to structured logger
+    context_details = dict(details)
+    context_details.pop("request_id", None)
     log_with_context(
-        "INFO", f"AUDIT: {action} by {user}", request_id=request_id, **details
+        "INFO",
+        f"AUDIT: {action} by {user}",
+        request_id=request_id,
+        **context_details,
     )
 
     # Also save to dedicated audit file
@@ -31,6 +53,28 @@ def log_audit_event(
             f.write(json.dumps(event) + "\n")
     except Exception as e:
         print(f"Failed to write audit log: {e}")
+
+
+def log_read_only_rejection(
+    *,
+    component: str,
+    operation: str,
+    details: dict[str, Any] | None = None,
+    request_id: str | None = None,
+) -> None:
+    payload: dict[str, Any] = {
+        "component": component,
+        "operation": operation,
+        "reason": "read_only_mode",
+    }
+    if details:
+        payload.update(details)
+    log_audit_event(
+        action="read_only_rejection",
+        details=payload,
+        user=component,
+        request_id=request_id,
+    )
 
 
 def get_audit_logs(limit: int = 100):

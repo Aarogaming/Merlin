@@ -31,24 +31,24 @@ const ModelPerformanceGrid = () => {
   };
 
   return (
-    <div className="card">
+    <div className="card min-w-0">
       <h3 className="text-lg font-semibold mb-6 text-merlin-blue">Model Performance</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0">
         {Object.entries(dashboardData.models).map(([modelName, metrics], index) => (
           <motion.div
             key={modelName}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
-            className="metric-card group hover:border-merlin-blue/30 cursor-pointer"
+            className="metric-card group hover:border-merlin-blue/30 cursor-pointer min-w-0"
           >
             {/* Model Header */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
-                <h4 className="font-semibold text-dark-text group-hover:text-merlin-blue transition-colors">
+                <h4 className="font-semibold text-dark-text group-hover:text-merlin-blue transition-colors break-words">
                   {modelName.split('-')[0]}
                 </h4>
-                <p className="text-xs text-dark-muted mt-1">
+                <p className="text-xs text-dark-muted mt-1 break-all">
                   {modelName}
                 </p>
               </div>

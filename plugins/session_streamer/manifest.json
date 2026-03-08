@@ -14,6 +14,13 @@
       "version": "0.1.0"
     }
   ],
+  "python_dependencies": [
+    {
+      "module": "core.integrations.maelstrom_ipc",
+      "package": "merlin-assistant",
+      "extra": "plugins-all"
+    }
+  ],
   "extensions": {
     "aas": {
       "hive": "merlin",

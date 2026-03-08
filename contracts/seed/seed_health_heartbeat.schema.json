@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "seed_health_heartbeat.schema.json",
+  "title": "AAS Merlin Seed Health Heartbeat",
+  "description": "Event payload emitted by merlin.seed.health.heartbeat for persistent health telemetry.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "event_id",
+    "event_type",
+    "workspace_root",
+    "state",
+    "severity",
+    "policy_decision",
+    "next_action",
+    "recommended_control_action",
+    "checks",
+    "progress",
+    "worker",
+    "staleness",
+    "health_snapshot",
+    "heartbeat_file",
+    "persisted",
+    "emitted_at"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Merlin.SeedHealthHeartbeat"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_type": {
+      "const": "merlin.seed.health.heartbeat"
+    },
+    "workspace_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "attention",
+        "blocked",
+        "complete"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "warn",
+        "critical"
+      ]
+    },
+    "policy_decision": {
+      "type": "string",
+      "enum": [
+        "allowed",
+        "stubbed"
+      ]
+    },
+    "next_action": {
+      "type": "string",
+      "enum": [
+        "observe",
+        "start",
+        "restart",
+        "stop",
+        "unblock_policy"
+      ]
+    },
+    "recommended_control_action": {
+      "type": "string",
+      "enum": [
+        "none",
+        "start",
+        "restart",
+        "stop"
+      ]
+    },
+    "checks": {
+      "$ref": "seed_health.schema.json#/properties/checks"
+    },
+    "progress": {
+      "$ref": "seed_health.schema.json#/properties/progress"
+    },
+    "worker": {
+      "$ref": "seed_health.schema.json#/properties/worker"
+    },
+    "staleness": {
+      "$ref": "seed_health.schema.json#/properties/staleness"
+    },
+    "health_snapshot": {
+      "$ref": "seed_health.schema.json"
+    },
+    "heartbeat_file": {
+      "type": "string",
+      "minLength": 1
+    },
+    "persisted": {
+      "type": "boolean"
+    },
+    "emitted_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

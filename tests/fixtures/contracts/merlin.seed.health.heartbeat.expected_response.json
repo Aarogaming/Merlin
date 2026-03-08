@@ -1,0 +1,18 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "2f084f5a-a061-4f3d-ab46-d212645be7d3",
+  "trace_id": "68967ea0-ae0f-4066-ab91-f1af4ab88697",
+  "operation": {
+    "name": "merlin.seed.health.heartbeat.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "heartbeat": {
+      "schema_name": "AAS.Merlin.SeedHealthHeartbeat",
+      "event_type": "merlin.seed.health.heartbeat",
+      "severity": "ok",
+      "persisted": false
+    }
+  }
+}

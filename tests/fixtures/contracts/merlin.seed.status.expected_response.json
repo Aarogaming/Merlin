@@ -1,0 +1,18 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "fc37f60f-d0ec-4fd2-b536-338f4e9331d0",
+  "trace_id": "9a5a7014-065f-4142-bf28-cc54f9f6f93e",
+  "operation": {
+    "name": "merlin.seed.status.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "seed": {
+      "schema_name": "AAS.Merlin.SeedStatus",
+      "guidance": {
+        "schema_name": "AAS.Merlin.SeedGuidance"
+      }
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "constraints": [],
+  "created_at_utc": "2026-02-20T15:11:59.785893+00:00",
+  "created_by": "AaroneousAutomationSuite/Hub:merlin_client",
+  "foresight": [
+    {
+      "probability": 0.5995,
+      "scenario": "best_case",
+      "trigger": "supporting evidence accumulates with low contradiction rate"
+    },
+    {
+      "probability": 0.55,
+      "scenario": "base_case",
+      "trigger": "current evidence trend holds without major external shocks"
+    },
+    {
+      "probability": 0.214,
+      "scenario": "worst_case",
+      "trigger": "dependency risk and contradiction signals outpace execution gains"
+    }
+  ],
+  "horizon_days": 7,
+  "hypotheses": [
+    {
+      "base_probability": 0.58,
+      "confidence": 0.29,
+      "contradicting_signals": 0,
+      "id": "h_execution_success",
+      "probability": 0.58,
+      "statement": "The objective can be executed with current local Merlin/AAS capabilities and bounded integration effort.",
+      "supporting_signals": 0
+    },
+    {
+      "base_probability": 0.52,
+      "confidence": 0.26,
+      "contradicting_signals": 0,
+      "id": "h_dependency_risk",
+      "probability": 0.52,
+      "statement": "External dependency and integration gaps will remain manageable without blocking critical milestones.",
+      "supporting_signals": 0
+    },
+    {
+      "base_probability": 0.55,
+      "confidence": 0.275,
+      "contradicting_signals": 0,
+      "id": "h_timeline_fit",
+      "probability": 0.55,
+      "statement": "The objective 'hub binding live proof refresh' can ship within the active horizon if sequencing and fallback controls stay enforced.",
+      "supporting_signals": 0
+    }
+  ],
+  "linked_task_ids": [],
+  "objective": "hub binding live proof refresh",
+  "planner_artifacts": [],
+  "policy_version": "research-session-provenance-v1",
+  "risk_rubric": {
+    "impact": 0.5,
+    "time_horizon": "near_term",
+    "uncertainty": 0.5
+  },
+  "schema_version": "1.0.0",
+  "session_id": "97ab2bae7373444da462d23cb791789c",
+  "signals": [
+    {
+      "claim": "create_signal_brief_path_verified",
+      "claim_hash": "9728e02e6586c004fc05258e5aba7e030fb09ca7967b5fbc6b0f2c9429944cde",
+      "confidence": 0.774,
+      "confidence_raw": 0.81,
+      "contradicts": [],
+      "duplicate_count": 0,
+      "novelty": 0.5,
+      "risk": 0.2,
+      "signal_id": "0f112d945b304e54a46d5c747dc579a0",
+      "source": "hub_binding_live_proof",
+      "supports": [],
+      "timestamp_utc": "2026-02-20T15:11:59.791404+00:00"
+    }
+  ],
+  "source_operation": "merlin.research.manager.session.create",
+  "status": "active",
+  "tags": [],
+  "tasks": [
+    {
+      "linked_hypothesis": "h_execution_success",
+      "priority": "high",
+      "status": "pending",
+      "task_id": "t_baseline",
+      "title": "Establish baseline and boundary assumptions"
+    },
+    {
+      "linked_hypothesis": "h_dependency_risk",
+      "priority": "high",
+      "status": "pending",
+      "task_id": "t_adversarial",
+      "title": "Run adversarial review for the highest-risk hypothesis"
+    },
+    {
+      "linked_hypothesis": "h_timeline_fit",
+      "priority": "medium",
+      "status": "pending",
+      "task_id": "t_decision_packet",
+      "title": "Prepare decision packet for: hub binding live proof refresh"
+    }
+  ],
+  "updated_at_utc": "2026-02-20T15:11:59.791404+00:00"
+}

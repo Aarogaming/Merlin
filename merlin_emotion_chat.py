@@ -2,12 +2,19 @@
 import os
 import json
 import time
+from typing import Any, Tuple
 from merlin_logger import merlin_logger
 import merlin_settings as settings
 from merlin_llm_backends import llm_backend
 from merlin_parallel_llm import parallel_llm_backend
 from merlin_adaptive_llm import adaptive_llm_backend
 from merlin_streaming_llm import streaming_llm_backend
+from merlin_routing_contract import (
+    RoutingFallbackReasonCode,
+    apply_dms_fallback,
+    build_routing_decision,
+    resolve_query_prompt_bucket,
+)
 from merlin_metrics_dashboard import metrics_dashboard, handle_dashboard_websocket
 from merlin_cost_optimization import cost_optimization_manager
 
@@ -64,7 +71,24 @@ def save_chat(user_id: str, history: list):
         json.dump(history, f, indent=2)
 
 
+def _prompt_size_bucket(prompt: str) -> str:
+    prompt_bucket, _ = resolve_query_prompt_bucket(
+        prompt,
+        min_prompt_chars=settings.DMS_MIN_PROMPT_CHARS,
+        token_aware=settings.MERLIN_PROMPT_BUCKET_TOKEN_AWARE,
+        min_prompt_tokens=settings.DMS_MIN_PROMPT_TOKENS,
+    )
+    return prompt_bucket
+
+
 def merlin_emotion_chat(user_input: str, user_id: str):
+    reply, _metadata = merlin_emotion_chat_with_metadata(user_input, user_id)
+    return reply
+
+
+def merlin_emotion_chat_with_metadata(
+    user_input: str, user_id: str
+) -> Tuple[str, dict[str, Any]]:
     merlin_logger.info(f"User ({user_id}): {user_input}")
     context = ""
     staff = WizardStaff() if WizardStaff else None  # type: ignore[operator]
@@ -168,8 +192,9 @@ def merlin_emotion_chat(user_input: str, user_id: str):
     for h in history[-10:]:
         if h["user"]:
             messages.append({"role": "user", "content": h["user"]})
-        if h["assistant"]:
-            messages.append({"role": "assistant", "content": h["merlin"]})
+        assistant_reply = h.get("assistant", h.get("merlin", ""))
+        if assistant_reply:
+            messages.append({"role": "assistant", "content": assistant_reply})
 
     if context:
         messages.append({"role": "system", "content": f"ADDITIONAL CONTEXT: {context}"})
@@ -188,12 +213,38 @@ def merlin_emotion_chat(user_input: str, user_id: str):
                 messages, temperature=0.7, stream=False, timeout=30
             )
         reply = response["choices"][0]["message"]["content"]
+        fallback_metadata = build_routing_decision(
+            prompt_size_bucket=_prompt_size_bucket(user_input),
+            router_backend=settings.LLM_BACKEND.lower(),
+            query=user_input,
+        )
+        fallback_metadata["selected_model"] = settings.LLM_BACKEND.lower()
+        fallback_metadata["dms_used"] = settings.LLM_BACKEND.lower() == "dms"
+        if settings.LLM_BACKEND.lower() == "dms" and not settings.DMS_ENABLED:
+            fallback_metadata["fallback_reason"] = "dms_error: dms_enabled_false"
+            fallback_metadata["fallback_reason_code"] = (
+                RoutingFallbackReasonCode.DMS_DISABLED.value
+            )
+            fallback_metadata["fallback_detail"] = "dms_enabled_false"
+            fallback_metadata["fallback_stage"] = "config_gate"
+            fallback_metadata["fallback_retryable"] = False
+        metadata = response.get("metadata", fallback_metadata)
         history[-1]["merlin"] = reply
         save_chat(user_id, history)
-        return reply
+        return reply, metadata
     except Exception as e:
         merlin_logger.error(f"Chat Error: {e}")
-        return f"I apologize, my neural link is flickering. Error: {str(e)}"
+        error_metadata = build_routing_decision(
+            prompt_size_bucket=_prompt_size_bucket(user_input),
+            router_backend=settings.LLM_BACKEND.lower(),
+            query=user_input,
+        )
+        error_metadata["selected_model"] = "error"
+        apply_dms_fallback(error_metadata, e, stage="chat_completion")
+        return (
+            f"I apologize, my neural link is flickering. Error: {str(e)}",
+            error_metadata,
+        )
 
 
 async def merlin_emotion_chat_stream(user_input: str, user_id: str):

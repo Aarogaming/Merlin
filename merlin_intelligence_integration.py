@@ -40,8 +40,8 @@ class MerlinIntelligenceManager:
         self.aas_hub_url = aas_hub_url
         self.client = None
         self.simple_client = None
-        self.intelligence_cache = {}
-        self.last_context_update = None
+        self.intelligence_cache: Dict[str, Any] = {}
+        self.last_context_update: Optional[float] = None
 
         if MerlinIntelligenceClient:
             self.client = MerlinIntelligenceClient(aas_hub_url)

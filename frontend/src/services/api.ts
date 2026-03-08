@@ -1,5 +1,10 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { DashboardStatus, ModelRequest, ModelResponse, ApprovalRequest, TaskItem, ResearchResponse } from '../types';
+import {
+  OPERATION_CONTRACT_FIXTURES,
+  OPERATION_NAMES,
+  type OperationName,
+} from './operationContracts.generated';
 
 export class MerlinApiService {
   private baseUrl: string;
@@ -264,6 +269,14 @@ export class MerlinApiService {
 
   getBaseUrl(): string {
     return this.baseUrl;
+  }
+
+  getOperationContractNames(): readonly OperationName[] {
+    return OPERATION_NAMES;
+  }
+
+  getOperationContractFixture(operation: OperationName) {
+    return OPERATION_CONTRACT_FIXTURES[operation];
   }
 }
 

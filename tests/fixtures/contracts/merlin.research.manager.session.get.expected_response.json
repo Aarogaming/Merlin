@@ -1,0 +1,32 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "5f8e6f3f-c62e-442e-81c5-b4c2b25ea9cc",
+  "trace_id": "4cbd1600-7f9f-4f97-902a-7267cbf538ee",
+  "operation": {
+    "name": "merlin.research.manager.session.get.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "session": {
+      "session_id": "fixture-session-id",
+      "objective": "Fixture research objective",
+      "tags": [
+        "fixture-tag"
+      ],
+      "linked_task_ids": [
+        1
+      ],
+      "planner_artifacts": [
+        "docs/research/fixture.md"
+      ],
+      "risk_rubric": {
+        "impact": 0.5,
+        "uncertainty": 0.5,
+        "time_horizon": "near_term"
+      },
+      "status": "active",
+      "horizon_days": 14
+    }
+  }
+}

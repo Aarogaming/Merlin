@@ -1,0 +1,47 @@
+{
+  "schema_name": "AAS.Merlin.SeedHealth",
+  "schema_version": "1.0.0",
+  "workspace_root": "/mnt/c/Dev library/AaroneousAutomationSuite",
+  "state": "attention",
+  "severity": "warn",
+  "policy_decision": "allowed",
+  "next_action": "start",
+  "recommended_control_action": "start",
+  "checks": {
+    "policy_allowed": true,
+    "status_stale": true,
+    "worker_active": false,
+    "progress_complete": false
+  },
+  "progress": {
+    "target_rounds": 50000,
+    "completed_rounds": 4641,
+    "remaining_rounds": 45359,
+    "completion_percent": 9.28
+  },
+  "worker": {
+    "active": false,
+    "count": 0
+  },
+  "staleness": {
+    "status_age_seconds": 1718619.369,
+    "stale_after_seconds": 3600.0,
+    "is_stale": true
+  },
+  "guidance": {
+    "schema_name": "AAS.Merlin.SeedGuidance",
+    "schema_version": "1.0.0",
+    "state": "attention",
+    "next_action": "start",
+    "recommendations": [
+      {
+        "id": "start_worker",
+        "severity": "high",
+        "message": "No active seed worker is running before target completion.",
+        "action": "Run merlin.seed.control with action=start and allow_live_automation=true."
+      }
+    ]
+  },
+  "status_snapshot_updated_at": "2026-02-25T16:50:33Z",
+  "updated_at": "2026-02-25T16:50:33Z"
+}

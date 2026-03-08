@@ -9,6 +9,8 @@ import Approvals from './pages/Approvals';
 import TaskDetails from './pages/TaskDetails';
 import Tasks from './pages/Tasks';
 import ControlCenter from './pages/ControlCenter';
+import ResearchSessions from './pages/ResearchSessions';
+import CommandPalette from './components/CommandPalette';
 import './index.css';
 
 const queryClient = new QueryClient({
@@ -26,10 +28,14 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <div className="min-h-screen bg-dark-bg text-dark-text">
+          <div className="fixed top-3 right-3 z-[95]">
+            <CommandPalette />
+          </div>
           <Layout>
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/control-center" element={<ControlCenter />} />
+              <Route path="/research-sessions" element={<ResearchSessions />} />
               <Route path="/model/:modelName" element={<ModelDetails />} />
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/approvals" element={<Approvals />} />

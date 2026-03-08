@@ -1,0 +1,20 @@
+{
+  "schema_name": "AAS.Discovery.TopicSelection",
+  "schema_version": "1.0.0",
+  "topic_id": "topic_9fd889e4bc7f20f3",
+  "run_id": "run_20260224T052300Z_4f1c9ab2",
+  "title": "Policy-gated Discovery Pipelines for Local-First Repositories",
+  "canonical_url": "https://example.org/research/discovery-pipeline",
+  "canonical_key": "ck_1d5a626423c0f2eaabc617dc",
+  "item_ids": [
+    "item_a34f7d1c6de312aa"
+  ],
+  "selection_score": 0.81,
+  "confidence": 0.77,
+  "tags": [
+    "policy",
+    "ci"
+  ],
+  "reason": "top score by weighted relevance and source trust",
+  "selected_at": "2026-02-24T05:23:20Z"
+}

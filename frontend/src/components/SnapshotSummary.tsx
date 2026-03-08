@@ -119,15 +119,23 @@ const SnapshotSummary = ({
     return healthy ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30';
   };
 
+  const hasUnhealthySubsystem =
+    Boolean(snapshot?.home_assistant && !snapshot.home_assistant.healthy) ||
+    Boolean(snapshot?.frigate && !snapshot.frigate.healthy);
+
+  const shouldShowRetryGuidance = Boolean(error) || hasUnhealthySubsystem;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-dark-secondary rounded-lg border border-dark-border p-6 space-y-4"
+      className="bg-dark-secondary rounded-lg border border-dark-border p-6 space-y-4 snapshot-summary-card"
+      role="region"
+      aria-label="Gateway snapshot summary"
     >
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Activity size={20} className="text-merlin-blue" />
           <h2 className="text-xl font-bold text-gradient">Gateway Snapshot</h2>
@@ -148,6 +156,8 @@ const SnapshotSummary = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-start gap-3"
+          role="status"
+          aria-live="polite"
         >
           <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
           <div>
@@ -155,6 +165,26 @@ const SnapshotSummary = ({
             <p className="text-red-300 text-sm">{error}</p>
           </div>
         </motion.div>
+      )}
+
+      {shouldShowRetryGuidance && (
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 space-y-3 snapshot-retry-guidance">
+          <p className="text-sm font-semibold text-amber-200">Retry Guidance</p>
+          <ul className="text-xs text-amber-100 space-y-1 list-disc pl-4">
+            <li>Confirm the MyFortress gateway process is reachable at <code>{myFortressUrl}</code>.</li>
+            <li>Check Home Assistant and Frigate service health before retrying.</li>
+            <li>Use manual refresh after dependency recovery to clear fallback state.</li>
+          </ul>
+          <button
+            type="button"
+            onClick={() => fetchSnapshot()}
+            disabled={loading}
+            className="btn-secondary text-xs px-3 py-1.5"
+            aria-label="Retry gateway snapshot fetch"
+          >
+            {loading ? 'Retrying...' : 'Retry Snapshot Fetch'}
+          </button>
+        </div>
       )}
 
       {!loading && snapshot && !error && (
@@ -187,7 +217,7 @@ const SnapshotSummary = ({
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     {Object.entries(snapshot.home_assistant.readings).slice(0, 6).map(([id, reading]) => (
-                      <div key={id} className="bg-dark-secondary rounded p-2">
+                    <div key={id} className="bg-dark-secondary rounded p-2 min-w-0">
                         <p className="text-xs text-dark-muted truncate">{reading.entity_id}</p>
                         <p className="text-sm text-white font-medium truncate">
                           {reading.error ? (
@@ -241,11 +271,11 @@ const SnapshotSummary = ({
                     <p className="text-xs text-dark-muted mb-1">
                       Cameras: {snapshot.frigate.cameras.length}
                     </p>
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1 min-w-0">
                       {snapshot.frigate.cameras.slice(0, 8).map((camera) => (
                         <span
                           key={camera}
-                          className="bg-dark-hover px-2 py-1 rounded text-xs text-light-muted"
+                          className="bg-dark-hover px-2 py-1 rounded text-xs text-light-muted max-w-full break-all"
                         >
                           {camera}
                         </span>
@@ -272,7 +302,7 @@ const SnapshotSummary = ({
       )}
 
       {loading && !snapshot && (
-        <div className="flex items-center justify-center py-8">
+        <div className="flex items-center justify-center py-8" aria-live="polite">
           <div className="text-center">
             <div className="animate-spin w-8 h-8 border-2 border-merlin-blue border-t-transparent rounded-full mx-auto mb-4" />
             <p className="text-dark-muted">Loading snapshot...</p>

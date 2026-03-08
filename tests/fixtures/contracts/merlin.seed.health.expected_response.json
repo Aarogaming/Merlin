@@ -1,0 +1,16 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "8f78d81f-9686-484f-af39-a84d7f2c7048",
+  "trace_id": "0ef5a31e-3111-4ff0-8cca-bde4d4f5a5bb",
+  "operation": {
+    "name": "merlin.seed.health.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "health": {
+      "schema_name": "AAS.Merlin.SeedHealth",
+      "severity": "ok"
+    }
+  }
+}

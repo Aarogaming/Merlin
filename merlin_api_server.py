@@ -1926,6 +1926,9 @@ MUTATING_ENVELOPE_OPERATIONS: set[str] = {
     "merlin.discovery.queue.resume",
     "merlin.discovery.queue.purge_deadletter",
     "merlin.seed.control",
+    "merlin.seed.health.heartbeat",
+    "merlin.seed.watchdog.tick",
+    "merlin.seed.watchdog.control",
     "merlin.llm.ab.complete",
     "merlin.llm.ab.create",
     "merlin.llm.ab.result",
@@ -1954,6 +1957,9 @@ IDEMPOTENCY_KEY_REQUIRED_OPERATIONS: set[str] = {
     "merlin.discovery.queue.resume",
     "merlin.discovery.queue.purge_deadletter",
     "merlin.seed.control",
+    "merlin.seed.health.heartbeat",
+    "merlin.seed.watchdog.tick",
+    "merlin.seed.watchdog.control",
     "merlin.llm.ab.create",
     "merlin.llm.cost.budget.set",
     "merlin.llm.cost.pricing.set",
@@ -2444,6 +2450,11 @@ SUPPORTED_ENVELOPE_OPERATIONS: list[str] = [
     "merlin.research.manager.brief.get",
     "merlin.knowledge.search",
     "merlin.seed.status",
+    "merlin.seed.health",
+    "merlin.seed.health.heartbeat",
+    "merlin.seed.watchdog.tick",
+    "merlin.seed.watchdog.status",
+    "merlin.seed.watchdog.control",
     "merlin.seed.control",
     "merlin.rag.query",
     "merlin.search.query",
@@ -3057,7 +3068,7 @@ async def execute_operation(
         _dependency_circuit_record_success(envelope.operation.name)
         return _operation_response(
             envelope=envelope,
-            payload={"path": str(output_path), "filename": output_path.name},
+            payload={"path": output_path.as_posix(), "filename": output_path.name},
         )
 
     if envelope.operation.name == "merlin.voice.listen":
@@ -4445,6 +4456,642 @@ async def execute_operation(
         return _operation_response(
             envelope=envelope,
             payload={"seed": status_payload},
+        )
+
+    if envelope.operation.name == "merlin.seed.health":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.seed.health payload must be an object",
+                status_code=422,
+            )
+
+        raw_status_file = envelope.payload.get("status_file", None)
+        raw_merged_jsonl = envelope.payload.get("merged_jsonl", None)
+        raw_merged_parquet = envelope.payload.get("merged_parquet", None)
+        raw_log_file = envelope.payload.get("log_file", None)
+        raw_allow_live_automation = envelope.payload.get("allow_live_automation", None)
+        raw_stale_after_seconds = envelope.payload.get("stale_after_seconds", 3600.0)
+
+        if raw_status_file is not None and not isinstance(raw_status_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.status_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_merged_jsonl is not None and not isinstance(raw_merged_jsonl, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.merged_jsonl must be a string when provided",
+                status_code=422,
+            )
+        if raw_merged_parquet is not None and not isinstance(raw_merged_parquet, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.merged_parquet must be a string when provided",
+                status_code=422,
+            )
+        if raw_log_file is not None and not isinstance(raw_log_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.log_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_allow_live_automation is not None and not isinstance(
+            raw_allow_live_automation, bool
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.allow_live_automation must be a boolean when provided",
+                status_code=422,
+            )
+        if (
+            not isinstance(raw_stale_after_seconds, (int, float))
+            or float(raw_stale_after_seconds) <= 0
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.stale_after_seconds must be a number greater than zero",
+                status_code=422,
+            )
+
+        controller, build_error = _build_seed_access_controller(envelope.payload)
+        if build_error is not None:
+            return build_error
+        health_payload = controller.health(
+            status_file=raw_status_file,
+            merged_jsonl=raw_merged_jsonl,
+            merged_parquet=raw_merged_parquet,
+            log_file=raw_log_file,
+            allow_live_automation=raw_allow_live_automation,
+            stale_after_seconds=float(raw_stale_after_seconds),
+        )
+        return _operation_response(
+            envelope=envelope,
+            payload={"health": health_payload},
+        )
+
+    if envelope.operation.name == "merlin.seed.health.heartbeat":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.seed.health.heartbeat payload must be an object",
+                status_code=422,
+            )
+
+        raw_status_file = envelope.payload.get("status_file", None)
+        raw_merged_jsonl = envelope.payload.get("merged_jsonl", None)
+        raw_merged_parquet = envelope.payload.get("merged_parquet", None)
+        raw_log_file = envelope.payload.get("log_file", None)
+        raw_allow_live_automation = envelope.payload.get("allow_live_automation", None)
+        raw_stale_after_seconds = envelope.payload.get("stale_after_seconds", 3600.0)
+        raw_heartbeat_file = envelope.payload.get("heartbeat_file", None)
+        raw_write_event = envelope.payload.get("write_event", True)
+
+        if raw_status_file is not None and not isinstance(raw_status_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.status_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_merged_jsonl is not None and not isinstance(raw_merged_jsonl, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.merged_jsonl must be a string when provided",
+                status_code=422,
+            )
+        if raw_merged_parquet is not None and not isinstance(raw_merged_parquet, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.merged_parquet must be a string when provided",
+                status_code=422,
+            )
+        if raw_log_file is not None and not isinstance(raw_log_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.log_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_allow_live_automation is not None and not isinstance(
+            raw_allow_live_automation, bool
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.allow_live_automation must be a boolean when provided",
+                status_code=422,
+            )
+        if (
+            not isinstance(raw_stale_after_seconds, (int, float))
+            or float(raw_stale_after_seconds) <= 0
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.stale_after_seconds must be a number greater than zero",
+                status_code=422,
+            )
+        if raw_heartbeat_file is not None and not isinstance(raw_heartbeat_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.heartbeat_file must be a string when provided",
+                status_code=422,
+            )
+        if not isinstance(raw_write_event, bool):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.write_event must be a boolean when provided",
+                status_code=422,
+            )
+
+        controller, build_error = _build_seed_access_controller(envelope.payload)
+        if build_error is not None:
+            return build_error
+        heartbeat_payload = controller.heartbeat(
+            status_file=raw_status_file,
+            merged_jsonl=raw_merged_jsonl,
+            merged_parquet=raw_merged_parquet,
+            log_file=raw_log_file,
+            allow_live_automation=raw_allow_live_automation,
+            stale_after_seconds=float(raw_stale_after_seconds),
+            heartbeat_file=raw_heartbeat_file,
+            write_event=raw_write_event,
+        )
+        return _operation_response(
+            envelope=envelope,
+            payload={"heartbeat": heartbeat_payload},
+        )
+
+    if envelope.operation.name == "merlin.seed.watchdog.tick":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.seed.watchdog.tick payload must be an object",
+                status_code=422,
+            )
+
+        raw_status_file = envelope.payload.get("status_file", None)
+        raw_merged_jsonl = envelope.payload.get("merged_jsonl", None)
+        raw_merged_parquet = envelope.payload.get("merged_parquet", None)
+        raw_log_file = envelope.payload.get("log_file", None)
+        raw_allow_live_automation = envelope.payload.get("allow_live_automation", None)
+        raw_stale_after_seconds = envelope.payload.get("stale_after_seconds", 3600.0)
+        raw_apply = envelope.payload.get("apply", False)
+        raw_force = envelope.payload.get("force", False)
+        raw_dry_run_control = envelope.payload.get("dry_run_control", False)
+
+        if raw_status_file is not None and not isinstance(raw_status_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.status_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_merged_jsonl is not None and not isinstance(raw_merged_jsonl, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.merged_jsonl must be a string when provided",
+                status_code=422,
+            )
+        if raw_merged_parquet is not None and not isinstance(raw_merged_parquet, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.merged_parquet must be a string when provided",
+                status_code=422,
+            )
+        if raw_log_file is not None and not isinstance(raw_log_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.log_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_allow_live_automation is not None and not isinstance(
+            raw_allow_live_automation, bool
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.allow_live_automation must be a boolean when provided",
+                status_code=422,
+            )
+        if (
+            not isinstance(raw_stale_after_seconds, (int, float))
+            or float(raw_stale_after_seconds) <= 0
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.stale_after_seconds must be a number greater than zero",
+                status_code=422,
+            )
+        if not isinstance(raw_apply, bool):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.apply must be a boolean when provided",
+                status_code=422,
+            )
+        if not isinstance(raw_force, bool):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.force must be a boolean when provided",
+                status_code=422,
+            )
+        if not isinstance(raw_dry_run_control, bool):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.dry_run_control must be a boolean when provided",
+                status_code=422,
+            )
+
+        controller, build_error = _build_seed_access_controller(envelope.payload)
+        if build_error is not None:
+            return build_error
+        watchdog_payload = controller.watchdog(
+            status_file=raw_status_file,
+            merged_jsonl=raw_merged_jsonl,
+            merged_parquet=raw_merged_parquet,
+            log_file=raw_log_file,
+            allow_live_automation=raw_allow_live_automation,
+            stale_after_seconds=float(raw_stale_after_seconds),
+            apply=raw_apply,
+            force=raw_force,
+            dry_run_control=raw_dry_run_control,
+        )
+        return _operation_response(
+            envelope=envelope,
+            payload={"watchdog": watchdog_payload},
+        )
+
+    if envelope.operation.name == "merlin.seed.watchdog.status":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.seed.watchdog.status payload must be an object",
+                status_code=422,
+            )
+
+        raw_status_file = envelope.payload.get("status_file", None)
+        raw_merged_jsonl = envelope.payload.get("merged_jsonl", None)
+        raw_merged_parquet = envelope.payload.get("merged_parquet", None)
+        raw_log_file = envelope.payload.get("log_file", None)
+        raw_watchdog_log_file = envelope.payload.get("watchdog_log_file", None)
+        raw_append_jsonl = envelope.payload.get("append_jsonl", None)
+        raw_output_json = envelope.payload.get("output_json", None)
+        raw_heartbeat_file = envelope.payload.get("heartbeat_file", None)
+        raw_allow_live_automation = envelope.payload.get("allow_live_automation", None)
+        raw_stale_after_seconds = envelope.payload.get("stale_after_seconds", 3600.0)
+
+        if raw_status_file is not None and not isinstance(raw_status_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.status_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_merged_jsonl is not None and not isinstance(raw_merged_jsonl, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.merged_jsonl must be a string when provided",
+                status_code=422,
+            )
+        if raw_merged_parquet is not None and not isinstance(raw_merged_parquet, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.merged_parquet must be a string when provided",
+                status_code=422,
+            )
+        if raw_log_file is not None and not isinstance(raw_log_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.log_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_watchdog_log_file is not None and not isinstance(
+            raw_watchdog_log_file, str
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.watchdog_log_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_append_jsonl is not None and not isinstance(raw_append_jsonl, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.append_jsonl must be a string when provided",
+                status_code=422,
+            )
+        if raw_output_json is not None and not isinstance(raw_output_json, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.output_json must be a string when provided",
+                status_code=422,
+            )
+        if raw_heartbeat_file is not None and not isinstance(raw_heartbeat_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.heartbeat_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_allow_live_automation is not None and not isinstance(
+            raw_allow_live_automation, bool
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.allow_live_automation must be a boolean when provided",
+                status_code=422,
+            )
+        if (
+            not isinstance(raw_stale_after_seconds, (int, float))
+            or float(raw_stale_after_seconds) <= 0
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.stale_after_seconds must be a number greater than zero",
+                status_code=422,
+            )
+
+        controller, build_error = _build_seed_access_controller(envelope.payload)
+        if build_error is not None:
+            return build_error
+        status_payload = controller.watchdog_runtime_status(
+            status_file=raw_status_file,
+            merged_jsonl=raw_merged_jsonl,
+            merged_parquet=raw_merged_parquet,
+            log_file=raw_log_file,
+            watchdog_log_file=raw_watchdog_log_file,
+            append_jsonl=raw_append_jsonl,
+            output_json=raw_output_json,
+            heartbeat_file=raw_heartbeat_file,
+            allow_live_automation=raw_allow_live_automation,
+            stale_after_seconds=float(raw_stale_after_seconds),
+        )
+        return _operation_response(
+            envelope=envelope,
+            payload={"watchdog_status": status_payload},
+        )
+
+    if envelope.operation.name == "merlin.seed.watchdog.control":
+        if not isinstance(envelope.payload, dict):
+            return _operation_error(
+                envelope=envelope,
+                code="INVALID_PAYLOAD",
+                message="merlin.seed.watchdog.control payload must be an object",
+                status_code=422,
+            )
+
+        raw_action = envelope.payload.get("action", "")
+        raw_allow_live_automation = envelope.payload.get("allow_live_automation", None)
+        raw_dry_run = envelope.payload.get("dry_run", False)
+        raw_force = envelope.payload.get("force", False)
+        raw_status_file = envelope.payload.get("status_file", None)
+        raw_merged_jsonl = envelope.payload.get("merged_jsonl", None)
+        raw_merged_parquet = envelope.payload.get("merged_parquet", None)
+        raw_log_file = envelope.payload.get("log_file", None)
+        raw_watchdog_log_file = envelope.payload.get("watchdog_log_file", None)
+        raw_append_jsonl = envelope.payload.get("append_jsonl", None)
+        raw_output_json = envelope.payload.get("output_json", None)
+        raw_heartbeat_file = envelope.payload.get("heartbeat_file", None)
+        raw_stale_after_seconds = envelope.payload.get("stale_after_seconds", 3600.0)
+        raw_apply = envelope.payload.get("apply", False)
+        raw_dry_run_control = envelope.payload.get("dry_run_control", False)
+        raw_interval_seconds = envelope.payload.get("interval_seconds", 60.0)
+        raw_max_iterations = envelope.payload.get("max_iterations", 0)
+        raw_emit_heartbeat = envelope.payload.get("emit_heartbeat", True)
+
+        if not isinstance(raw_action, str) or not raw_action.strip():
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.action is required",
+                status_code=422,
+            )
+        action = raw_action.strip().lower()
+        if action not in {"start", "stop", "restart"}:
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.action must be one of: start, stop, restart",
+                status_code=422,
+            )
+        if raw_allow_live_automation is not None and not isinstance(
+            raw_allow_live_automation, bool
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.allow_live_automation must be a boolean when provided",
+                status_code=422,
+            )
+        if not isinstance(raw_dry_run, bool):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.dry_run must be a boolean when provided",
+                status_code=422,
+            )
+        if not isinstance(raw_force, bool):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.force must be a boolean when provided",
+                status_code=422,
+            )
+        if raw_status_file is not None and not isinstance(raw_status_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.status_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_merged_jsonl is not None and not isinstance(raw_merged_jsonl, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.merged_jsonl must be a string when provided",
+                status_code=422,
+            )
+        if raw_merged_parquet is not None and not isinstance(raw_merged_parquet, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.merged_parquet must be a string when provided",
+                status_code=422,
+            )
+        if raw_log_file is not None and not isinstance(raw_log_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.log_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_watchdog_log_file is not None and not isinstance(
+            raw_watchdog_log_file, str
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.watchdog_log_file must be a string when provided",
+                status_code=422,
+            )
+        if raw_append_jsonl is not None and not isinstance(raw_append_jsonl, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.append_jsonl must be a string when provided",
+                status_code=422,
+            )
+        if raw_output_json is not None and not isinstance(raw_output_json, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.output_json must be a string when provided",
+                status_code=422,
+            )
+        if raw_heartbeat_file is not None and not isinstance(raw_heartbeat_file, str):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.heartbeat_file must be a string when provided",
+                status_code=422,
+            )
+        if (
+            not isinstance(raw_stale_after_seconds, (int, float))
+            or float(raw_stale_after_seconds) <= 0
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.stale_after_seconds must be a number greater than zero",
+                status_code=422,
+            )
+        if not isinstance(raw_apply, bool):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.apply must be a boolean when provided",
+                status_code=422,
+            )
+        if not isinstance(raw_dry_run_control, bool):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.dry_run_control must be a boolean when provided",
+                status_code=422,
+            )
+        if (
+            not isinstance(raw_interval_seconds, (int, float))
+            or float(raw_interval_seconds) < 0
+        ):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.interval_seconds must be a number greater than or equal to zero",
+                status_code=422,
+            )
+        if not isinstance(raw_max_iterations, int) or raw_max_iterations < 0:
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.max_iterations must be an integer greater than or equal to zero",
+                status_code=422,
+            )
+        if not isinstance(raw_emit_heartbeat, bool):
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message="payload.emit_heartbeat must be a boolean when provided",
+                status_code=422,
+            )
+
+        controller, build_error = _build_seed_access_controller(envelope.payload)
+        if build_error is not None:
+            return build_error
+
+        try:
+            control_payload = controller.watchdog_runtime_control(
+                action=action,
+                allow_live_automation=raw_allow_live_automation,
+                dry_run=raw_dry_run,
+                force=raw_force,
+                status_file=raw_status_file,
+                merged_jsonl=raw_merged_jsonl,
+                merged_parquet=raw_merged_parquet,
+                log_file=raw_log_file,
+                watchdog_log_file=raw_watchdog_log_file,
+                append_jsonl=raw_append_jsonl,
+                output_json=raw_output_json,
+                heartbeat_file=raw_heartbeat_file,
+                stale_after_seconds=float(raw_stale_after_seconds),
+                apply=raw_apply,
+                dry_run_control=raw_dry_run_control,
+                interval_seconds=float(raw_interval_seconds),
+                max_iterations=raw_max_iterations,
+                emit_heartbeat=raw_emit_heartbeat,
+            )
+        except (ValueError, FileNotFoundError) as exc:
+            return _operation_error(
+                envelope=envelope,
+                code="VALIDATION_ERROR",
+                message=str(exc),
+                status_code=422,
+            )
+        except Exception as exc:
+            merlin_logger.error(f"Seed watchdog control failed: {exc}")
+            return _operation_error(
+                envelope=envelope,
+                code="SEED_WATCHDOG_CONTROL_FAILED",
+                message="Seed watchdog control failed",
+                retryable=True,
+                status_code=500,
+            )
+
+        decision = str(control_payload.get("decision", "")).strip().lower()
+        if decision != "allowed":
+            return _operation_error(
+                envelope=envelope,
+                code="SEED_WATCHDOG_CONTROL_BLOCKED",
+                message=str(
+                    control_payload.get(
+                        "message", "Seed watchdog control blocked by policy decision"
+                    )
+                ),
+                status_code=403,
+            )
+
+        return _operation_response(
+            envelope=envelope,
+            payload={"watchdog_control": control_payload},
         )
 
     if envelope.operation.name == "merlin.seed.control":

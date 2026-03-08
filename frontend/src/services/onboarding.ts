@@ -19,7 +19,42 @@ export interface OnboardingData {
   theme: 'light' | 'dark';
 }
 
+export interface ResearchSessionSummary {
+  session_id: string;
+  objective?: string;
+  created_at?: string;
+  updated_at?: string;
+  status?: string;
+  tags?: string[];
+  signal_count?: number;
+  archived?: boolean;
+  [key: string]: unknown;
+}
+
+export interface ResearchSessionsListResult {
+  sessions: ResearchSessionSummary[];
+  next_cursor: string | null;
+  query?: string;
+}
+
+export interface ResearchSessionDetailResult {
+  session: Record<string, unknown>;
+}
+
+export interface ResearchSessionBriefResult {
+  brief: Record<string, unknown>;
+}
+
 class OnboardingService {
+  private buildAuthHeaders(apiKey?: string): HeadersInit {
+    if (apiKey && apiKey.trim()) {
+      return {
+        'Authorization': `Bearer ${apiKey.trim()}`,
+      };
+    }
+    return {};
+  }
+
   /**
    * Validate API connection
    */
@@ -189,6 +224,157 @@ class OnboardingService {
     } catch {
       return null;
     }
+  }
+
+  /**
+   * List research manager sessions with optional cursor/tag/topic filters.
+   */
+  async listResearchSessions(params?: {
+    apiKey?: string;
+    limit?: number;
+    cursor?: string;
+    tag?: string;
+    topic?: string;
+  }): Promise<ResearchSessionsListResult> {
+    const limit = Math.max(1, Math.min(params?.limit ?? 20, 200));
+    const searchParams = new URLSearchParams();
+    searchParams.set('limit', String(limit));
+    if (params?.cursor) {
+      searchParams.set('cursor', params.cursor);
+    }
+    if (params?.tag) {
+      searchParams.set('tag', params.tag);
+    }
+    if (params?.topic) {
+      searchParams.set('topic', params.topic);
+    }
+    const query = searchParams.toString();
+    const baseUrl = merlinApi.getBaseUrl();
+    const response = await fetch(`${baseUrl}/merlin/research/manager/sessions?${query}`, {
+      method: 'GET',
+      headers: {
+        ...this.buildAuthHeaders(params?.apiKey),
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to list research sessions (${response.status})`);
+    }
+    const payload = await response.json();
+    const sessions = Array.isArray(payload?.sessions) ? payload.sessions : [];
+    return {
+      sessions,
+      next_cursor: typeof payload?.next_cursor === 'string' ? payload.next_cursor : null,
+    };
+  }
+
+  /**
+   * Search research manager sessions by objective/content keyword.
+   */
+  async searchResearchSessions(params: {
+    query: string;
+    apiKey?: string;
+    limit?: number;
+    cursor?: string;
+    tag?: string;
+  }): Promise<ResearchSessionsListResult> {
+    const normalizedQuery = params.query.trim();
+    if (!normalizedQuery) {
+      return {
+        sessions: [],
+        next_cursor: null,
+        query: '',
+      };
+    }
+    const limit = Math.max(1, Math.min(params.limit ?? 20, 200));
+    const searchParams = new URLSearchParams();
+    searchParams.set('q', normalizedQuery);
+    searchParams.set('limit', String(limit));
+    if (params.cursor) {
+      searchParams.set('cursor', params.cursor);
+    }
+    if (params.tag) {
+      searchParams.set('tag', params.tag);
+    }
+    const baseUrl = merlinApi.getBaseUrl();
+    const response = await fetch(
+      `${baseUrl}/merlin/research/manager/search?${searchParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          ...this.buildAuthHeaders(params.apiKey),
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to search research sessions (${response.status})`);
+    }
+    const payload = await response.json();
+    const sessions = Array.isArray(payload?.sessions) ? payload.sessions : [];
+    return {
+      sessions,
+      next_cursor: typeof payload?.next_cursor === 'string' ? payload.next_cursor : null,
+      query: typeof payload?.query === 'string' ? payload.query : normalizedQuery,
+    };
+  }
+
+  async getResearchSession(
+    sessionId: string,
+    apiKey?: string
+  ): Promise<ResearchSessionDetailResult> {
+    const normalizedSessionId = sessionId.trim();
+    if (!normalizedSessionId) {
+      throw new Error('session_id is required');
+    }
+    const baseUrl = merlinApi.getBaseUrl();
+    const response = await fetch(
+      `${baseUrl}/merlin/research/manager/session/${encodeURIComponent(normalizedSessionId)}`,
+      {
+        method: 'GET',
+        headers: {
+          ...this.buildAuthHeaders(apiKey),
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch research session (${response.status})`);
+    }
+    const payload = await response.json();
+    return {
+      session:
+        payload && typeof payload.session === 'object' && payload.session !== null
+          ? payload.session
+          : {},
+    };
+  }
+
+  async getResearchSessionBrief(
+    sessionId: string,
+    apiKey?: string
+  ): Promise<ResearchSessionBriefResult> {
+    const normalizedSessionId = sessionId.trim();
+    if (!normalizedSessionId) {
+      throw new Error('session_id is required');
+    }
+    const baseUrl = merlinApi.getBaseUrl();
+    const response = await fetch(
+      `${baseUrl}/merlin/research/manager/session/${encodeURIComponent(normalizedSessionId)}/brief`,
+      {
+        method: 'GET',
+        headers: {
+          ...this.buildAuthHeaders(apiKey),
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch research brief (${response.status})`);
+    }
+    const payload = await response.json();
+    return {
+      brief:
+        payload && typeof payload.brief === 'object' && payload.brief !== null
+          ? payload.brief
+          : {},
+    };
   }
 }
 

@@ -1,0 +1,23 @@
+{
+  "schema_name": "AAS.Knowledge.Tags",
+  "schema_version": "1.0.0",
+  "tags": {
+    "ci": [
+      "knowledge/research/2026/02/24/offline-first-discovery-orchestration-for-plugin-ecosystems.md"
+    ],
+    "general": [
+      "knowledge/research/2026/02/24/local-indexing-strategies-for-markdown-knowledge-bases.md"
+    ],
+    "llm": [
+      "knowledge/research/2026/02/25/merlin-scoring-adapters-and-deterministic-fallbacks.md"
+    ],
+    "policy": [
+      "knowledge/research/2026/02/24/offline-first-discovery-orchestration-for-plugin-ecosystems.md",
+      "knowledge/research/2026/02/24/policy-boundaries-for-automation-modes.md"
+    ],
+    "ux": [
+      "knowledge/research/2026/02/24/offline-first-discovery-orchestration-for-plugin-ecosystems.md"
+    ]
+  },
+  "updated_at": "2026-02-25T16:31:56Z"
+}

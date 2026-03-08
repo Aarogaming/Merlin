@@ -46,3 +46,43 @@ def test_scan_resources_respects_excludes(tmp_path, monkeypatch):
     assert not any(
         path.endswith(".log") for path in audio_paths | doc_paths | script_paths
     )
+
+
+def test_scan_resources_reuses_hash_cache_for_unchanged_files(tmp_path, monkeypatch):
+    root = tmp_path / "root"
+    root.mkdir()
+    target = root / "notes.txt"
+    target.write_text("hello", encoding="utf-8")
+
+    config_path = tmp_path / "merlin_resource_config.json"
+    config_path.write_text(
+        "{\n"
+        '  "resource_index_path": "merlin_resource_index.json",\n'
+        '  "resource_hash_cache_path": "merlin_resource_hash_cache.json",\n'
+        '  "scan_root": ".",\n'
+        '  "exclude_dirs": [],\n'
+        '  "exclude_globs": [],\n'
+        '  "max_file_size_mb": 5\n'
+        "}\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(indexer, "CONFIG_PATH", config_path)
+    hash_calls: list[str] = []
+    real_hash = indexer._hash_file_sha256
+
+    def _tracking_hash(file_path, chunk_size=1024 * 1024):
+        hash_calls.append(str(file_path))
+        return real_hash(file_path, chunk_size=chunk_size)
+
+    monkeypatch.setattr(indexer, "_hash_file_sha256", _tracking_hash)
+
+    first = indexer.scan_resources(str(root))
+    assert len(hash_calls) == 1
+    first_hash = first["docs"][0]["sha256"]
+    assert isinstance(first_hash, str) and first_hash
+
+    hash_calls.clear()
+    second = indexer.scan_resources(str(root))
+    assert len(hash_calls) == 0
+    assert second["docs"][0]["sha256"] == first_hash

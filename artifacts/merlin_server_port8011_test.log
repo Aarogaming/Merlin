@@ -1,0 +1,66 @@
+Traceback (most recent call last):
+  File "C:\Dev library\AaroneousAutomationSuite\Merlin\merlin_api_server.py", line 4243, in <module>
+    uvicorn.run("merlin_api_server:app", **_uvicorn_runtime_kwargs())
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\main.py", line 594, in run
+    server.run()
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\_compat.py", line 60, in asyncio_run
+    return loop.run_until_complete(main)
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\server.py", line 71, in serve
+    await self._serve(sockets)
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\server.py", line 78, in _serve
+    config.load()
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\config.py", line 431, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\importer.py", line 22, in import_from_string
+    raise exc from None
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\protocols\websockets\auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\protocols\websockets\websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+ModuleNotFoundError: No module named 'websockets.legacy.handshake'
+INFO:     Started server process [36164]
+INFO:     Waiting for application startup.
+ERROR:    Traceback (most recent call last):
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 199, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 201, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 199, in __aenter__
+    return await anext(self.gen)
+  File "C:\Dev library\AaroneousAutomationSuite\Merlin\merlin_api_server.py", line 249, in lifespan
+    importlib.import_module("merlin_dashboard").setup_dashboard(app)
+  File "C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "C:\Dev library\AaroneousAutomationSuite\Merlin\merlin_dashboard.py", line 6, in <module>
+    from merlin_metrics_dashboard import metrics_dashboard
+  File "C:\Dev library\AaroneousAutomationSuite\Merlin\merlin_metrics_dashboard.py", line 9, in <module>
+    from merlin_adaptive_llm import adaptive_llm_backend
+  File "C:\Dev library\AaroneousAutomationSuite\Merlin\merlin_adaptive_llm.py", line 12, in <module>
+    from merlin_routing_contract import (
+  File "C:\Dev library\AaroneousAutomationSuite\Merlin\merlin_routing_contract.py", line 3, in <module>
+    from enum import StrEnum
+ImportError: cannot import name 'StrEnum' from 'enum' (C:\Users\aarog\AppData\Local\Programs\Python\Python310\lib\enum.py)
+
+ERROR:    Application startup failed. Exiting.

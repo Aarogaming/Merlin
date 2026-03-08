@@ -1,0 +1,7 @@
+{
+  "planner_expected_tests": 149,
+  "schema_expected_tests": 104,
+  "planner_min_tests": 1,
+  "schema_min_tests": 1,
+  "sync_expected_summary": "contract schemas are in sync"
+}

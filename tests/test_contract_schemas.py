@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -9,6 +10,9 @@ import merlin_api_server as api_server
 ROOT_DIR = Path(__file__).resolve().parents[1]
 CONTRACTS_DIR = ROOT_DIR / "contracts"
 FIXTURES_DIR = Path(__file__).parent / "fixtures" / "contracts"
+SMOKE_BASELINE_PATH = (
+    ROOT_DIR / "docs" / "research" / "CP4A_SMOKE_BASELINE_2026-02-15.json"
+)
 
 
 def auth_headers():
@@ -26,6 +30,10 @@ OPERATION_ENVELOPE_VALIDATOR = Draft202012Validator(
 )
 CAPABILITY_MANIFEST_VALIDATOR = Draft202012Validator(
     load_json(CONTRACTS_DIR / "aas.repo-capability-manifest.v1.schema.json"),
+    format_checker=FormatChecker(),
+)
+CP4A_SMOKE_EVIDENCE_VALIDATOR = Draft202012Validator(
+    load_json(CONTRACTS_DIR / "cp4a.smoke-evidence.v1.schema.json"),
     format_checker=FormatChecker(),
 )
 
@@ -62,6 +70,27 @@ def _schema_errors(validator: Draft202012Validator, data: dict):
     return [error.message for error in validator.iter_errors(data)]
 
 
+def _normalized_routing_metadata_schema(schema: dict) -> dict:
+    normalized = dict(schema)
+    normalized.pop("$schema", None)
+    normalized.pop("$id", None)
+    normalized.pop("title", None)
+    normalized.pop("description", None)
+    return normalized
+
+
+def _merge_subset(base, subset):
+    if isinstance(base, dict) and isinstance(subset, dict):
+        merged = deepcopy(base)
+        for key, value in subset.items():
+            if key in merged:
+                merged[key] = _merge_subset(merged[key], value)
+            else:
+                merged[key] = deepcopy(value)
+        return merged
+    return deepcopy(subset)
+
+
 def test_operation_request_fixtures_match_operation_envelope_schema():
     request_files = sorted(FIXTURES_DIR.glob("*.request.json"))
     assert request_files, "No request fixtures found in tests/fixtures/contracts"
@@ -70,6 +99,53 @@ def test_operation_request_fixtures_match_operation_envelope_schema():
         payload = load_json(request_file)
         errors = _schema_errors(OPERATION_ENVELOPE_VALIDATOR, payload)
         assert not errors, f"{request_file.name} failed schema validation: {errors}"
+
+
+def test_routing_metadata_schema_fragment_matches_embedded_envelope_definition():
+    standalone_schema = load_json(
+        CONTRACTS_DIR / "assistant.chat.routing-metadata.v1.schema.json"
+    )
+    envelope_schema = load_json(CONTRACTS_DIR / "aas.operation-envelope.v1.schema.json")
+    embedded_schema = envelope_schema["$defs"]["assistant_chat_routing_metadata"]
+
+    assert _normalized_routing_metadata_schema(standalone_schema) == embedded_schema
+
+
+def test_cp4a_smoke_baseline_is_well_formed():
+    baseline = load_json(SMOKE_BASELINE_PATH)
+
+    assert isinstance(baseline.get("planner_expected_tests"), int)
+    assert baseline["planner_expected_tests"] > 0
+    assert isinstance(baseline.get("schema_expected_tests"), int)
+    assert baseline["schema_expected_tests"] > 0
+    assert isinstance(baseline.get("planner_min_tests"), int)
+    assert baseline["planner_min_tests"] >= 0
+    assert isinstance(baseline.get("schema_min_tests"), int)
+    assert baseline["schema_min_tests"] >= 0
+    assert isinstance(baseline.get("sync_expected_summary"), str)
+    assert baseline["sync_expected_summary"].strip()
+
+
+def test_cp4a_smoke_evidence_fixture_matches_schema_contract():
+    evidence = load_json(FIXTURES_DIR / "cp4a.smoke_evidence.contract.json")
+    errors = _schema_errors(CP4A_SMOKE_EVIDENCE_VALIDATOR, evidence)
+
+    assert not errors, f"cp4a smoke evidence fixture failed schema validation: {errors}"
+
+
+def test_chat_with_metadata_expected_fixture_materializes_valid_operation_envelope():
+    request_fixture = load_json(
+        FIXTURES_DIR / "assistant.chat.request.with_metadata.json"
+    )
+    expected_response_fixture = load_json(
+        FIXTURES_DIR / "assistant.chat.request.with_metadata.expected_response.json"
+    )
+    materialized_response = _merge_subset(request_fixture, expected_response_fixture)
+    errors = _schema_errors(OPERATION_ENVELOPE_VALIDATOR, materialized_response)
+
+    assert (
+        not errors
+    ), f"assistant.chat with metadata materialized response failed schema: {errors}"
 
 
 def test_supported_operations_have_request_fixtures():
@@ -141,3 +217,67 @@ def test_operation_response_error_matches_operation_envelope_schema():
     errors = _schema_errors(OPERATION_ENVELOPE_VALIDATOR, body)
     assert not errors, f"Error response failed schema validation: {errors}"
     assert body["payload"]["error"]["code"] == "VALIDATION_ERROR"
+
+
+def test_operation_response_chat_with_metadata_matches_embedded_schema(monkeypatch):
+    metadata = load_json(FIXTURES_DIR / "assistant.chat.routing_metadata.contract.json")
+    monkeypatch.setattr(
+        api_server,
+        "merlin_emotion_chat_with_metadata",
+        lambda user_input, user_id: ("ok", metadata),
+    )
+    monkeypatch.setattr(
+        api_server, "merlin_emotion_chat", lambda user_input, user_id: "ok"
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="assistant.chat.request",
+            payload={
+                "user_input": "hello",
+                "user_id": "u1",
+                "include_metadata": True,
+            },
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 200
+    body = response.json()
+    errors = _schema_errors(OPERATION_ENVELOPE_VALIDATOR, body)
+    assert not errors, f"Metadata response failed schema validation: {errors}"
+
+
+def test_operation_response_chat_with_invalid_metadata_fails_embedded_schema(
+    monkeypatch,
+):
+    metadata = load_json(FIXTURES_DIR / "assistant.chat.routing_metadata.contract.json")
+    metadata["fallback_reason_code"] = "invalid_reason_code"
+    metadata["fallback_retryable"] = False
+    monkeypatch.setattr(
+        api_server,
+        "merlin_emotion_chat_with_metadata",
+        lambda user_input, user_id: ("ok", metadata),
+    )
+    monkeypatch.setattr(
+        api_server, "merlin_emotion_chat", lambda user_input, user_id: "ok"
+    )
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="assistant.chat.request",
+            payload={
+                "user_input": "hello",
+                "user_id": "u1",
+                "include_metadata": True,
+            },
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 200
+    body = response.json()
+    errors = _schema_errors(OPERATION_ENVELOPE_VALIDATOR, body)
+    assert errors

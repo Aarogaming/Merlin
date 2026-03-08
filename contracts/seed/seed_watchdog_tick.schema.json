@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "seed_watchdog_tick.schema.json",
+  "title": "AAS Merlin Seed Watchdog Tick",
+  "description": "Watchdog tick output that turns seed health guidance into explicit control decisions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "workspace_root",
+    "health",
+    "decision",
+    "control_result",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Merlin.SeedWatchdogTick"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "workspace_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "health": {
+      "$ref": "seed_health.schema.json"
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recommended_control_action",
+        "apply_requested",
+        "dry_run_control",
+        "force",
+        "action_taken",
+        "outcome_status",
+        "reason"
+      ],
+      "properties": {
+        "recommended_control_action": {
+          "type": "string",
+          "enum": [
+            "none",
+            "start",
+            "restart",
+            "stop"
+          ]
+        },
+        "apply_requested": {
+          "type": "boolean"
+        },
+        "dry_run_control": {
+          "type": "boolean"
+        },
+        "force": {
+          "type": "boolean"
+        },
+        "action_taken": {
+          "type": "string",
+          "enum": [
+            "none",
+            "start",
+            "restart",
+            "stop"
+          ]
+        },
+        "outcome_status": {
+          "type": "string",
+          "enum": [
+            "noop",
+            "preview",
+            "executed",
+            "blocked",
+            "error"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "control_result": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

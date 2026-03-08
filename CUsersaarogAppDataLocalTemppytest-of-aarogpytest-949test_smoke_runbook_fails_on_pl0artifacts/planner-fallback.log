@@ -1,0 +1,56 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.2, pluggy-1.6.0
+rootdir: /mnt/c/Dev library/AaroneousAutomationSuite/Merlin
+configfile: pytest.ini
+plugins: anyio-4.12.1, cov-7.0.0
+collected 149 items
+
+tests/test_merlin_parallel_llm.py ..................
+tests/test_merlin_streaming_llm.py ..........................
+tests/test_merlin_adaptive_llm.py ................................
+tests/test_merlin_routing_contract.py .........................................................................
+
+=============================== warnings summary ===============================
+tests/test_merlin_parallel_llm.py::test_dms_model_registration_when_enabled
+  /mnt/c/Dev library/AaroneousAutomationSuite/Merlin/.venv/lib/python3.12/site-packages/starlette/formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+tests/test_merlin_parallel_llm.py::test_dms_model_registration_when_enabled
+  /mnt/c/Dev library/AaroneousAutomationSuite/Merlin/.venv/lib/python3.12/site-packages/passlib/utils/__init__.py:854: DeprecationWarning: 'crypt' is deprecated and slated for removal in Python 3.13
+    from crypt import crypt as _crypt
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/c/Dev library/AaroneousAutomationSuite/Merlin/C:\Users\aarog\AppData\Local\Temp\pytest-of-aarog\pytest-949\test_smoke_runbook_fails_on_pl0\artifacts/planner-fallback-junit.xml -
+======================= 149 passed, 2 warnings in 5.14s ========================
+contract schemas are in sync
+routing taxonomy is in sync
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.2, pluggy-1.6.0
+rootdir: /mnt/c/Dev library/AaroneousAutomationSuite/Merlin
+configfile: pytest.ini
+plugins: anyio-4.12.1, cov-7.0.0
+collected 104 items
+
+tests/test_contract_schemas.py ...........
+tests/test_merlin_routing_contract.py .........................................................................
+tests/test_export_cp4a_smoke_evidence.py ...
+tests/test_verify_cp4a_smoke_evidence_schema.py ...
+tests/test_sync_contract_schemas.py .....
+tests/test_verify_junit_totals.py ...
+tests/test_verify_routing_taxonomy_sync.py ...
+tests/test_verify_smoke_log_signatures.py ...
+
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/starlette/formparsers.py:12
+  /mnt/c/Dev library/AaroneousAutomationSuite/Merlin/.venv/lib/python3.12/site-packages/starlette/formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+.venv/lib/python3.12/site-packages/passlib/utils/__init__.py:854
+  /mnt/c/Dev library/AaroneousAutomationSuite/Merlin/.venv/lib/python3.12/site-packages/passlib/utils/__init__.py:854: DeprecationWarning: 'crypt' is deprecated and slated for removal in Python 3.13
+    from crypt import crypt as _crypt
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/c/Dev library/AaroneousAutomationSuite/Merlin/C:\Users\aarog\AppData\Local\Temp\pytest-of-aarog\pytest-949\test_smoke_runbook_fails_on_pl0\artifacts/cp4a-schema-junit.xml -
+======================= 104 passed, 2 warnings in 8.86s ========================
+planner: tests=149 failures=0 errors=0 skipped=0
+planner: expected exactly 999 tests, got 149

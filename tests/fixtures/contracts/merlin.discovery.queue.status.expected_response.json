@@ -1,0 +1,15 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "6c2ced6c-f1b4-4d8d-a1d8-61ddf24f7bf1",
+  "trace_id": "d1f289f0-a2f7-4f14-9b97-9f5c20d7d46d",
+  "operation": {
+    "name": "merlin.discovery.queue.status.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "status": {
+      "schema_name": "AAS.Discovery.QueueStatus"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "801f1512-fa6d-4d38-9d8f-efbcaabb3bb0",
+  "trace_id": "2b677d35-b1c6-424a-89e0-4ccda1b17cfd",
+  "operation": {
+    "name": "merlin.llm.cost.thresholds.get.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "thresholds": {
+      "warning": 70.0,
+      "critical": 90.0
+    }
+  }
+}

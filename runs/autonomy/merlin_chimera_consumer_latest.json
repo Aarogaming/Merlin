@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "run_id": "chimera-rm-consume-dfd7193f1cb8",
+  "status": "ok",
+  "selected_path": "research_manager",
+  "research_manager_enabled": true,
+  "state_machine": [
+    "probe",
+    "validate",
+    "consume",
+    "archive"
+  ],
+  "transitions": [
+    {
+      "state": "probe",
+      "at_utc": "2026-03-03T16:10:34Z",
+      "selected_path": "research_manager"
+    },
+    {
+      "state": "validate",
+      "at_utc": "2026-03-03T16:10:34Z",
+      "validated_items": 2,
+      "invalid_items": 0
+    },
+    {
+      "state": "consume",
+      "at_utc": "2026-03-03T16:10:34Z",
+      "consumed_items": 2,
+      "failed_items": 0
+    },
+    {
+      "state": "archive",
+      "at_utc": "2026-03-03T16:10:34Z",
+      "archived_items": 2
+    }
+  ],
+  "counts": {
+    "subscription_items": 2,
+    "validated_items": 2,
+    "consumed_items": 2,
+    "failed_items": 0,
+    "archived_items": 2
+  },
+  "errors": [],
+  "consumed": [
+    {
+      "item_id": "itm-healthy-001",
+      "attempts": 1,
+      "consumed_at_utc": "2026-03-03T16:10:34Z",
+      "title": "Weekly federation readiness digest"
+    },
+    {
+      "item_id": "itm-healthy-002",
+      "attempts": 1,
+      "consumed_at_utc": "2026-03-03T16:10:34Z",
+      "title": "Chimera handoff note"
+    }
+  ],
+  "failed": [],
+  "archived": [
+    {
+      "item_id": "itm-healthy-001",
+      "attempts": 1,
+      "consumed_at_utc": "2026-03-03T16:10:34Z",
+      "title": "Weekly federation readiness digest"
+    },
+    {
+      "item_id": "itm-healthy-002",
+      "attempts": 1,
+      "consumed_at_utc": "2026-03-03T16:10:34Z",
+      "title": "Chimera handoff note"
+    }
+  ]
+}

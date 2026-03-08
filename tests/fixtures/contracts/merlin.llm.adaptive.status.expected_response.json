@@ -1,0 +1,31 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "ec7ef96b-76e1-43ee-81ab-67b35cd5ac0a",
+  "trace_id": "bfda0ffa-8fa3-4f4f-b7a6-bf672741f9ce",
+  "operation": {
+    "name": "merlin.llm.adaptive.status.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "status": {
+      "strategy": "auto",
+      "learning_mode": true,
+      "min_samples": 1,
+      "models": [
+        {
+          "name": "fixture-model",
+          "backend": "fixture-backend"
+        }
+      ],
+      "metrics": {
+        "fixture-model": {
+          "total_requests": 2,
+          "success_rate": 1.0,
+          "avg_latency": 0.25,
+          "avg_rating": 4.5
+        }
+      }
+    }
+  }
+}

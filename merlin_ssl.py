@@ -1,7 +1,7 @@
 import ssl
-import os
 from pathlib import Path
 from merlin_logger import merlin_logger
+from merlin_utils import generate_self_signed_cert as _generate_self_signed_cert
 
 
 def get_ssl_context():
@@ -20,5 +20,15 @@ def get_ssl_context():
 
 
 def generate_self_signed_cert():
-    # Placeholder for generating self-signed certs using cryptography lib
-    pass
+    certs_dir = Path("certs")
+    certs_dir.mkdir(parents=True, exist_ok=True)
+    cert_file = certs_dir / "cert.pem"
+    key_file = certs_dir / "key.pem"
+
+    try:
+        _generate_self_signed_cert(str(cert_file), str(key_file))
+        merlin_logger.info("Generated self-signed TLS certificate bundle")
+        return str(cert_file), str(key_file)
+    except Exception as exc:  # noqa: BLE001
+        merlin_logger.error(f"Failed generating self-signed certs: {exc}")
+        return None

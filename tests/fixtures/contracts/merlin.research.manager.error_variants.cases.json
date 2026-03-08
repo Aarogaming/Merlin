@@ -1,0 +1,283 @@
+{
+  "cases": [
+    {
+      "case_id": "research_session_create_missing_objective",
+      "request_fixture": "merlin.research.manager.session.create.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "objective": "   "
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.objective is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_create_invalid_constraints_type",
+      "request_fixture": "merlin.research.manager.session.create.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "objective": "Valid objective",
+        "constraints": "repo-local-only"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.constraints must be an array when provided",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_create_invalid_tags_type",
+      "request_fixture": "merlin.research.manager.session.create.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "objective": "Valid objective",
+        "tags": "cp2"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.tags must be an array when provided",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_create_read_only",
+      "request_fixture": "merlin.research.manager.session.create.request.json",
+      "setup": "research_manager_read_only",
+      "payload": {
+        "objective": "Blocked write operation"
+      },
+      "expected_status": 403,
+      "expected_error": {
+        "code": "RESEARCH_MANAGER_READ_ONLY",
+        "message": "Research manager is read-only",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_sessions_list_invalid_limit",
+      "request_fixture": "merlin.research.manager.sessions.list.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "limit": 0
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.limit must be an integer greater than zero",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_sessions_list_invalid_tag_type",
+      "request_fixture": "merlin.research.manager.sessions.list.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "limit": 20,
+        "tag": 123
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.tag must be a string when provided",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_sessions_list_invalid_topic_type",
+      "request_fixture": "merlin.research.manager.sessions.list.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "limit": 20,
+        "topic": 123
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.topic must be a string when provided",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_sessions_list_invalid_cursor_type",
+      "request_fixture": "merlin.research.manager.sessions.list.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "limit": 20,
+        "cursor": 123
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.cursor must be a string when provided",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_sessions_list_invalid_cursor_value",
+      "request_fixture": "merlin.research.manager.sessions.list.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "limit": 20,
+        "cursor": "-1"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "cursor must be a non-negative integer string",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_get_missing_session_id",
+      "request_fixture": "merlin.research.manager.session.get.request.json",
+      "setup": "research_manager_default",
+      "payload": {},
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.session_id is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_get_invalid_session_id",
+      "request_fixture": "merlin.research.manager.session.get.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "session_id": "../bad"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "session_id contains invalid characters; allowed: A-Z, a-z, 0-9, _, -",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_session_get_not_found",
+      "request_fixture": "merlin.research.manager.session.get.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "session_id": "missing-session"
+      },
+      "expected_status": 404,
+      "expected_error": {
+        "code": "SESSION_NOT_FOUND",
+        "message": "Research session not found",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_signal_add_missing_source",
+      "request_fixture": "merlin.research.manager.session.signal.add.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "session_id": "fixture-session-id",
+        "claim": "Missing source should fail",
+        "confidence": 0.8
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.source is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_signal_add_invalid_confidence_type",
+      "request_fixture": "merlin.research.manager.session.signal.add.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "session_id": "fixture-session-id",
+        "source": "test-source",
+        "claim": "Invalid confidence type",
+        "confidence": "high"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.confidence must be a number when provided",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_signal_add_not_found",
+      "request_fixture": "merlin.research.manager.session.signal.add.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "session_id": "missing-session",
+        "source": "test-source",
+        "claim": "Session missing path",
+        "confidence": 0.8
+      },
+      "expected_status": 404,
+      "expected_error": {
+        "code": "SESSION_NOT_FOUND",
+        "message": "Research session not found",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_signal_add_read_only",
+      "request_fixture": "merlin.research.manager.session.signal.add.request.json",
+      "setup": "research_manager_read_only_seeded",
+      "payload": {
+        "session_id": "__SEEDED_SESSION_ID__",
+        "source": "test-source",
+        "claim": "Write blocked in read-only",
+        "confidence": 0.8
+      },
+      "expected_status": 403,
+      "expected_error": {
+        "code": "RESEARCH_MANAGER_READ_ONLY",
+        "message": "Research manager is read-only",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_brief_get_missing_session_id",
+      "request_fixture": "merlin.research.manager.brief.get.request.json",
+      "setup": "research_manager_default",
+      "payload": {},
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "payload.session_id is required",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_brief_get_invalid_session_id",
+      "request_fixture": "merlin.research.manager.brief.get.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "session_id": "../bad"
+      },
+      "expected_status": 422,
+      "expected_error": {
+        "code": "VALIDATION_ERROR",
+        "message": "session_id contains invalid characters; allowed: A-Z, a-z, 0-9, _, -",
+        "retryable": false
+      }
+    },
+    {
+      "case_id": "research_brief_get_not_found",
+      "request_fixture": "merlin.research.manager.brief.get.request.json",
+      "setup": "research_manager_default",
+      "payload": {
+        "session_id": "missing-session"
+      },
+      "expected_status": 404,
+      "expected_error": {
+        "code": "SESSION_NOT_FOUND",
+        "message": "Research session not found",
+        "retryable": false
+      }
+    }
+  ]
+}

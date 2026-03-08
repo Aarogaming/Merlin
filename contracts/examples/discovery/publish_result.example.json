@@ -1,0 +1,13 @@
+{
+  "schema_name": "AAS.Discovery.PublishResult",
+  "schema_version": "1.0.0",
+  "run_id": "run_20260224T052300Z_4f1c9ab2",
+  "publisher_mode": "stage_only",
+  "status": "staged",
+  "blocked_by_policy": false,
+  "decision": "allowed",
+  "message": "artifacts staged in working tree",
+  "created_paths": [
+    "knowledge/research/2026/02/24/policy-gated-discovery-pipelines-for-local-first-repositories.md"
+  ]
+}

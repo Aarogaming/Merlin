@@ -1,0 +1,15 @@
+{
+  "schema_name": "AAS.Discovery.CollectedItem",
+  "schema_version": "1.0.0",
+  "item_id": "item_a34f7d1c6de312aa",
+  "seed_id": "seed_7f08e3d4129a4f2c",
+  "title": "Policy-gated Discovery Pipelines for Local-First Repositories",
+  "url": "https://example.org/research/discovery-pipeline",
+  "canonical_url": "https://example.org/research/discovery-pipeline",
+  "canonical_key": "ck_1d5a626423c0f2eaabc617dc",
+  "snippet": "A practical blueprint for queue leasing, offline ranking, and policy boundary enforcement.",
+  "source": "fixture:engineering_notes",
+  "collector": "local_fixture",
+  "published_at": "2026-02-23T19:10:00Z",
+  "collected_at": "2026-02-24T05:21:00Z"
+}

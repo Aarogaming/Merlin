@@ -1,7 +1,6 @@
 # Predictive Model Selection - ML-Based LLM Optimization
 import os
 import json
-import numpy as np
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
@@ -139,19 +138,17 @@ class ModelPerformance:
     total_requests: int
     task_successes: Dict[str, int] = field(default_factory=dict)
 
-    def get_feature_vector(self, task_type: str) -> np.ndarray:
+    def get_feature_vector(self, task_type: str) -> list[float]:
         task_score = self.task_successes.get(task_type, 0) / max(1, self.total_requests)
 
-        vector = np.array(
-            [
-                self.success_rate,
-                10.0 / max(1.0, self.avg_latency),  # Higher is worse
-                self.avg_rating / 5.0,  # Normalized to 0-1
-                task_score,
-                1.0 if self.total_requests > 100 else 0.5,  # Confidence
-                1.0 if self.success_rate > 0.9 else 0.7,  # Reliability
-            ]
-        )
+        vector = [
+            self.success_rate,
+            10.0 / max(1.0, self.avg_latency),  # Higher is worse
+            self.avg_rating / 5.0,  # Normalized to 0-1
+            task_score,
+            1.0 if self.total_requests > 100 else 0.5,  # Confidence
+            1.0 if self.success_rate > 0.9 else 0.7,  # Reliability
+        ]
 
         return vector
 
@@ -385,19 +382,15 @@ class PredictiveModelSelector:
         return "; ".join(reasons)
 
     def get_status(self) -> Dict:
-        total_weights = sum(
-            sum(abs(w.values()) for w in self.model_weights.values())
-            for w in self.model_weights.values()
-        )
-
+        model_scores = {
+            model: self._normalize_weights(self.model_weights.get(model, {}))
+            for model in self.model_weights.keys()
+        }
         return {
             "model_count": len(self.model_weights),
             "training_samples": len(self.training_data),
             "last_updated": datetime.now().isoformat(),
-            "model_scores": {
-                model: self._normalize_weights(self.model_weights.get(model, {}))
-                for model in self.model_weights.keys()
-            },
+            "model_scores": model_scores,
             "feature_importance": self.feature_importance,
         }
 

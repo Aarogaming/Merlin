@@ -1,0 +1,20 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "a00dd96c-2c66-440d-a3d4-f7ad4e1b9ca0",
+  "trace_id": "1f16982e-e4eb-4da6-a808-e2ea12a66b66",
+  "operation": {
+    "name": "merlin.llm.cost.pricing.set.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "status": "pricing_updated",
+    "pricing": {
+      "input_cost_per_1k": 0.001,
+      "output_cost_per_1k": 0.002,
+      "currency": "USD",
+      "free_tier_limit": 100000,
+      "tier_name": "Pro"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "topic": "offline discovery orchestration",
+    "source": "local_seed_file",
+    "metadata": {
+      "collector": "local_fixture"
+    }
+  },
+  {
+    "topic": "policy boundaries for automation",
+    "source": "local_seed_file",
+    "metadata": {
+      "collector": "local_fixture"
+    }
+  }
+]

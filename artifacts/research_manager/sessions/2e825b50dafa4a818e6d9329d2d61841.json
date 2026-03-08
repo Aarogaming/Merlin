@@ -1,0 +1,110 @@
+{
+  "constraints": [
+    "repo-local-only"
+  ],
+  "created_at_utc": "2026-02-21T15:45:30.448876+00:00",
+  "created_by": "AaroneousAutomationSuite/Hub:hub_orchestrator",
+  "foresight": [
+    {
+      "probability": 0.5995,
+      "scenario": "best_case",
+      "trigger": "supporting evidence accumulates with low contradiction rate"
+    },
+    {
+      "probability": 0.55,
+      "scenario": "base_case",
+      "trigger": "current evidence trend holds without major external shocks"
+    },
+    {
+      "probability": 0.214,
+      "scenario": "worst_case",
+      "trigger": "dependency risk and contradiction signals outpace execution gains"
+    }
+  ],
+  "horizon_days": 7,
+  "hypotheses": [
+    {
+      "base_probability": 0.58,
+      "confidence": 0.29,
+      "contradicting_signals": 0,
+      "id": "h_execution_success",
+      "probability": 0.58,
+      "statement": "The objective can be executed with current local Merlin/AAS capabilities and bounded integration effort.",
+      "supporting_signals": 0
+    },
+    {
+      "base_probability": 0.52,
+      "confidence": 0.26,
+      "contradicting_signals": 0,
+      "id": "h_dependency_risk",
+      "probability": 0.52,
+      "statement": "External dependency and integration gaps will remain manageable without blocking critical milestones.",
+      "supporting_signals": 0
+    },
+    {
+      "base_probability": 0.55,
+      "confidence": 0.275,
+      "contradicting_signals": 0,
+      "id": "h_timeline_fit",
+      "probability": 0.55,
+      "statement": "The objective 'Automated live runtime proof' can ship within the active horizon if sequencing and fallback controls stay enforced.",
+      "supporting_signals": 0
+    }
+  ],
+  "linked_task_ids": [],
+  "objective": "Automated live runtime proof",
+  "planner_artifacts": [],
+  "policy_version": "research-session-provenance-v1",
+  "risk_rubric": {
+    "impact": 0.5,
+    "time_horizon": "near_term",
+    "uncertainty": 0.5
+  },
+  "schema_version": "1.0.0",
+  "session_id": "2e825b50dafa4a818e6d9329d2d61841",
+  "signals": [
+    {
+      "claim": "Server reached stable runtime state",
+      "claim_hash": "2283e5735e80ce5385734efb566795b6f2291ce1c823d7733f27deb7c619b2c1",
+      "confidence": 0.914,
+      "confidence_raw": 0.95,
+      "contradicts": [],
+      "duplicate_count": 0,
+      "novelty": 0.5,
+      "risk": 0.2,
+      "signal_id": "b511e277128b48bd8bd749b2d5a0097d",
+      "source": "run_merlin_live_runtime_proof",
+      "supports": [
+        "h_runtime_live"
+      ],
+      "timestamp_utc": "2026-02-21T15:45:30.464081+00:00"
+    }
+  ],
+  "source_operation": "merlin.research.manager.session.create",
+  "status": "active",
+  "tags": [],
+  "tasks": [
+    {
+      "linked_hypothesis": "h_execution_success",
+      "priority": "high",
+      "status": "pending",
+      "task_id": "t_baseline",
+      "title": "Establish baseline and boundary assumptions"
+    },
+    {
+      "linked_hypothesis": "h_dependency_risk",
+      "priority": "high",
+      "status": "pending",
+      "task_id": "t_adversarial",
+      "title": "Run adversarial review for the highest-risk hypothesis"
+    },
+    {
+      "linked_hypothesis": "h_timeline_fit",
+      "priority": "medium",
+      "status": "pending",
+      "task_id": "t_decision_packet",
+      "title": "Prepare decision packet for: Automated live runtime proof"
+    }
+  ],
+  "updated_at_utc": "2026-02-21T15:45:30.464104+00:00"
+}

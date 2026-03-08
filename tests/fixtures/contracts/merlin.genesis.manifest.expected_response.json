@@ -1,0 +1,14 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "da5eab62-f5da-4fa0-84f0-de953c1df254",
+  "trace_id": "ec0af3f0-746d-4f65-b07b-077875ec7fd8",
+  "operation": {
+    "name": "merlin.genesis.manifest.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "status": "queued",
+    "filename": "fixture.py"
+  }
+}

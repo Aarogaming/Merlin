@@ -16,9 +16,18 @@ merlin_voice_sources.json
 
 # Secrets
 .env
+.env.*
+!.env.example
 credentials.json
 token.pickle
+*.p12
+*.jks
+*.keystore
+merlin-key
 
 # Build outputs
 build/
 dist/
+
+# Runtime outputs
+logs/

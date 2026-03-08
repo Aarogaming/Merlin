@@ -1,0 +1,16 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "20d0b9f4-c31d-49e9-8c4e-4e43d65f4d65",
+  "trace_id": "34e2d9fa-90f4-4bc4-8198-c9f25a3d3b03",
+  "operation": {
+    "name": "merlin.user_manager.create.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "user": {
+      "username": "fixture-user-create",
+      "role": "user"
+    }
+  }
+}

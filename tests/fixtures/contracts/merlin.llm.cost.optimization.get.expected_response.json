@@ -1,0 +1,16 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "2677c880-5f17-406f-89a4-2789e73e8404",
+  "trace_id": "22db42ea-f25b-4b7f-b67a-b99db9e7ea88",
+  "operation": {
+    "name": "merlin.llm.cost.optimization.get.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "recommendations": {
+      "switch_to_free_model": false,
+      "reduce_usage": true
+    }
+  }
+}

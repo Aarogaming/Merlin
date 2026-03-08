@@ -1,0 +1,20 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "d7fff13e-7f14-41fa-93f0-1cc05d63c393",
+  "trace_id": "44f2b31e-b5b6-493e-a9a6-bd86eac77979",
+  "operation": {
+    "name": "merlin.llm.adaptive.metrics.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "metrics": {
+      "fixture-model": {
+        "total_requests": 2,
+        "success_rate": 1.0,
+        "avg_latency": 0.25,
+        "avg_rating": 4.5
+      }
+    }
+  }
+}

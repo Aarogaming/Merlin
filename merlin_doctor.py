@@ -4,6 +4,7 @@ import platform
 import subprocess
 import shutil
 from typing import List, Tuple
+from urllib import request, error
 
 
 def check_python_version() -> Tuple[bool, str]:
@@ -49,9 +50,52 @@ def check_directories() -> Tuple[bool, str]:
 
 
 def check_api_connectivity() -> Tuple[bool, str]:
-    # This is a placeholder for a real connectivity check
-    # In a real scenario, we might try to ping the local LLM or AAS Hub
-    return True, "API connectivity check skipped (Placeholder)"
+    candidates: List[str] = []
+
+    explicit_health_url = os.getenv("AAS_HUB_HEALTH_URL", "").strip()
+    if explicit_health_url:
+        candidates.append(explicit_health_url)
+
+    web_base = os.getenv("AAS_WEB_BASE_URL", "").strip()
+    if web_base:
+        candidates.append(f"{web_base.rstrip('/')}/health")
+
+    web_host = os.getenv("AAS_WEB_HOST", "127.0.0.1").strip() or "127.0.0.1"
+    web_port = os.getenv("AAS_WEB_PORT", "8000").strip() or "8000"
+    candidates.append(f"http://{web_host}:{web_port}/health")
+
+    opencode_host = os.getenv("AAS_OPENCODE_HOST", "127.0.0.1").strip() or "127.0.0.1"
+    opencode_port = os.getenv("AAS_OPENCODE_PORT", "4096").strip() or "4096"
+    candidates.append(f"http://{opencode_host}:{opencode_port}/global/health")
+
+    seen = set()
+    deduped_candidates = []
+    for url in candidates:
+        if url in seen:
+            continue
+        seen.add(url)
+        deduped_candidates.append(url)
+
+    last_error = ""
+    for url in deduped_candidates:
+        try:
+            req = request.Request(url, method="GET")
+            with request.urlopen(req, timeout=2.5) as response:
+                status = getattr(response, "status", response.getcode())
+            if int(status) < 500:
+                return True, f"Connectivity OK via {url} (status={status})"
+            last_error = f"{url} returned status {status}"
+        except (error.URLError, error.HTTPError, TimeoutError) as exc:
+            last_error = f"{url} failed: {exc}"
+        except Exception as exc:  # noqa: BLE001
+            last_error = f"{url} error: {exc}"
+
+    if not deduped_candidates:
+        return False, "No health endpoints configured"
+    return (
+        False,
+        f"Connectivity failed across {len(deduped_candidates)} endpoint(s): {last_error}",
+    )
 
 
 def run_doctor():

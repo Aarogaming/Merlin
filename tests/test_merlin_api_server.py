@@ -414,6 +414,11 @@ def test_operation_capabilities_endpoint():
     assert "merlin.discovery.run" in capability_names
     assert "merlin.knowledge.search" in capability_names
     assert "merlin.seed.status" in capability_names
+    assert "merlin.seed.health" in capability_names
+    assert "merlin.seed.health.heartbeat" in capability_names
+    assert "merlin.seed.watchdog.tick" in capability_names
+    assert "merlin.seed.watchdog.status" in capability_names
+    assert "merlin.seed.watchdog.control" in capability_names
     assert "merlin.seed.control" in capability_names
 
 
@@ -2821,6 +2826,513 @@ def test_operation_envelope_seed_control_dry_run_preview(monkeypatch):
     assert control_payload["status"] == "preview"
     assert control_payload["dry_run"] is True
     assert recorded_calls and recorded_calls[0]["dry_run"] is True
+
+
+def test_operation_envelope_seed_health(monkeypatch):
+    class DummySeedAccess:
+        def health(
+            self,
+            *,
+            status_file=None,
+            merged_jsonl=None,
+            merged_parquet=None,
+            log_file=None,
+            allow_live_automation=None,
+            stale_after_seconds=3600.0,
+        ):
+            return {
+                "schema_name": "AAS.Merlin.SeedHealth",
+                "schema_version": "1.0.0",
+                "state": "attention",
+                "severity": "warn",
+                "next_action": "start",
+                "recommended_control_action": "start",
+                "progress": {
+                    "target_rounds": 50000,
+                    "completed_rounds": 4641,
+                    "remaining_rounds": 45359,
+                    "completion_percent": 9.28,
+                },
+                "staleness": {
+                    "status_age_seconds": 1718619.0,
+                    "stale_after_seconds": stale_after_seconds,
+                    "is_stale": True,
+                },
+            }
+
+    monkeypatch.setattr(
+        api_server,
+        "build_seed_access",
+        lambda workspace_root=None: DummySeedAccess(),
+    )
+
+    client = TestClient(api_server.app)
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.seed.health",
+            payload={"stale_after_seconds": 1200.0},
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 200
+    payload = response.json()["payload"]["health"]
+    assert payload["schema_name"] == "AAS.Merlin.SeedHealth"
+    assert payload["severity"] == "warn"
+    assert payload["recommended_control_action"] == "start"
+
+
+def test_operation_envelope_seed_health_heartbeat(monkeypatch):
+    recorded_calls: list[dict[str, object]] = []
+
+    class DummySeedAccess:
+        def heartbeat(
+            self,
+            *,
+            status_file=None,
+            merged_jsonl=None,
+            merged_parquet=None,
+            log_file=None,
+            allow_live_automation=None,
+            stale_after_seconds=3600.0,
+            heartbeat_file=None,
+            write_event=True,
+        ):
+            recorded_calls.append(
+                {
+                    "status_file": status_file,
+                    "stale_after_seconds": stale_after_seconds,
+                    "heartbeat_file": heartbeat_file,
+                    "write_event": write_event,
+                    "allow_live_automation": allow_live_automation,
+                }
+            )
+            return {
+                "schema_name": "AAS.Merlin.SeedHealthHeartbeat",
+                "schema_version": "1.0.0",
+                "event_id": "hb_fixture_seed_health_heartbeat_0001",
+                "event_type": "merlin.seed.health.heartbeat",
+                "workspace_root": "/tmp/seed-workspace",
+                "state": "healthy",
+                "severity": "ok",
+                "policy_decision": "allowed",
+                "next_action": "observe",
+                "recommended_control_action": "none",
+                "checks": {
+                    "policy_allowed": True,
+                    "status_stale": False,
+                    "worker_active": True,
+                    "progress_complete": False,
+                },
+                "progress": {
+                    "target_rounds": 50000,
+                    "completed_rounds": 5712,
+                    "remaining_rounds": 44288,
+                    "completion_percent": 11.42,
+                },
+                "worker": {
+                    "active": True,
+                    "count": 2,
+                },
+                "staleness": {
+                    "status_age_seconds": 12.0,
+                    "stale_after_seconds": stale_after_seconds,
+                    "is_stale": False,
+                },
+                "health_snapshot": {
+                    "schema_name": "AAS.Merlin.SeedHealth",
+                    "schema_version": "1.0.0",
+                    "state": "healthy",
+                    "severity": "ok",
+                },
+                "heartbeat_file": (
+                    heartbeat_file
+                    or "/tmp/seed-workspace/artifacts/diagnostics/merlin_seed_health_heartbeat.jsonl"
+                ),
+                "persisted": write_event,
+                "emitted_at": "2026-02-25T18:00:00Z",
+            }
+
+    monkeypatch.setattr(
+        api_server,
+        "build_seed_access",
+        lambda workspace_root=None: DummySeedAccess(),
+    )
+
+    client = TestClient(api_server.app)
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.seed.health.heartbeat",
+            payload={
+                "status_file": "artifacts/merlin_seed_status.json",
+                "stale_after_seconds": 1200.0,
+                "heartbeat_file": "artifacts/diagnostics/custom_heartbeat.jsonl",
+                "write_event": False,
+                "allow_live_automation": True,
+            },
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 200
+    payload = response.json()["payload"]["heartbeat"]
+    assert payload["schema_name"] == "AAS.Merlin.SeedHealthHeartbeat"
+    assert payload["persisted"] is False
+    assert payload["event_type"] == "merlin.seed.health.heartbeat"
+    assert recorded_calls == [
+        {
+            "status_file": "artifacts/merlin_seed_status.json",
+            "stale_after_seconds": 1200.0,
+            "heartbeat_file": "artifacts/diagnostics/custom_heartbeat.jsonl",
+            "write_event": False,
+            "allow_live_automation": True,
+        }
+    ]
+
+
+def test_operation_envelope_seed_health_heartbeat_rejects_invalid_write_event():
+    client = TestClient(api_server.app)
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.seed.health.heartbeat",
+            payload={"write_event": "yes"},
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 422
+    error = response.json()["payload"]["error"]
+    assert error["code"] == "VALIDATION_ERROR"
+    assert error["message"] == "payload.write_event must be a boolean when provided"
+
+
+def test_operation_envelope_seed_watchdog_tick(monkeypatch):
+    recorded_calls: list[dict[str, object]] = []
+
+    class DummySeedAccess:
+        def watchdog(
+            self,
+            *,
+            status_file=None,
+            merged_jsonl=None,
+            merged_parquet=None,
+            log_file=None,
+            allow_live_automation=None,
+            stale_after_seconds=3600.0,
+            apply=False,
+            force=False,
+            dry_run_control=False,
+        ):
+            recorded_calls.append(
+                {
+                    "status_file": status_file,
+                    "stale_after_seconds": stale_after_seconds,
+                    "allow_live_automation": allow_live_automation,
+                    "apply": apply,
+                    "force": force,
+                    "dry_run_control": dry_run_control,
+                }
+            )
+            return {
+                "schema_name": "AAS.Merlin.SeedWatchdogTick",
+                "schema_version": "1.0.0",
+                "workspace_root": "/tmp/seed-workspace",
+                "health": {
+                    "schema_name": "AAS.Merlin.SeedHealth",
+                    "schema_version": "1.0.0",
+                    "state": "attention",
+                    "severity": "warn",
+                    "policy_decision": "allowed",
+                    "next_action": "start",
+                    "recommended_control_action": "start",
+                    "checks": {
+                        "policy_allowed": True,
+                        "status_stale": False,
+                        "worker_active": False,
+                        "progress_complete": False,
+                    },
+                    "progress": {
+                        "target_rounds": 50000,
+                        "completed_rounds": 5712,
+                        "remaining_rounds": 44288,
+                        "completion_percent": 11.42,
+                    },
+                    "worker": {"active": False, "count": 0},
+                    "staleness": {
+                        "status_age_seconds": 45.0,
+                        "stale_after_seconds": stale_after_seconds,
+                        "is_stale": False,
+                    },
+                    "guidance": {
+                        "schema_name": "AAS.Merlin.SeedGuidance",
+                        "schema_version": "1.0.0",
+                        "state": "attention",
+                        "next_action": "start",
+                        "recommendations": [],
+                    },
+                    "status_snapshot_updated_at": "2026-02-25T18:00:00Z",
+                    "updated_at": "2026-02-25T18:00:45Z",
+                },
+                "decision": {
+                    "recommended_control_action": "start",
+                    "apply_requested": True,
+                    "dry_run_control": False,
+                    "force": True,
+                    "action_taken": "start",
+                    "outcome_status": "executed",
+                    "reason": "Control action 'start' executed.",
+                },
+                "control_result": {
+                    "schema_name": "AAS.Merlin.SeedControl",
+                    "schema_version": "1.0.0",
+                    "action": "start",
+                    "decision": "allowed",
+                    "status": "started",
+                },
+                "updated_at": "2026-02-25T18:00:45Z",
+            }
+
+    monkeypatch.setattr(
+        api_server,
+        "build_seed_access",
+        lambda workspace_root=None: DummySeedAccess(),
+    )
+
+    client = TestClient(api_server.app)
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.seed.watchdog.tick",
+            payload={
+                "status_file": "artifacts/merlin_seed_status.json",
+                "stale_after_seconds": 900,
+                "allow_live_automation": True,
+                "apply": True,
+                "force": True,
+                "dry_run_control": False,
+            },
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 200
+    payload = response.json()["payload"]["watchdog"]
+    assert payload["schema_name"] == "AAS.Merlin.SeedWatchdogTick"
+    assert payload["decision"]["outcome_status"] == "executed"
+    assert recorded_calls == [
+        {
+            "status_file": "artifacts/merlin_seed_status.json",
+            "stale_after_seconds": 900.0,
+            "allow_live_automation": True,
+            "apply": True,
+            "force": True,
+            "dry_run_control": False,
+        }
+    ]
+
+
+def test_operation_envelope_seed_watchdog_tick_rejects_invalid_apply():
+    client = TestClient(api_server.app)
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.seed.watchdog.tick",
+            payload={"apply": "yes"},
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 422
+    error = response.json()["payload"]["error"]
+    assert error["code"] == "VALIDATION_ERROR"
+    assert error["message"] == "payload.apply must be a boolean when provided"
+
+
+def test_operation_envelope_seed_watchdog_runtime_status(monkeypatch):
+    class DummySeedAccess:
+        def watchdog_runtime_status(
+            self,
+            *,
+            status_file=None,
+            merged_jsonl=None,
+            merged_parquet=None,
+            log_file=None,
+            watchdog_log_file=None,
+            append_jsonl=None,
+            output_json=None,
+            heartbeat_file=None,
+            allow_live_automation=None,
+            stale_after_seconds=3600.0,
+        ):
+            return {
+                "schema_name": "AAS.Merlin.SeedWatchdogRuntimeStatus",
+                "schema_version": "1.0.0",
+                "workspace_root": "/tmp/seed-workspace",
+                "policy": {"decision": "allowed"},
+                "paths": {"watchdog_log_file": "logs/merlin_seed_watchdog_runtime.log"},
+                "process": {"active": False, "count": 0, "rows": []},
+                "telemetry": {"append_jsonl_exists": False},
+                "health": {"schema_name": "AAS.Merlin.SeedHealth"},
+                "updated_at": "2026-02-25T20:00:00Z",
+            }
+
+    monkeypatch.setattr(
+        api_server,
+        "build_seed_access",
+        lambda workspace_root=None: DummySeedAccess(),
+    )
+    client = TestClient(api_server.app)
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.seed.watchdog.status",
+            payload={"stale_after_seconds": 900},
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 200
+    payload = response.json()["payload"]["watchdog_status"]
+    assert payload["schema_name"] == "AAS.Merlin.SeedWatchdogRuntimeStatus"
+    assert payload["process"]["count"] == 0
+
+
+def test_operation_envelope_seed_watchdog_runtime_control(monkeypatch):
+    recorded_calls: list[dict[str, object]] = []
+
+    class DummySeedAccess:
+        def watchdog_runtime_control(
+            self,
+            *,
+            action,
+            allow_live_automation=None,
+            dry_run=False,
+            force=False,
+            status_file=None,
+            merged_jsonl=None,
+            merged_parquet=None,
+            log_file=None,
+            watchdog_log_file=None,
+            append_jsonl=None,
+            output_json=None,
+            heartbeat_file=None,
+            stale_after_seconds=3600.0,
+            apply=False,
+            dry_run_control=False,
+            interval_seconds=60.0,
+            max_iterations=0,
+            emit_heartbeat=True,
+        ):
+            recorded_calls.append(
+                {
+                    "action": action,
+                    "allow_live_automation": allow_live_automation,
+                    "dry_run": dry_run,
+                    "force": force,
+                    "stale_after_seconds": stale_after_seconds,
+                    "apply": apply,
+                    "dry_run_control": dry_run_control,
+                    "interval_seconds": interval_seconds,
+                    "max_iterations": max_iterations,
+                    "emit_heartbeat": emit_heartbeat,
+                }
+            )
+            return {
+                "schema_name": "AAS.Merlin.SeedWatchdogRuntimeControl",
+                "schema_version": "1.0.0",
+                "action": action,
+                "decision": "allowed",
+                "status": "preview",
+                "message": "Dry-run preview only; no watchdog runtime process started",
+            }
+
+    monkeypatch.setattr(
+        api_server,
+        "build_seed_access",
+        lambda workspace_root=None: DummySeedAccess(),
+    )
+    client = TestClient(api_server.app)
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.seed.watchdog.control",
+            payload={
+                "action": "start",
+                "allow_live_automation": True,
+                "dry_run": True,
+                "force": True,
+                "stale_after_seconds": 900,
+                "apply": True,
+                "dry_run_control": True,
+                "interval_seconds": 5.0,
+                "max_iterations": 0,
+                "emit_heartbeat": False,
+            },
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 200
+    payload = response.json()["payload"]["watchdog_control"]
+    assert payload["schema_name"] == "AAS.Merlin.SeedWatchdogRuntimeControl"
+    assert payload["status"] == "preview"
+    assert recorded_calls == [
+        {
+            "action": "start",
+            "allow_live_automation": True,
+            "dry_run": True,
+            "force": True,
+            "stale_after_seconds": 900.0,
+            "apply": True,
+            "dry_run_control": True,
+            "interval_seconds": 5.0,
+            "max_iterations": 0,
+            "emit_heartbeat": False,
+        }
+    ]
+
+
+def test_operation_envelope_seed_watchdog_runtime_control_blocked_by_policy():
+    client = TestClient(api_server.app)
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.seed.watchdog.control",
+            payload={"action": "start", "allow_live_automation": False},
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 403
+    assert response.json()["payload"]["error"]["code"] == "SEED_WATCHDOG_CONTROL_BLOCKED"
+
+
+def test_operation_envelope_seed_watchdog_runtime_control_rejects_invalid_max_iterations():
+    client = TestClient(api_server.app)
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.seed.watchdog.control",
+            payload={"action": "start", "max_iterations": -1},
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 422
+    error = response.json()["payload"]["error"]
+    assert error["code"] == "VALIDATION_ERROR"
+    assert (
+        error["message"]
+        == "payload.max_iterations must be an integer greater than or equal to zero"
+    )
+
+
+def test_operation_envelope_seed_health_rejects_invalid_stale_after_seconds():
+    client = TestClient(api_server.app)
+    response = client.post(
+        "/merlin/operations",
+        json=operation_envelope(
+            operation_name="merlin.seed.health",
+            payload={"stale_after_seconds": 0},
+        ),
+        headers=auth_headers(),
+    )
+    assert response.status_code == 422
+    assert response.json()["payload"]["error"]["code"] == "VALIDATION_ERROR"
 
 
 def test_operation_envelope_rag_query(monkeypatch):

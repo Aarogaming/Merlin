@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/contracts/events/event_envelope.schema.json",
+  "title": "AAS Discovery Event Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "event_id",
+    "event_type",
+    "run_id",
+    "timestamp_utc",
+    "stage",
+    "status",
+    "payload"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Discovery.EventEnvelope"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^evt_[A-Za-z0-9]{8,64}$"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "discovery.seed.created",
+        "discovery.item.collected",
+        "discovery.item.scored",
+        "discovery.topic.selected",
+        "discovery.topic.researched",
+        "discovery.artifact.generated",
+        "discovery.artifact.validated",
+        "discovery.artifact.published",
+        "discovery.index.updated",
+        "discovery.run.completed"
+      ]
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run_[A-Za-z0-9TZ_:-]{10,80}$"
+    },
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "stage": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

@@ -14,6 +14,11 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
+from merlin_backup import (
+    compute_file_sha256,
+    verify_backup_integrity,
+    write_backup_integrity_manifest,
+)
 from merlin_settings import MERLIN_CHAT_HISTORY_DIR
 
 SCOPES = ["https://www.googleapis.com/auth/drive.file"]
@@ -55,9 +60,23 @@ def backup_chat_history():
         return 1
 
     zip_path = _zip_chat_history(chat_dir)
+    checksum = compute_file_sha256(zip_path)
+    manifest_path = Path(write_backup_integrity_manifest(zip_path, checksum=checksum))
+    verify_result = verify_backup_integrity(zip_path, expected_sha256=checksum)
+    if not verify_result.get("ok"):
+        print(f"Backup integrity verification failed: {verify_result}")
+        if zip_path.exists():
+            zip_path.unlink()
+        if manifest_path.exists():
+            manifest_path.unlink()
+        return 1
+
     try:
         service = _get_drive_service()
-        metadata = {"name": zip_path.name}
+        metadata = {
+            "name": zip_path.name,
+            "description": f"sha256={checksum}",
+        }
         if BACKUP_FOLDER_ID:
             metadata["parents"] = [BACKUP_FOLDER_ID]
         media = MediaFileUpload(str(zip_path), mimetype="application/zip")
@@ -66,11 +85,16 @@ def backup_chat_history():
             .create(body=metadata, media_body=media, fields="id")
             .execute()
         )
-        print(f"Uploaded backup: {zip_path.name} (file ID: {file.get('id')})")
+        print(
+            f"Uploaded backup: {zip_path.name} "
+            f"(file ID: {file.get('id')}, sha256: {checksum})"
+        )
         return 0
     finally:
         if zip_path.exists():
             zip_path.unlink()
+        if manifest_path.exists():
+            manifest_path.unlink()
 
 
 if __name__ == "__main__":

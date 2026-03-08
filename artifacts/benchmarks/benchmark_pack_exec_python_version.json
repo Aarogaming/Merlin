@@ -1,0 +1,32 @@
+{
+  "schema_name": "AAS.BenchmarkCommandPackResult",
+  "schema_version": "1.0.0",
+  "generated_at": "2026-02-19T15:17:30.012181+00:00",
+  "mode": "execute",
+  "selected_command_ids": [
+    "python_version"
+  ],
+  "summary": {
+    "total": 1,
+    "executed": 1,
+    "failed": 0,
+    "failed_critical": 0
+  },
+  "results": [
+    {
+      "command_id": "python_version",
+      "description": "Capture interpreter version used for benchmark snapshots.",
+      "critical": true,
+      "executed": true,
+      "command": [
+        "/usr/bin/python3",
+        "--version"
+      ],
+      "command_str": "/usr/bin/python3 --version",
+      "returncode": 0,
+      "ok": true,
+      "stdout": "Python 3.12.3\n",
+      "stderr": ""
+    }
+  ]
+}

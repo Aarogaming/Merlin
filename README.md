@@ -23,3 +23,102 @@ The canonical documentation lives in the AAS superproject:
 - `frontend/`: Desktop UI package (see `frontend/README.md`)
 - `plugins/`: Merlin plugin implementations
 - `merlin_*.py`: Core services, CLIs, and integration layers
+
+## DMS Reasoning Endpoint
+
+Merlin supports an optional DMS-backed reasoning endpoint (OpenAI-compatible API)
+for long-context or high-complexity reasoning queries.
+
+Set these values in `.env`:
+
+```env
+DMS_ENABLED=true
+DMS_URL=http://localhost:8002/v1/chat/completions
+DMS_MODEL=nvidia/Qwen3-8B-DMS-8x
+DMS_API_KEY=
+DMS_MIN_PROMPT_CHARS=6000
+DMS_TASK_TYPES=analysis,code,planning
+DMS_AB_ENABLED=false
+DMS_AB_DMS_PERCENTAGE=50
+```
+
+Behavior:
+- DMS is only used when enabled and configured.
+- Routing prefers DMS for long prompts or high-complexity reasoning tasks.
+- If DMS is unavailable, Merlin falls back automatically to existing model routing.
+- Backends expose structured routing metadata fields: `selected_model`,
+  `prompt_size_bucket`, `dms_used`, `fallback_reason`.
+- A/B controls are optional and can be enabled with `DMS_AB_ENABLED=true` and
+  `DMS_AB_DMS_PERCENTAGE=<0-100>`.
+
+Example flows:
+- DMS route (enabled for this request): long analysis prompt with default routing
+  decision.
+  - Request:
+    - `{"messages":[{"role":"user","content":"Analyze this architecture migration plan in detail. [include detailed, long context here ...]"}]}`
+  - Expected metadata:
+    - `selected_model = "dms"`
+    - `dms_used = true`
+    - `prompt_size_bucket = "long"` or `"medium"`
+    - `fallback_reason = null`
+- No DMS route (short/simple or control bucket):
+  - Request:
+    - `{"messages":[{"role":"user","content":"Hello, summarize this in 1 sentence."]}`
+  - Expected metadata:
+    - `selected_model != "dms"`
+    - `dms_used = false`
+    - `prompt_size_bucket = "short"`
+    - `fallback_reason = null`
+
+For A/B analysis, check backend status:
+- `GET /merlin/llm/parallel/status`
+- `GET /merlin/llm/adaptive/status`
+
+Each includes `routing_metrics` with `ab_variants` (`dms`, `control`, `disabled`),
+throughput, and quality/latency aggregates.
+
+## Research Manager (Local)
+
+Merlin includes a local research-manager engine for hypothesis-driven planning,
+signal ingestion, and probability/foresight briefs.
+
+CLI examples:
+
+```bash
+python merlin_cli.py research create "Build local autonomy pilot" --constraint repo-local-only --horizon-days 14
+python merlin_cli.py research list --limit 10
+python merlin_cli.py research signal <session_id> --source routing-suite --claim "Planner fallback checks are green" --confidence 0.9 --supports h_execution_success
+python merlin_cli.py research brief <session_id>
+```
+
+HTTP endpoints:
+- `POST /merlin/research/manager/session`
+- `GET /merlin/research/manager/sessions`
+- `GET /merlin/research/manager/session/{session_id}`
+- `POST /merlin/research/manager/session/{session_id}/signal`
+- `GET /merlin/research/manager/session/{session_id}/brief`
+
+AAS envelope operations:
+- `merlin.research.manager.session.create`
+- `merlin.research.manager.sessions.list`
+- `merlin.research.manager.session.get`
+- `merlin.research.manager.session.signal.add`
+- `merlin.research.manager.brief.get`
+
+Controls:
+- Set `MERLIN_RESEARCH_MANAGER_READ_ONLY=1` to block write operations.
+- `session_id` must match `[A-Za-z0-9_-]{1,128}`.
+
+## Changelog Generation
+
+Generate a markdown changelog from git tags and commit history:
+
+```bash
+python merlin_changelog.py --output artifacts/changelog/changelog-from-tags.md
+```
+
+If Merlin is installed as a package, the console entrypoint is also available:
+
+```bash
+merlin-changelog --output artifacts/changelog/changelog-from-tags.md
+```

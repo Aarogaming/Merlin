@@ -98,14 +98,15 @@ class ABTest:
         best_variant = None
         best_score = -1.0
 
-        for variant, metrics in self.metrics.items():
-            if not metrics or metrics["requests"] < 10:
+        for variant in self.metrics:
+            stats = self.get_variant_stats(variant)
+            if stats["requests"] < 10:
                 continue
 
             score = (
-                metrics.get("success_rate", 0) * 0.5
-                + (10.0 / max(1.0, metrics.get("avg_latency", 100))) * 0.3
-                + metrics.get("avg_rating", 0) / 5.0 * 0.2
+                stats["success_rate"] * 0.5
+                + (10.0 / max(1.0, stats["avg_latency"])) * 0.3
+                + stats["avg_rating"] / 5.0 * 0.2
             )
 
             if score > best_score:
@@ -186,7 +187,7 @@ class ABTestingManager:
         variants: List[str],
         weights: List[float] = None,
         duration_hours: int = 24,
-    ) -> ABTest:
+    ) -> str:
         if weights is None:
             weights = [1.0 / len(variants)] * len(variants)
 
@@ -315,7 +316,7 @@ class ABTestingManager:
         total_tests = len(all_tests)
         completed_tests = len([t for t in all_tests if t.status == "completed"])
 
-        best_performers = defaultdict(int)
+        best_performers: Dict[str, int] = defaultdict(int)
         for test in self.test_history:
             winner = test.get_winner()
             if winner:

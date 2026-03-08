@@ -1,0 +1,19 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "bda7f08a-d8aa-46d3-a88b-1e1385f5d4c3",
+  "trace_id": "5e2b60c1-6640-45c9-a0db-c8e7f32c7847",
+  "operation": {
+    "name": "merlin.history.get.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "user_id": "fixture-user",
+    "history": [
+      {
+        "user": "u",
+        "merlin": "m"
+      }
+    ]
+  }
+}

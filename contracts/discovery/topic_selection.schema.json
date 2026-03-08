@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/contracts/discovery/topic_selection.schema.json",
+  "title": "AAS Discovery Topic Selection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "topic_id",
+    "run_id",
+    "title",
+    "canonical_url",
+    "canonical_key",
+    "item_ids",
+    "selection_score",
+    "confidence",
+    "tags",
+    "reason",
+    "selected_at"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Discovery.TopicSelection"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "topic_id": {
+      "type": "string",
+      "pattern": "^topic_[A-Za-z0-9_-]{8,64}$"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run_[A-Za-z0-9TZ_:-]{10,80}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "canonical_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "canonical_key": {
+      "type": "string",
+      "pattern": "^ck_[a-f0-9]{24}$"
+    },
+    "item_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^item_[A-Za-z0-9_-]{8,64}$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "selection_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "uniqueItems": true
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "selected_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

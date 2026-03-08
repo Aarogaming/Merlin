@@ -1,0 +1,18 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "2f9973e7-a140-4df8-9959-8e409d2ef530",
+  "trace_id": "4348c5ac-0d6f-4cd9-bf09-b3cb8687bcda",
+  "operation": {
+    "name": "merlin.tasks.create.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "task": {
+      "id": 101,
+      "title": "Fixture task",
+      "description": "Created from fixture",
+      "priority": "High"
+    }
+  }
+}

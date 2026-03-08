@@ -1,0 +1,19 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "f64ca23e-8668-4f8c-90b5-9eaf2ddf4fe8",
+  "trace_id": "df595d8a-f95f-4c41-a4ca-97f6d1f1f637",
+  "operation": {
+    "name": "merlin.tasks.list.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "existing task",
+        "priority": "Low"
+      }
+    ]
+  }
+}

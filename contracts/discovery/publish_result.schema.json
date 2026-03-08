@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/contracts/discovery/publish_result.schema.json",
+  "title": "AAS Discovery Publish Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "run_id",
+    "publisher_mode",
+    "status",
+    "blocked_by_policy",
+    "decision",
+    "message",
+    "created_paths"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Discovery.PublishResult"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run_[A-Za-z0-9TZ_:-]{10,80}$"
+    },
+    "publisher_mode": {
+      "type": "string",
+      "enum": [
+        "stage_only",
+        "pr",
+        "git",
+        "push",
+        "none"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "staged",
+        "blocked",
+        "published",
+        "skipped"
+      ]
+    },
+    "blocked_by_policy": {
+      "type": "boolean"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "allowed",
+        "blocked",
+        "stubbed"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "created_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  }
+}

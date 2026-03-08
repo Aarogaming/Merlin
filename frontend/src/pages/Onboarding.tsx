@@ -114,6 +114,22 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
   const currentStepData = steps[currentStep];
   const progress = (currentStep / steps.length) * 100;
 
+  const handleWizardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const targetTag = (event.target as HTMLElement).tagName;
+    if (targetTag === 'INPUT' || targetTag === 'TEXTAREA' || targetTag === 'SELECT') {
+      return;
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      if (!isLoading) {
+        handleNext();
+      }
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      handlePrevious();
+    }
+  };
+
   const handleNext = async () => {
     if (currentStep === steps.length - 1) {
       // Final step
@@ -211,6 +227,10 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="bg-white rounded-lg shadow-xl max-w-2xl w-full"
+        onKeyDown={handleWizardKeyDown}
+        tabIndex={0}
+        role="region"
+        aria-label="Onboarding setup wizard"
       >
         {/* Progress Bar */}
         <div className="h-1 bg-gray-200">
@@ -251,10 +271,12 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
               </div>
 
               {/* Step Indicator */}
-              <div className="flex gap-2 mb-8">
+              <div className="flex gap-2 mb-8" role="list" aria-label="Onboarding steps">
                 {steps.map((step, index) => (
                   <motion.div
                     key={step.id}
+                    role="listitem"
+                    aria-current={index === currentStep ? 'step' : undefined}
                     className={`h-2 rounded-full transition-all ${
                       index <= currentStep
                         ? 'bg-indigo-600'
@@ -276,6 +298,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
               whileTap={{ scale: 0.95 }}
               onClick={handlePrevious}
               disabled={currentStep === 0}
+              aria-label="Go to previous onboarding step"
               className="flex items-center gap-2 px-6 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -288,6 +311,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleSkip}
+                  aria-label="Skip optional onboarding step"
                   className="px-6 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                 >
                   Skip
@@ -299,6 +323,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleNext}
                 disabled={isLoading}
+                aria-label={currentStep === steps.length - 1 ? 'Finish onboarding' : 'Go to next onboarding step'}
                 className="flex items-center gap-2 px-6 py-2 text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:shadow-lg disabled:opacity-50 transition"
               >
                 {isLoading ? 'Validating...' : currentStep === steps.length - 1 ? 'Finish' : 'Next'}
@@ -338,17 +363,19 @@ interface StepProps {
 const APIConfigStep: React.FC<StepProps> = ({ config, onUpdate }) => (
   <div className="space-y-4">
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label htmlFor="onboarding-api-url" className="block text-sm font-medium text-gray-700 mb-2">
         API URL
       </label>
       <input
+        id="onboarding-api-url"
         type="url"
         placeholder="https://api.example.com"
         value={config.apiUrl}
         onChange={(e) => onUpdate({ ...config, apiUrl: e.target.value })}
+        aria-describedby="onboarding-api-url-help"
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
       />
-      <p className="text-sm text-gray-500 mt-2">
+      <p id="onboarding-api-url-help" className="text-sm text-gray-600 mt-2">
         Enter the URL of your AAS backend API server
       </p>
     </div>
@@ -358,17 +385,19 @@ const APIConfigStep: React.FC<StepProps> = ({ config, onUpdate }) => (
 const DatabaseConfigStep: React.FC<StepProps> = ({ config, onUpdate }) => (
   <div className="space-y-4">
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label htmlFor="onboarding-database-url" className="block text-sm font-medium text-gray-700 mb-2">
         Database URL (Optional)
       </label>
       <input
+        id="onboarding-database-url"
         type="text"
         placeholder="postgresql://user:pass@localhost/aas"
         value={config.databaseUrl}
         onChange={(e) => onUpdate({ ...config, databaseUrl: e.target.value })}
+        aria-describedby="onboarding-database-url-help"
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
       />
-      <p className="text-sm text-gray-500 mt-2">
+      <p id="onboarding-database-url-help" className="text-sm text-gray-600 mt-2">
         Leave empty to use default in-memory storage
       </p>
     </div>
@@ -378,17 +407,19 @@ const DatabaseConfigStep: React.FC<StepProps> = ({ config, onUpdate }) => (
 const SecurityStep: React.FC<StepProps> = ({ config, onUpdate }) => (
   <div className="space-y-4">
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label htmlFor="onboarding-api-key" className="block text-sm font-medium text-gray-700 mb-2">
         API Key
       </label>
       <input
+        id="onboarding-api-key"
         type="password"
         placeholder="Enter your API key"
         value={config.apiKey}
         onChange={(e) => onUpdate({ ...config, apiKey: e.target.value })}
+        aria-describedby="onboarding-api-key-help"
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
       />
-      <p className="text-sm text-gray-500 mt-2">
+      <p id="onboarding-api-key-help" className="text-sm text-gray-600 mt-2">
         This key will be stored securely in your system
       </p>
     </div>
@@ -397,8 +428,9 @@ const SecurityStep: React.FC<StepProps> = ({ config, onUpdate }) => (
 
 const PreferencesStep: React.FC<StepProps> = ({ config, onUpdate }) => (
   <div className="space-y-4">
-    <label className="flex items-center gap-3">
+    <label htmlFor="onboarding-enable-notifications" className="flex items-center gap-3">
       <input
+        id="onboarding-enable-notifications"
         type="checkbox"
         checked={config.enableNotifications}
         onChange={(e) => onUpdate({ ...config, enableNotifications: e.target.checked })}
@@ -406,8 +438,9 @@ const PreferencesStep: React.FC<StepProps> = ({ config, onUpdate }) => (
       />
       <span className="text-gray-700">Enable notifications</span>
     </label>
-    <label className="flex items-center gap-3">
+    <label htmlFor="onboarding-auto-refresh" className="flex items-center gap-3">
       <input
+        id="onboarding-auto-refresh"
         type="checkbox"
         checked={config.autoRefresh}
         onChange={(e) => onUpdate({ ...config, autoRefresh: e.target.checked })}

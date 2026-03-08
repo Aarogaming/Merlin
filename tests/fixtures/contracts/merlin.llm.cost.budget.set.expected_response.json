@@ -1,0 +1,14 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "cb165dfa-cf73-446e-8d31-e3689118e7f2",
+  "trace_id": "8ab9f8f9-8009-4a43-bfe8-e6e0f152ed17",
+  "operation": {
+    "name": "merlin.llm.cost.budget.set.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "status": "updated",
+    "new_budget_limit": 250.0
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schema_name": "AAS.Merlin.SeedGuidance",
+  "schema_version": "1.0.0",
+  "state": "attention",
+  "next_action": "start",
+  "recommendations": [
+    {
+      "id": "start_worker",
+      "severity": "high",
+      "message": "No active seed worker is running before target completion.",
+      "action": "Run merlin.seed.control with action=start and allow_live_automation=true."
+    },
+    {
+      "id": "stale_status",
+      "severity": "medium",
+      "message": "Seed status has not been updated recently.",
+      "action": "Inspect logs and consider merlin.seed.control action=restart if the worker is stuck."
+    }
+  ]
+}

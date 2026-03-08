@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/contracts/discovery/artifact.schema.json",
+  "title": "AAS Discovery Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "artifact_id",
+    "topic_id",
+    "run_id",
+    "title",
+    "path",
+    "canonical_url",
+    "canonical_key",
+    "tags",
+    "confidence",
+    "created_at",
+    "plan_action",
+    "validation"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Discovery.Artifact"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "artifact_id": {
+      "type": "string",
+      "pattern": "^artifact_[A-Za-z0-9_-]{8,64}$"
+    },
+    "topic_id": {
+      "type": "string",
+      "pattern": "^topic_[A-Za-z0-9_-]{8,64}$"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run_[A-Za-z0-9TZ_:-]{10,80}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "canonical_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "canonical_key": {
+      "type": "string",
+      "pattern": "^ck_[a-f0-9]{24}$"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "plan_action": {
+      "type": "string",
+      "enum": [
+        "CREATE",
+        "OVERWRITE",
+        "SKIP"
+      ]
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "errors"
+      ],
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

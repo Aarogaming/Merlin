@@ -1,0 +1,23 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "69857f51-6075-44ea-8607-5ac0a2f0e493",
+  "trace_id": "17a4ff57-0e3f-441f-8f91-1fd2674c2450",
+  "operation": {
+    "name": "merlin.search.query.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "results": [
+      "docs/readme.md: doc",
+      "standalone match"
+    ],
+    "count": 2,
+    "citations": [
+      {
+        "source_id": "src_ee19fd947f43",
+        "path": "docs/readme.md"
+      }
+    ]
+  }
+}

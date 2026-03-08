@@ -1,0 +1,15 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "d8dc50e2-cbfc-4366-a38a-d4af368f9f7c",
+  "trace_id": "a2c8ef53-eb73-49b8-8d42-f09f1d1b6d0b",
+  "operation": {
+    "name": "merlin.llm.predictive.select.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "selected_model": "fixture-model",
+    "explanation": "Fixture explanation",
+    "query_preview": "optimize this python code"
+  }
+}

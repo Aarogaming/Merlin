@@ -1,0 +1,17 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "ebcbeb0e-4de8-42c6-86de-d68e5c679420",
+  "trace_id": "34d3b78d-b16d-4f3e-b9f5-b0994ff18f30",
+  "operation": {
+    "name": "merlin.llm.cost.report.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "report": {
+      "period_days": 7,
+      "total_spend": 12.5,
+      "budget_limit": 100.0
+    }
+  }
+}

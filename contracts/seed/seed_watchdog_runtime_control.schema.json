@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "seed_watchdog_runtime_control.schema.json",
+  "title": "AAS Merlin Seed Watchdog Runtime Control",
+  "description": "Control action result for seed watchdog runtime process management.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "action",
+    "decision",
+    "status",
+    "message",
+    "policy",
+    "workspace_root",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Merlin.SeedWatchdogRuntimeControl"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "start",
+        "stop",
+        "restart"
+      ]
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "allowed",
+        "stubbed"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "blocked",
+        "preview",
+        "started",
+        "restarted",
+        "stopped",
+        "already_stopped",
+        "already_running"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dry_run": {
+      "type": "boolean"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "allow_live_automation",
+        "allow_live_automation_default",
+        "reason"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "allowed",
+            "stubbed"
+          ]
+        },
+        "allow_live_automation": {
+          "type": "boolean"
+        },
+        "allow_live_automation_default": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "workspace_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "paths": {
+      "type": "object"
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stale_after_seconds",
+        "apply",
+        "dry_run_control",
+        "force",
+        "interval_seconds",
+        "max_iterations",
+        "emit_heartbeat"
+      ],
+      "properties": {
+        "stale_after_seconds": {
+          "type": "number",
+          "minimum": 1
+        },
+        "apply": {
+          "type": "boolean"
+        },
+        "dry_run_control": {
+          "type": "boolean"
+        },
+        "force": {
+          "type": "boolean"
+        },
+        "interval_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max_iterations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "emit_heartbeat": {
+          "type": "boolean"
+        }
+      }
+    },
+    "preview": {
+      "type": "object"
+    },
+    "process": {
+      "type": "object"
+    },
+    "start": {
+      "type": "object"
+    },
+    "stop": {
+      "type": "object"
+    },
+    "status_snapshot": {
+      "$ref": "seed_watchdog_runtime_status.schema.json"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

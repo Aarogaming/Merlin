@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/contracts/cp4a.smoke-evidence.v1.schema.json",
+  "title": "CP4A Smoke Evidence v1",
+  "description": "Machine-readable smoke evidence exported by the CP4-A planner fallback runbook.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_schema",
+    "status",
+    "planner",
+    "schema",
+    "log_signatures",
+    "inputs"
+  ],
+  "properties": {
+    "artifact_schema": {
+      "type": "string",
+      "const": "cp4a-smoke-evidence.v1"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "planner": {
+      "$ref": "#/$defs/junit_summary"
+    },
+    "schema": {
+      "$ref": "#/$defs/junit_summary"
+    },
+    "log_signatures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sync_summary_found",
+        "taxonomy_summary_found",
+        "smoke_signature_summary_found"
+      ],
+      "properties": {
+        "sync_summary_found": {
+          "type": "boolean"
+        },
+        "taxonomy_summary_found": {
+          "type": "boolean"
+        },
+        "smoke_signature_summary_found": {
+          "type": "boolean"
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planner_junit",
+        "schema_junit",
+        "smoke_log"
+      ],
+      "properties": {
+        "planner_junit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_junit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "smoke_log": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "$defs": {
+    "junit_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tests",
+        "failures",
+        "errors",
+        "skipped"
+      ],
+      "properties": {
+        "tests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "pass"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "planner": {
+            "properties": {
+              "failures": {
+                "const": 0
+              },
+              "errors": {
+                "const": 0
+              }
+            }
+          },
+          "schema": {
+            "properties": {
+              "failures": {
+                "const": 0
+              },
+              "errors": {
+                "const": 0
+              }
+            }
+          },
+          "log_signatures": {
+            "properties": {
+              "sync_summary_found": {
+                "const": true
+              },
+              "taxonomy_summary_found": {
+                "const": true
+              },
+              "smoke_signature_summary_found": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

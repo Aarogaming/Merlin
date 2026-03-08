@@ -1,6 +1,6 @@
 # Merlin Agent Transition Runbook
 
-Last updated: 2026-02-13
+Last updated: 2026-02-14
 
 This file is the handoff point for the next engineer/agent working in this repo.
 It focuses on current quality gates, recent hardening work, and what to do next.
@@ -62,9 +62,16 @@ python -m black --check \
   setup.py
 python -m mypy
 python -m pytest
+python scripts/run_release_checklist.py --strict
 ```
 
 For docs-only changes, `python -m pytest` can be skipped when no code/test paths are touched.
+
+Optional deeper release validation (includes schema sync + targeted checklist commands):
+
+```bash
+python scripts/run_release_checklist.py --run-commands --strict
+```
 
 ## Typed Scope (Current)
 
@@ -84,6 +91,11 @@ For docs-only changes, `python -m pytest` can be skipped when no code/test paths
 12. `merlin_settings.py`
 13. `merlin_rag.py`
 14. `merlin_vector_memory.py`
+15. `merlin_resource_api.py`
+16. `merlin_resource_indexer.py`
+17. `merlin_command_executor.py`
+18. `merlin_file_manager.py`
+19. `merlin_system_info.py`
 
 ## Gitleaks Notes
 
@@ -107,13 +119,28 @@ If more allowlist entries are needed, constrain by exact path/pattern and docume
 8. Added machine-readable operation capability manifest endpoint (`GET /merlin/operations/capabilities`).
 9. Added schema validation tests for contract fixtures and capability manifest against `contracts/*.schema.json`.
 10. Added request fixture coverage for all currently wired envelope operations and parity checks against supported-operation list.
+11. Added unit tests for `merlin_ab_testing.py`, `merlin_adaptive_llm.py`, `merlin_rag.py`, and `merlin_vector_memory.py`.
+12. Fixed A/B winner selection logic to score from computed variant stats in `ABTest.get_winner()`.
+13. Added expected-response fixtures for all currently supported envelope operations.
+14. Added a parameterized operation-contract test that validates fixture-backed live success responses against the operation envelope schema.
+15. Added fixture-backed invalid-payload error cases covering all currently supported envelope operations.
+16. Added a parameterized operation-contract test validating live error responses (status + error payload + schema) against the fixture cases.
+17. Added fixture-backed operation-specific error cases (validation/auth/policy/backend/execution branches) for envelope operations with deterministic failure paths.
+18. Added a parameterized operation-contract test that applies case-specific mocks and validates live error responses for those operation-specific failures.
+19. Expanded deterministic error fixtures/tests to include command execution exceptions, plugin execution exceptions/failures, and voice output-missing failures.
+20. Expanded `mypy` typed scope to include `merlin_resource_api.py` and `merlin_resource_indexer.py`.
+21. Expanded envelope ingress coverage with `merlin.history.get`, `merlin.context.get`, `merlin.context.update`, `merlin.dynamic_components.list`, and `merlin.alerts.list`, plus request/success/error fixture coverage and schema-backed tests.
+22. Expanded envelope ingress for LLM parallel/adaptive operations (`merlin.llm.parallel.status`, `merlin.llm.parallel.strategy`, `merlin.llm.adaptive.feedback`, `merlin.llm.adaptive.status`, `merlin.llm.adaptive.metrics`, `merlin.llm.adaptive.reset`) with success fixtures, invalid-payload matrix coverage, and specific-error cases.
+23. Expanded envelope ingress for remaining LLM families (A/B, predictive, cost) with 17 new operations plus fixture-backed success/invalid-payload/specific-error coverage.
+24. Added fixture-backed dynamic error coverage (`operation_error_dynamic.cases.json`) plus a parameterized contract test that supports regex/contains matching for variable error messages.
+25. Expanded `mypy` typed scope to include `merlin_command_executor.py`, `merlin_file_manager.py`, and `merlin_system_info.py`.
 
 ## Highest-Priority Next Work
 
-1. Expand envelope ingress coverage to remaining endpoints and standardize payloads across all existing API operations.
-2. Add expected-response fixture coverage for all currently wired operations and validate live responses against schemas where stable.
+1. Standardize payload contracts across newly added LLM envelope operations (A/B, predictive, cost) and decide final cross-repo naming/versioning for any operation aliases.
+2. Expand dynamic error fixture coverage to additional variable-message branches (for example, cross-service proxy failures) while keeping schema and code/retryable assertions strict.
 3. Expand mypy scope to additional `merlin_*.py` modules in small batches, fixing issues as each batch is added.
-4. Add/expand tests for `merlin_adaptive_llm.py`, `merlin_ab_testing.py`, and integration-heavy modules touched by typing work.
+4. Continue expanding tests for integration-heavy modules touched by typing work (A/B + adaptive + RAG + vector-memory unit coverage is now in place).
 5. Add branch-protection requirements to enforce both CI jobs before merge (repo settings).
 6. Tighten dependency hygiene (`requirements*.txt`) with explicit version policy and periodic updates.
 

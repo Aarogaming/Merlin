@@ -1,0 +1,15 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "d1f52ce6-f930-4def-a05e-7edf5f9e4d41",
+  "trace_id": "1a52d1eb-f4ea-4ae9-b2ce-b2d6da7c4458",
+  "operation": {
+    "name": "merlin.discovery.queue.resume.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "resume": {
+      "schema_name": "AAS.Discovery.QueueResume"
+    }
+  }
+}

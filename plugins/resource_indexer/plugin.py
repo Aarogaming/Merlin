@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import fnmatch
+import hashlib
 import json
 import os
 import sys
@@ -49,14 +50,73 @@ def _should_exclude_file(filename: str, exclude_globs: List[str]) -> bool:
     return False
 
 
+def _hash_file_sha256(file_path: Path, chunk_size: int = 1024 * 1024) -> str:
+    hasher = hashlib.sha256()
+    with file_path.open("rb") as handle:
+        while True:
+            chunk = handle.read(chunk_size)
+            if not chunk:
+                break
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+
+def _load_hash_cache(cache_path: Path) -> Dict[str, Dict[str, Any]]:
+    if not cache_path.exists():
+        return {}
+    try:
+        payload = json.loads(cache_path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _save_hash_cache(cache_path: Path, cache: Dict[str, Dict[str, Any]]) -> None:
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    cache_path.write_text(json.dumps(cache, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _hash_from_cache_or_compute(
+    *,
+    file_path: Path,
+    relative_path: str,
+    stat_result: os.stat_result,
+    prior_cache: Dict[str, Dict[str, Any]],
+    next_cache: Dict[str, Dict[str, Any]],
+) -> str:
+    prior_entry = prior_cache.get(relative_path)
+    size = int(stat_result.st_size)
+    mtime_ns = int(getattr(stat_result, "st_mtime_ns", int(stat_result.st_mtime * 1e9)))
+    if (
+        isinstance(prior_entry, dict)
+        and int(prior_entry.get("size", -1)) == size
+        and int(prior_entry.get("mtime_ns", -1)) == mtime_ns
+        and isinstance(prior_entry.get("sha256"), str)
+        and prior_entry.get("sha256")
+    ):
+        sha256 = str(prior_entry["sha256"])
+    else:
+        sha256 = _hash_file_sha256(file_path)
+
+    next_cache[relative_path] = {
+        "size": size,
+        "mtime_ns": mtime_ns,
+        "sha256": sha256,
+    }
+    return sha256
+
+
 def _scan_resources(
     root_dir: Path,
     *,
     exclude_dirs: List[str],
     exclude_globs: List[str],
     max_bytes: Optional[int],
+    hash_cache_path: Optional[Path],
 ) -> Dict[str, List[Dict[str, Any]]]:
     resources: Dict[str, List[Dict[str, Any]]] = {key: [] for key in RESOURCE_TYPES}
+    prior_hash_cache = _load_hash_cache(hash_cache_path) if hash_cache_path else {}
+    next_hash_cache: Dict[str, Dict[str, Any]] = {}
 
     for dirpath, dirnames, filenames in os.walk(root_dir):
         dirnames[:] = [d for d in dirnames if d not in exclude_dirs]
@@ -75,17 +135,28 @@ def _scan_resources(
                         continue
                     if max_bytes is not None and stat.st_size > max_bytes:
                         continue
+                    relative_path = os.path.relpath(fpath, root_dir)
+                    sha256 = _hash_from_cache_or_compute(
+                        file_path=fpath,
+                        relative_path=relative_path,
+                        stat_result=stat,
+                        prior_cache=prior_hash_cache,
+                        next_cache=next_hash_cache,
+                    )
                     resources[rtype].append(
                         {
-                            "path": os.path.relpath(fpath, root_dir),
+                            "path": relative_path,
                             "type": ext[1:],
                             "size": stat.st_size,
                             "modified": datetime.fromtimestamp(
                                 stat.st_mtime
                             ).isoformat(),
+                            "sha256": sha256,
                         }
                     )
                     break
+    if hash_cache_path:
+        _save_hash_cache(hash_cache_path, next_hash_cache)
     return resources
 
 
@@ -123,6 +194,10 @@ class Plugin:
 
         output_value = output_path or str(config.get("resource_index_path", "merlin_resource_index.json"))
         index_path = _resolve_path(REPO_ROOT, output_value)
+        hash_cache_value = str(
+            config.get("resource_hash_cache_path", "merlin_resource_hash_cache.json")
+        )
+        hash_cache_path = _resolve_path(REPO_ROOT, hash_cache_value)
 
         exclude_dirs_list = _coerce_list(exclude_dirs) or _coerce_list(config.get("exclude_dirs"))
         exclude_globs_list = _coerce_list(exclude_globs) or _coerce_list(config.get("exclude_globs"))
@@ -141,6 +216,7 @@ class Plugin:
                 exclude_dirs=exclude_dirs_list,
                 exclude_globs=exclude_globs_list,
                 max_bytes=max_bytes,
+                hash_cache_path=hash_cache_path,
             )
             index_path.parent.mkdir(parents=True, exist_ok=True)
             index_path.write_text(json.dumps(resources, indent=2), encoding="utf-8")

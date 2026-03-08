@@ -667,7 +667,8 @@ MERLIN_SQLITE_TEMP_STORE = _parse_upper_choice(
 )
 
 # Path to Dev Library
-DEV_LIBRARY_PATH = "D:/Dev library/AaroneousAutomationSuite"
+_default_dev_library_path = str(Path(__file__).resolve().parent.parent)
+DEV_LIBRARY_PATH = os.getenv("DEV_LIBRARY_PATH", _default_dev_library_path)
 
 # Runtime directories
 MERLIN_CHAT_HISTORY_DIR = Path(

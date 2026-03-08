@@ -1,6 +1,13 @@
 import grpc
 import os
-from loguru import logger
+import requests
+
+try:
+    from loguru import logger
+except ModuleNotFoundError:  # pragma: no cover - exercised in minimal environments
+    import logging
+
+    logger = logging.getLogger("merlin_hub_client")
 
 # Note: This requires the generated proto files to be available in the path
 # In a real setup, we'd share the proto package or use a common library
@@ -25,6 +32,9 @@ except Exception:
 
 class MerlinHubClient:
     def __init__(self):
+        self.research_event_webhook_url = (
+            os.getenv("AAS_RESEARCH_EVENT_WEBHOOK_URL", "").strip()
+        )
         if not _proto_loaded or grpc is None or hub_pb2_grpc is None:
             self.channel = None
             self.stub = None
@@ -66,3 +76,20 @@ class MerlinHubClient:
         except Exception as e:
             logger.error(f"Failed to get task status: {e}")
             return None
+
+    def emit_research_session_event(self, event_payload):
+        if not isinstance(event_payload, dict):
+            return False
+        if not self.research_event_webhook_url:
+            return False
+        try:
+            response = requests.post(
+                self.research_event_webhook_url,
+                json=event_payload,
+                timeout=5,
+            )
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            logger.error(f"Failed to emit research session event: {e}")
+            return False

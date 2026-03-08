@@ -1,0 +1,15 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "f29d7d58-03f6-4ca0-ae11-17f4e17e06d4",
+  "trace_id": "5008677d-b6fc-4326-b7f2-d96af7ec63bc",
+  "operation": {
+    "name": "merlin.system_info.get.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "system_info": {
+      "platform": "fixture-os"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "6f204f4f-a6f5-4514-b8f0-29963fc74f7d",
+  "trace_id": "cefa2963-155f-4c30-9a6c-7fd87c84ae96",
+  "operation": {
+    "name": "merlin.dynamic_components.list.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "user_id": "fixture-user",
+    "components": [
+      {
+        "type": "plugin",
+        "title": "Demo",
+        "description": "d",
+        "actionCommand": "demo"
+      }
+    ]
+  }
+}

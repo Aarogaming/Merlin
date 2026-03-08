@@ -1,3 +1,22 @@
 .system-info-bar > div {
   width: var(--bar-width, 0%);
 }
+
+.system-info-card {
+  background: var(--theme-surface-card);
+  border-color: var(--theme-border-strong);
+}
+
+.system-retry-guidance {
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+@media (max-width: 768px) {
+  .system-info-card {
+    padding: 1rem;
+  }
+
+  .system-info-card .grid {
+    grid-template-columns: 1fr;
+  }
+}

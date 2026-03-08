@@ -1,0 +1,14 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "69c946f4-78d5-4fef-a706-ba639ab56c57",
+  "trace_id": "945e1fc2-296b-45b2-801a-cd11f577c264",
+  "operation": {
+    "name": "merlin.llm.adaptive.reset.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "status": "metrics reset",
+    "model": "fixture-model"
+  }
+}

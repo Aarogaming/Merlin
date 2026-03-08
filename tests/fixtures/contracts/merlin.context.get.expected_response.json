@@ -1,0 +1,18 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "2a69ee6c-a632-4f86-8e93-5f9a56f26f6a",
+  "trace_id": "739d6f67-6301-4f00-8962-26631d4a038e",
+  "operation": {
+    "name": "merlin.context.get.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "context": {
+      "last_active_platform": "FixtureOS",
+      "current_task": "fixture-task",
+      "perception_data": {},
+      "divine_guidance": []
+    }
+  }
+}

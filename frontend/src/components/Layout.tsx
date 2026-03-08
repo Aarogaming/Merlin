@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   ListTodo,
   Compass,
+  FolderSearch,
   Menu,
   X
 } from 'lucide-react';
@@ -22,6 +23,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Control Center', href: '/control-center', icon: Compass },
+    { name: 'Research', href: '/research-sessions', icon: FolderSearch },
     { name: 'Models', href: '/models', icon: Cpu },
     { name: 'Activity', href: '/activity', icon: Activity },
     { name: 'Tasks', href: '/tasks', icon: ListTodo },
@@ -72,6 +74,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <Link
                   key={item.name}
                   to={item.href}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
                   className={`${
                     isActive(item.href)
                       ? 'sidebar-item-active'
@@ -107,7 +110,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </motion.div>
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-0">
+      <div className="flex-1 lg:ml-0 min-w-0">
         {/* Top Bar */}
         <header className="h-16 bg-dark-card border-b border-dark-border flex items-center justify-between px-6">
           <button
@@ -132,7 +135,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto p-4 sm:p-6">
           {children}
         </main>
       </div>

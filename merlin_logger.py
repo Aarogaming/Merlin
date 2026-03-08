@@ -5,6 +5,17 @@ from datetime import datetime
 from typing import Any, Dict
 from pathlib import Path
 
+_BASE_LOG_RECORD = logging.LogRecord(
+    name="merlin",
+    level=logging.INFO,
+    pathname=__file__,
+    lineno=0,
+    msg="",
+    args=(),
+    exc_info=None,
+)
+_RESERVED_LOG_RECORD_FIELDS = set(_BASE_LOG_RECORD.__dict__.keys())
+
 
 class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
@@ -23,6 +34,17 @@ class JsonFormatter(logging.Formatter):
 
         if record.exc_info:
             log_data["exception"] = self.formatException(record.exc_info)
+
+        for key, value in record.__dict__.items():
+            if key in _RESERVED_LOG_RECORD_FIELDS or key.startswith("_"):
+                continue
+            if key in log_data:
+                continue
+            try:
+                json.dumps(value)
+                log_data[key] = value
+            except TypeError:
+                log_data[key] = str(value)
 
         return json.dumps(log_data)
 

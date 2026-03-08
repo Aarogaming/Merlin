@@ -1,0 +1,32 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "d76f6d69-5f73-42a5-857f-f218f43cd54e",
+  "correlation_id": "ee7985ed-6f8e-45b5-86b9-c33c0df7f595",
+  "trace_id": "e79343cc-d333-4f6c-b93f-d100db6eb2f8",
+  "timestamp_utc": "2026-02-25T12:00:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.seed.watchdog.control",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "merlin-seed-watchdog-control-2026-02-25-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "action": "start",
+    "allow_live_automation": true,
+    "dry_run": true,
+    "apply": true
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "ee7985ed-6f8e-45b5-86b9-c33c0df7f595",
+  "trace_id": "e79343cc-d333-4f6c-b93f-d100db6eb2f8",
+  "operation": {
+    "name": "merlin.seed.watchdog.control.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "watchdog_control": {
+      "schema_name": "AAS.Merlin.SeedWatchdogRuntimeControl",
+      "decision": "allowed",
+      "status": "preview"
+    }
+  }
+}

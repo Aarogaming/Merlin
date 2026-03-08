@@ -1,5 +1,21 @@
 # Merlin Agent Guide
 
+## Primary Optimization Objective (P0)
+- P0 is user time efficiency: maximize useful progress per user interaction.
+- Treat repetitive "proceed" requests as a defect; eliminate them by default.
+- Use an interruption budget of <= 1 decision request per substantial task.
+
+## Execution Cadence (Autonomy-First)
+- Default to autonomous multi-step execution after task receipt.
+- Do not pause for repetitive "proceed" confirmations during normal implementation.
+- Continue through investigate -> plan -> implement -> validate -> iterate until complete.
+- Interrupt only for true blockers, destructive actions, or major strategic forks.
+
+## Decision Threshold
+- Default profile is `hands-off`.
+- `hands-off` interrupts only on blockers/destructive actions/material strategic forks.
+- Use `normal` or `low` only if explicitly requested by the user.
+
 ## Scope
 This file defines default operating behavior for IDE agents working inside `Merlin` (research manager and CI orchestration module).
 

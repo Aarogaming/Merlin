@@ -61,10 +61,107 @@ This envelope wraps cross-repo requests and events so Merlin and peers can commu
 ## Field Notes
 
 - `correlation_id`: ties request/response chain together.
+- `correlation_id`: required for mutating operations (for example: `*.create`, `*.update`, `*.set`, `*.execute`).
 - `causation_id`: parent message id when this is produced by another operation.
 - `idempotency_key`: required for mutating operations.
 - `expects_ack`: `true` for request/response flows, optional for fire-and-forget events.
 - `retry.max_attempts`: must stay bounded to avoid runaway loops.
+
+## Idempotency Handling
+
+- For create/update-style operations, `operation.idempotency_key` is required.
+- Merlin caches result envelopes by `(operation.name, idempotency_key)` for bounded safe retry handling.
+- Replayed responses include header `X-Merlin-Idempotent-Replay: true`.
+
+## Schema Version Negotiation
+
+- Merlin currently supports envelope schema version `1.0.0`.
+- `schema_version` must be semver (`X.Y.Z`).
+- When version negotiation fails:
+  - Newer-than-supported envelope version -> `SCHEMA_VERSION_DOWNGRADE_REQUIRED`
+  - Older-than-supported envelope version -> `SCHEMA_VERSION_UPGRADE_REQUIRED`
+  - Non-semver value -> `INVALID_SCHEMA_VERSION`
+
+## Planner Routing Metadata (CP4-A)
+
+When `assistant.chat.result` includes planner/routing telemetry, place it under
+`payload.metadata` with the normalized fallback contract keys:
+
+```json
+{
+  "payload": {
+    "reply": "ok",
+    "metadata": {
+      "selected_model": "m1",
+      "prompt_size_bucket": "long",
+      "dms_used": false,
+      "dms_candidate": true,
+      "dms_attempted": true,
+      "fallback_reason": "dms_error: connection timeout",
+      "fallback_reason_code": "dms_timeout",
+      "fallback_detail": "connection timeout",
+      "fallback_stage": "dms_primary",
+      "fallback_retryable": true,
+      "ab_variant": "dms",
+      "router_backend": "parallel",
+      "router_policy_version": "cp2-2026-02-15",
+      "routing_telemetry_schema": "1.0.0"
+    }
+  }
+}
+```
+
+If `assistant.chat.request` includes `payload.research_session_id` (string) and
+`include_metadata=true`, Merlin attempts to ingest the routing/fallback metadata as a
+structured research signal. Response payload includes:
+
+- `research_signal_ingest.ingested`
+- `research_signal_ingest.reason` (when not ingested)
+
+## Research Brief Template Versioning
+
+`merlin.research.manager.brief.get.result` payloads include template version fields so
+consumers can detect schema/layout drift:
+
+- `brief.brief_template_id`: template identity (`research_manager.default`)
+- `brief.brief_template_version`: template/schema version (`1.0.0`)
+
+Example fragment:
+
+```json
+{
+  "payload": {
+    "brief": {
+      "session_id": "fixture-session-id",
+      "brief_template_id": "research_manager.default",
+      "brief_template_version": "1.0.0"
+    }
+  }
+}
+```
+
+## Research Session Traceability Fields
+
+`merlin.research.manager.session.create` payloads may include optional traceability links:
+
+- `payload.linked_task_ids`: array of positive integer task IDs.
+- `payload.planner_artifacts`: array of planner artifact refs/paths.
+
+Session and brief payloads surface these fields as:
+
+- `session.linked_task_ids`
+- `session.planner_artifacts`
+- `brief.linked_task_ids`
+- `brief.linked_tasks` (resolved local task records when available)
+- `brief.planner_artifacts`
+
+## Request Audit Metadata Contract
+
+Merlin emits operation-dispatch audit entries with required metadata keys:
+
+- `request_id`: request-scoped UUID from middleware.
+- `route`: HTTP route path (for example `/merlin/operations`).
+- `decision_version`: dispatch/audit decision stamp (current: `operation-dispatch-v1`).
 
 ## Acknowledgement Pattern
 
@@ -83,3 +180,25 @@ On failure, return a normal envelope with payload:
   }
 }
 ```
+
+## Dependency Circuit Breaker
+
+For dependency-backed operations, Merlin applies endpoint-level circuit breaking when
+`MERLIN_DEPENDENCY_CIRCUIT_BREAKER_ENABLED=true`:
+
+- `MERLIN_DEPENDENCY_CIRCUIT_BREAKER_FAILURE_THRESHOLD`: consecutive failures before open.
+- `MERLIN_DEPENDENCY_CIRCUIT_BREAKER_RESET_SECONDS`: open-window before half-open probe.
+
+When open, operation calls return:
+
+- `error.code`: `DEPENDENCY_CIRCUIT_OPEN`
+- `error.retryable`: `true`
+
+Plugin execution operations can also return:
+
+- `error.code`: `PLUGIN_PERMISSION_DENIED`
+- `error.retryable`: `false`
+- `error.code`: `PLUGIN_TIMEOUT`
+- `error.retryable`: `true`
+- `error.code`: `PLUGIN_CRASH_ISOLATED`
+- `error.retryable`: `true`

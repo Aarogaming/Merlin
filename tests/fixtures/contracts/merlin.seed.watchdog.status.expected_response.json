@@ -1,0 +1,21 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "df423051-6ef7-4640-89d9-8a5fd6cd7ca2",
+  "trace_id": "9435ce8d-3fc6-4fb7-ad4d-26508ed74c4c",
+  "operation": {
+    "name": "merlin.seed.watchdog.status.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "watchdog_status": {
+      "schema_name": "AAS.Merlin.SeedWatchdogRuntimeStatus",
+      "process": {
+        "active": false
+      },
+      "health": {
+        "schema_name": "AAS.Merlin.SeedHealth"
+      }
+    }
+  }
+}

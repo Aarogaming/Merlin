@@ -1,0 +1,20 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "31412f18-cbe6-4d89-b011-2f908d53e925",
+  "trace_id": "307d7f8c-4637-45f4-90f6-38ceacc92dc0",
+  "operation": {
+    "name": "merlin.voice.status.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "status": {
+      "tts": {
+        "primary": "dummy"
+      },
+      "stt": {
+        "primary": "dummy"
+      }
+    }
+  }
+}

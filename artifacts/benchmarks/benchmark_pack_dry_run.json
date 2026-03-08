@@ -1,0 +1,83 @@
+{
+  "schema_name": "AAS.BenchmarkCommandPackResult",
+  "schema_version": "1.0.0",
+  "generated_at": "2026-02-19T15:17:30.011281+00:00",
+  "mode": "dry_run",
+  "selected_command_ids": [
+    "python_version",
+    "llm_local_snapshot",
+    "voice_dataset_snapshot",
+    "operation_conformance_plan"
+  ],
+  "summary": {
+    "total": 4,
+    "executed": 0,
+    "failed": 0,
+    "failed_critical": 0
+  },
+  "results": [
+    {
+      "command_id": "python_version",
+      "description": "Capture interpreter version used for benchmark snapshots.",
+      "critical": true,
+      "executed": false,
+      "command": [
+        "/usr/bin/python3",
+        "--version"
+      ],
+      "command_str": "/usr/bin/python3 --version",
+      "returncode": null,
+      "ok": null
+    },
+    {
+      "command_id": "llm_local_snapshot",
+      "description": "Run one local LLM benchmark iteration and store JSON snapshot.",
+      "critical": false,
+      "executed": false,
+      "command": [
+        "/usr/bin/python3",
+        "merlin_benchmark.py",
+        "--iterations",
+        "1",
+        "--output-json",
+        "artifacts/benchmarks/llm_local_snapshot.json"
+      ],
+      "command_str": "/usr/bin/python3 merlin_benchmark.py --iterations 1 --output-json artifacts/benchmarks/llm_local_snapshot.json",
+      "returncode": null,
+      "ok": null
+    },
+    {
+      "command_id": "voice_dataset_snapshot",
+      "description": "Run voice benchmark snapshot with catalog-backed dataset metadata.",
+      "critical": false,
+      "executed": false,
+      "command": [
+        "/usr/bin/python3",
+        "merlin_voice_benchmark.py",
+        "--engines",
+        "pyttsx3",
+        "--runs",
+        "1",
+        "--output-dir",
+        "artifacts/benchmarks/voice"
+      ],
+      "command_str": "/usr/bin/python3 merlin_voice_benchmark.py --engines pyttsx3 --runs 1 --output-dir artifacts/benchmarks/voice",
+      "returncode": null,
+      "ok": null
+    },
+    {
+      "command_id": "operation_conformance_plan",
+      "description": "Capture conformance suite command plan for reproducibility.",
+      "critical": true,
+      "executed": false,
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_operation_conformance_suite.py",
+        "--dry-run"
+      ],
+      "command_str": "/usr/bin/python3 scripts/run_operation_conformance_suite.py --dry-run",
+      "returncode": null,
+      "ok": null
+    }
+  ]
+}

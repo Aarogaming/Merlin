@@ -1,0 +1,24 @@
+{
+  "schema_name": "AAS.FrontendBundleBudgetReport",
+  "schema_version": "1.0.0",
+  "generated_at": "2026-02-19T23:39:11.877Z",
+  "dist_dir": "/mnt/c/Dev library/AaroneousAutomationSuite/Merlin/frontend/dist",
+  "budgets_mb": {
+    "total": 8,
+    "largest": 2.5,
+    "javascript": 2.5,
+    "css": 0.8
+  },
+  "metrics": {
+    "file_count": 14,
+    "total_mb": 4.389,
+    "javascript_mb": 0.842,
+    "css_mb": 0.043,
+    "largest_asset": {
+      "relative_path": "assets/vendor-W9HjDRnr.js.map",
+      "size_mb": 1.322
+    }
+  },
+  "violations": [],
+  "status": "passed"
+}

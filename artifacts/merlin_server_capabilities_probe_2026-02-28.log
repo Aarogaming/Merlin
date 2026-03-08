@@ -1,0 +1,17 @@
+INFO:     Started server process [29652]
+INFO:     Waiting for application startup.
+2026-02-28 18:06:07,465 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-02-28 18:06:07,470 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-02-28 18:06:07,470 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-02-28 18:06:10,204 - merlin - WARNING - Redis connection failed: Error 111 connecting to localhost:6379. Connection refused.. Falling back to in-memory cache.
+2026-02-28 18:06:10,208 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-02-28 18:06:10,984 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:38246 - "GET /health HTTP/1.1" 200 OK
+2026-02-28 18:06:10,992 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:38260 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [29652]

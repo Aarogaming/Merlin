@@ -1,1 +1,20 @@
 /* Snapshot Summary Component Styles */
+
+.snapshot-summary-card {
+  background: var(--theme-surface-card);
+  border-color: var(--theme-border-strong);
+}
+
+.snapshot-retry-guidance {
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+@media (max-width: 768px) {
+  .snapshot-summary-card {
+    padding: 1rem;
+  }
+
+  .snapshot-summary-card .grid {
+    grid-template-columns: 1fr;
+  }
+}

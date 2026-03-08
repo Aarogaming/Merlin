@@ -1,0 +1,17 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "89c815f8-802f-4605-a2d7-fbd2358fbd86",
+  "trace_id": "c5b9085f-10a1-41a9-a2c5-4c8465d6cf8f",
+  "operation": {
+    "name": "merlin.llm.predictive.feedback.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "status": "recorded",
+    "model_name": "fixture-model",
+    "updated_weights": {
+      "task_type": 0.4
+    }
+  }
+}

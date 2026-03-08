@@ -1,0 +1,4 @@
+[console_scripts]
+aas = merlin_cli:main
+merlin = merlin_cli:main
+merlin-changelog = merlin_changelog:main

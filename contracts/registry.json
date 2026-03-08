@@ -1,0 +1,82 @@
+{
+  "schema_name": "AAS.ContractRegistry",
+  "schema_version": "1.0.0",
+  "updated_at": "2026-02-24T00:00:00Z",
+  "entries": [
+    {
+      "name": "AAS.Discovery.Seed",
+      "version": "1.0.0",
+      "path": "contracts/discovery/seed.schema.json"
+    },
+    {
+      "name": "AAS.Discovery.CollectedItem",
+      "version": "1.0.0",
+      "path": "contracts/discovery/collected_item.schema.json"
+    },
+    {
+      "name": "AAS.Discovery.ScoreResult",
+      "version": "1.0.0",
+      "path": "contracts/discovery/score_result.schema.json"
+    },
+    {
+      "name": "AAS.Discovery.TopicSelection",
+      "version": "1.0.0",
+      "path": "contracts/discovery/topic_selection.schema.json"
+    },
+    {
+      "name": "AAS.Discovery.Artifact",
+      "version": "1.0.0",
+      "path": "contracts/discovery/artifact.schema.json"
+    },
+    {
+      "name": "AAS.Discovery.PublishResult",
+      "version": "1.0.0",
+      "path": "contracts/discovery/publish_result.schema.json"
+    },
+    {
+      "name": "AAS.Discovery.RunReport",
+      "version": "1.0.0",
+      "path": "contracts/discovery/run_report.schema.json"
+    },
+    {
+      "name": "AAS.Discovery.EventEnvelope",
+      "version": "1.0.0",
+      "path": "contracts/events/event_envelope.schema.json"
+    },
+    {
+      "name": "AAS.Merlin.SeedGuidance",
+      "version": "1.0.0",
+      "path": "contracts/seed/seed_guidance.schema.json"
+    },
+    {
+      "name": "AAS.Merlin.SeedHealth",
+      "version": "1.0.0",
+      "path": "contracts/seed/seed_health.schema.json"
+    },
+    {
+      "name": "AAS.Merlin.SeedHealthHeartbeat",
+      "version": "1.0.0",
+      "path": "contracts/seed/seed_health_heartbeat.schema.json"
+    },
+    {
+      "name": "AAS.Merlin.SeedWatchdogTick",
+      "version": "1.0.0",
+      "path": "contracts/seed/seed_watchdog_tick.schema.json"
+    },
+    {
+      "name": "AAS.Merlin.SeedWatchdogRuntimeStatus",
+      "version": "1.0.0",
+      "path": "contracts/seed/seed_watchdog_runtime_status.schema.json"
+    },
+    {
+      "name": "AAS.Merlin.SeedWatchdogRuntimeControl",
+      "version": "1.0.0",
+      "path": "contracts/seed/seed_watchdog_runtime_control.schema.json"
+    },
+    {
+      "name": "AAS.Merlin.SeedStatus",
+      "version": "1.0.0",
+      "path": "contracts/seed/seed_status.schema.json"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "f046f963-a0f8-46de-8a69-b73ac9a753f6",
+  "trace_id": "3bc27539-c03c-4505-8e2e-d4a5a457801d",
+  "operation": {
+    "name": "merlin.genesis.logs.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "logs": [
+      {
+        "message": "fixture-log"
+      }
+    ]
+  }
+}

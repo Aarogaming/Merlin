@@ -1,0 +1,26 @@
+{
+  "artifact_schema": "cp4a-smoke-evidence.v1",
+  "status": "pass",
+  "planner": {
+    "tests": 149,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "schema": {
+    "tests": 104,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "log_signatures": {
+    "sync_summary_found": true,
+    "taxonomy_summary_found": true,
+    "smoke_signature_summary_found": true
+  },
+  "inputs": {
+    "planner_junit": "artifacts/planner-fallback-junit.xml",
+    "schema_junit": "artifacts/cp4a-schema-junit.xml",
+    "smoke_log": "artifacts/planner-fallback.log"
+  }
+}

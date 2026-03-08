@@ -27,6 +27,12 @@ Schemas live in `contracts/`:
 - `contracts/aas.operation-envelope.v1.schema.json`
 - `contracts/aas.repo-capability-manifest.v1.schema.json`
 
+## Live Protocol Snapshots
+
+- `GET /merlin/operations/spec` exposes an OpenAPI-like operation snapshot for current public operation names, deprecation metadata, and protocol doc pointers.
+- `GET /merlin/operations/capabilities` exposes supported operation capability names.
+- `GET /merlin/operations/capability-flags` exposes debug flag state with source attribution (`env`, `default`, `runtime`).
+
 ## Usage Rule
 
 Before introducing a cross-repo payload change:

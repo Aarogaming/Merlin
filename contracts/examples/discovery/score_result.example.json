@@ -1,0 +1,19 @@
+{
+  "schema_name": "AAS.Discovery.ScoreResult",
+  "schema_version": "1.0.0",
+  "item_id": "item_a34f7d1c6de312aa",
+  "score": 0.81,
+  "confidence": 0.77,
+  "model_mode": "local",
+  "reason": "source_trust=0.7, tags=policy,ci, lexicon_hits=3",
+  "tags": [
+    "policy",
+    "ci"
+  ],
+  "scored_at": "2026-02-24T05:22:00Z",
+  "explainability": {
+    "source_trust": 0.7,
+    "relevance": 0.86,
+    "novelty": 0.5
+  }
+}

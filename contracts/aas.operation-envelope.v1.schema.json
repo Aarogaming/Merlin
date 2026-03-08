@@ -3,6 +3,211 @@
   "$id": "https://aas.local/contracts/aas.operation-envelope.v1.schema.json",
   "title": "AAS Operation Envelope v1",
   "type": "object",
+  "$defs": {
+    "assistant_chat_routing_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selected_model",
+        "prompt_size_bucket",
+        "dms_used",
+        "dms_candidate",
+        "dms_attempted",
+        "fallback_reason",
+        "fallback_reason_code",
+        "fallback_detail",
+        "fallback_stage",
+        "fallback_retryable",
+        "ab_variant",
+        "router_backend",
+        "router_policy_version",
+        "router_rule_version",
+        "routing_telemetry_schema",
+        "maturity_tier",
+        "maturity_policy_version",
+        "routing_trace_id",
+        "routing_trace_fingerprint",
+        "routing_trace_scheme"
+      ],
+      "properties": {
+        "selected_model": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "prompt_size_bucket": {
+          "type": "string",
+          "enum": [
+            "short",
+            "medium",
+            "long"
+          ]
+        },
+        "dms_used": {
+          "type": "boolean"
+        },
+        "dms_candidate": {
+          "type": "boolean"
+        },
+        "dms_attempted": {
+          "type": "boolean"
+        },
+        "fallback_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fallback_reason_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "dms_auth_error",
+            "dms_disabled",
+            "dms_error",
+            "dms_http_5xx",
+            "dms_parse_error",
+            "dms_rate_limited",
+            "dms_timeout",
+            "dms_transport_error"
+          ]
+        },
+        "fallback_detail": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fallback_stage": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fallback_retryable": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "ab_variant": {
+          "type": "string",
+          "enum": [
+            "dms",
+            "control",
+            "disabled"
+          ]
+        },
+        "router_backend": {
+          "type": "string",
+          "minLength": 1
+        },
+        "router_policy_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "router_rule_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "routing_telemetry_schema": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "maturity_tier": {
+          "type": "string",
+          "enum": [
+            "M0",
+            "M1",
+            "M2",
+            "M3",
+            "M4"
+          ]
+        },
+        "maturity_policy_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "routing_trace_id": {
+          "type": "string",
+          "pattern": "^rt_[a-f0-9]{16}$"
+        },
+        "routing_trace_fingerprint": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "routing_trace_scheme": {
+          "type": "string",
+          "const": "sha256-v1"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "fallback_reason_code": {
+                "const": null
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fallback_retryable": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "fallback_reason_code": {
+                "enum": [
+                  "dms_http_5xx",
+                  "dms_rate_limited",
+                  "dms_timeout",
+                  "dms_transport_error"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fallback_retryable": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "fallback_reason_code": {
+                "enum": [
+                  "dms_auth_error",
+                  "dms_disabled",
+                  "dms_error",
+                  "dms_parse_error"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fallback_retryable": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
   "additionalProperties": false,
   "required": [
     "schema_name",
@@ -137,5 +342,47 @@
     "metadata": {
       "type": "object"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "properties": {
+          "operation": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "const": "assistant.chat.result"
+              }
+            }
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "metadata"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "$ref": "#/$defs/assistant_chat_routing_metadata"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

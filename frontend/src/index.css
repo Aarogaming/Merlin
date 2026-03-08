@@ -4,13 +4,41 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --theme-surface-app: #020617;
+  --theme-surface-card: #0f172a;
+  --theme-surface-elevated: #1e293b;
+  --theme-surface-muted: #111827;
+  --theme-border-soft: rgba(100, 116, 139, 0.28);
+  --theme-border-strong: rgba(100, 116, 139, 0.44);
+  --theme-text-primary: #f8fafc;
+  --theme-text-secondary: #e2e8f0;
+  --theme-text-muted: #94a3b8;
+  --theme-brand-primary: #0ea5e9;
+  --theme-brand-accent: #22c55e;
+  --theme-warning: #f59e0b;
+  --theme-danger: #ef4444;
+}
+
 @layer base {
   * {
     @apply border-dark-border;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
   
   body {
     @apply bg-dark-bg text-dark-text font-sans;
+    background: var(--theme-surface-app);
+    color: var(--theme-text-primary);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   

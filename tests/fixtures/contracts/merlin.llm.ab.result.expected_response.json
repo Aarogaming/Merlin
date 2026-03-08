@@ -1,0 +1,15 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "4fe40ea9-fd19-4531-8412-12fbf2944f3f",
+  "trace_id": "6478de73-83d3-46a5-98f6-5b1ba2b75e53",
+  "operation": {
+    "name": "merlin.llm.ab.result.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "status": "recorded",
+    "test_id": "fixture-ab-test-id",
+    "variant": "routing"
+  }
+}

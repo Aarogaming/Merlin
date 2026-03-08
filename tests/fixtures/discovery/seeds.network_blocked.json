@@ -1,0 +1,9 @@
+[
+  {
+    "topic": "latest technology news",
+    "source": "user_seed",
+    "metadata": {
+      "collector": "rss"
+    }
+  }
+]

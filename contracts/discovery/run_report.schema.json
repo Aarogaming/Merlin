@@ -1,0 +1,329 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/contracts/discovery/run_report.schema.json",
+  "title": "AAS Discovery Run Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "run_id",
+    "profile",
+    "allow_live_automation",
+    "merlin_mode",
+    "started_at",
+    "completed_at",
+    "status",
+    "counts",
+    "policy",
+    "publish_result",
+    "plan",
+    "paths"
+  ],
+  "$defs": {
+    "policy_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "reason"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "allowed",
+            "blocked",
+            "stubbed"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Discovery.RunReport"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run_[A-Za-z0-9TZ_:-]{10,80}$"
+    },
+    "profile": {
+      "type": "string",
+      "enum": [
+        "public",
+        "experimental"
+      ]
+    },
+    "allow_live_automation": {
+      "type": "boolean"
+    },
+    "merlin_mode": {
+      "type": "string",
+      "enum": [
+        "local",
+        "null"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "partial_failure",
+        "failed"
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "seeds_added",
+        "work_promoted",
+        "work_claimed",
+        "items_collected",
+        "items_scored",
+        "topics_selected",
+        "artifacts_generated",
+        "artifacts_written",
+        "artifacts_skipped",
+        "blocked_by_policy",
+        "failed"
+      ],
+      "properties": {
+        "seeds_added": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "work_promoted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "work_claimed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "items_collected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "items_scored": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "topics_selected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "artifacts_generated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "artifacts_written": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "artifacts_skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocked_by_policy": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile",
+        "allow_live_automation",
+        "collector_decisions",
+        "publisher_decisions",
+        "dry_run",
+        "no_write"
+      ],
+      "properties": {
+        "profile": {
+          "type": "string",
+          "enum": [
+            "public",
+            "experimental"
+          ]
+        },
+        "allow_live_automation": {
+          "type": "boolean"
+        },
+        "collector_decisions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/policy_decision"
+          }
+        },
+        "publisher_decisions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/policy_decision"
+          }
+        },
+        "dry_run": {
+          "type": "boolean"
+        },
+        "no_write": {
+          "type": "boolean"
+        }
+      }
+    },
+    "publish_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_name",
+        "schema_version",
+        "run_id",
+        "publisher_mode",
+        "status",
+        "blocked_by_policy",
+        "decision",
+        "message",
+        "created_paths"
+      ],
+      "properties": {
+        "schema_name": {
+          "const": "AAS.Discovery.PublishResult"
+        },
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^run_[A-Za-z0-9TZ_:-]{10,80}$"
+        },
+        "publisher_mode": {
+          "type": "string",
+          "enum": [
+            "stage_only",
+            "pr",
+            "git",
+            "push",
+            "none"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "staged",
+            "blocked",
+            "published",
+            "skipped"
+          ]
+        },
+        "blocked_by_policy": {
+          "type": "boolean"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "allowed",
+            "blocked",
+            "stubbed"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "created_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_id",
+          "path",
+          "action",
+          "valid"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "pattern": "^artifact_[A-Za-z0-9_-]{8,64}$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "CREATE",
+              "OVERWRITE",
+              "SKIP"
+            ]
+          },
+          "valid": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output_root",
+        "knowledge_root",
+        "queue_root",
+        "run_dir"
+      ],
+      "properties": {
+        "output_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "knowledge_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "queue_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "run_dir": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

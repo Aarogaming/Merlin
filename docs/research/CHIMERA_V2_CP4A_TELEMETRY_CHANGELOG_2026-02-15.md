@@ -1,0 +1,117 @@
+# CHIMERA V2 CP4-A Telemetry Changelog (2026-02-15)
+
+## Scope
+Repo-local CP4-A planner fallback and telemetry hardening for `Merlin/**`.
+
+## Applied Changes
+- Added operation-envelope metadata parity for `assistant.chat.request` when `payload.include_metadata=true`.
+  - `merlin_api_server.py`
+  - `tests/test_merlin_api_server.py`
+  - `tests/test_operation_expected_responses.py`
+  - `tests/fixtures/contracts/assistant.chat.request.with_metadata.json`
+  - `tests/fixtures/contracts/assistant.chat.request.with_metadata.expected_response.json`
+- Normalized fallback-reason counter telemetry in all planner routers (`fallback_reason_counts` keyed by shared taxonomy).
+  - `merlin_parallel_llm.py`
+  - `merlin_streaming_llm.py`
+  - `merlin_adaptive_llm.py`
+- Added shared router-metrics test utility and non-fallback zero-count assertions for singleton-sensitive test runs.
+  - `tests/conftest.py`
+  - `tests/test_merlin_parallel_llm.py`
+  - `tests/test_merlin_streaming_llm.py`
+  - `tests/test_merlin_adaptive_llm.py`
+- Added routing metadata schema fragment + fixture validation coverage.
+  - `contracts/assistant.chat.routing-metadata.v1.schema.json`
+  - `tests/test_merlin_routing_contract.py`
+  - `tests/fixtures/contracts/assistant.chat.routing_metadata.contract.json`
+- Composed routing metadata schema into envelope-level validation for `assistant.chat.result` responses with `payload.metadata`.
+  - `contracts/aas.operation-envelope.v1.schema.json`
+  - `tests/test_contract_schemas.py`
+- Added schema parity guard test to prevent drift between standalone routing metadata schema and envelope-embedded definition.
+  - `tests/test_contract_schemas.py`
+- Added fixture materialization guard so `assistant.chat.request.with_metadata.expected_response.json` is validated as a schema-complete response after merge with request fixture defaults.
+  - `tests/test_contract_schemas.py`
+- Added CI-parity runbook smoke script and workflow wiring.
+  - `scripts/smoke_planner_fallback_runbook.sh`
+  - `.github/workflows/ci.yml`
+  - `docs/research/PLANNER_FALLBACK_TEST_RUNBOOK.md`
+- Expanded smoke gate to include envelope/schema enforcement (`test_contract_schemas.py` + `test_merlin_routing_contract.py`) and emit schema JUnit evidence.
+  - `scripts/smoke_planner_fallback_runbook.sh`
+  - `.github/workflows/ci.yml`
+- Added schema sync utility to enforce single-source routing metadata contract shape and fail on embedded-schema drift.
+  - `scripts/sync_contract_schemas.py`
+  - `scripts/smoke_planner_fallback_runbook.sh`
+- Added sync utility regression tests (check failure/success and write-repair path).
+  - `tests/test_sync_contract_schemas.py`
+- Promoted schema sync guard into always-on quality gates.
+  - `.github/workflows/ci.yml` (`quality` job)
+  - `.pre-commit-config.yaml` (`pre-commit`/`pre-push` hooks)
+- Hardened smoke log assertions to require both suite pass signatures and schema-sync signature, preventing partial-success false positives.
+  - `scripts/smoke_planner_fallback_runbook.sh`
+- Removed hardcoded pass-count coupling in smoke by deriving expected `<N passed>` signatures from collected test counts per suite.
+  - `scripts/smoke_planner_fallback_runbook.sh`
+- Replaced log-summary coupling with machine-readable JUnit total verification and added verifier regression tests.
+  - `scripts/verify_junit_totals.py`
+  - `tests/test_verify_junit_totals.py`
+  - `scripts/smoke_planner_fallback_runbook.sh`
+- Pinned expected planner/schema suite totals in CI smoke invocation to catch accidental suite shrink.
+  - `.github/workflows/ci.yml`
+- Added baseline source-of-truth for smoke expected totals and wired smoke/CI to consume it.
+  - `docs/research/CP4A_SMOKE_BASELINE_2026-02-15.json`
+  - `scripts/smoke_planner_fallback_runbook.sh`
+  - `.github/workflows/ci.yml`
+- Added explicit baseline loader/validator with regression tests to fail fast on malformed baseline payloads.
+  - `scripts/load_cp4a_smoke_baseline.py`
+  - `tests/test_load_cp4a_smoke_baseline.py`
+  - `scripts/smoke_planner_fallback_runbook.sh`
+  - `.github/workflows/ci.yml`
+- Hardened smoke baseline load path to require successful validator execution before any suite run (prevents process-substitution false positives).
+  - `scripts/smoke_planner_fallback_runbook.sh`
+- Added routing taxonomy sync verifier to enforce fallback reason enum/required-field/retryable partition parity between schema and Python contract constants.
+  - `scripts/verify_routing_taxonomy_sync.py`
+  - `tests/test_verify_routing_taxonomy_sync.py`
+  - `scripts/smoke_planner_fallback_runbook.sh`
+  - `.github/workflows/ci.yml`
+  - `.pre-commit-config.yaml`
+- Added explicit smoke log signature assertion for taxonomy sync output (`routing taxonomy is in sync`).
+  - `scripts/smoke_planner_fallback_runbook.sh`
+- Extracted smoke log/artifact signature checks into a dedicated verifier with regression tests.
+  - `scripts/verify_smoke_log_signatures.py`
+  - `tests/test_verify_smoke_log_signatures.py`
+  - `scripts/smoke_planner_fallback_runbook.sh`
+  - `.github/workflows/ci.yml`
+- Added smoke runbook sequencing regression tests to assert malformed/missing baseline failures short-circuit before planner/schema execution.
+  - `tests/test_smoke_planner_fallback_runbook.py`
+  - `.github/workflows/ci.yml`
+- Expanded smoke runbook sequencing regression tests to cover planner expected-total mismatch and missing taxonomy signature failure paths.
+  - `tests/test_smoke_planner_fallback_runbook.py`
+  - `.github/workflows/ci.yml`
+- Added timing-insensitive smoke evidence exporter for packetizable downstream consumption.
+  - `scripts/export_cp4a_smoke_evidence.py`
+  - `tests/test_export_cp4a_smoke_evidence.py`
+  - `scripts/smoke_planner_fallback_runbook.sh`
+  - `.github/workflows/ci.yml`
+- Added CP4-A smoke evidence schema contract and validator gate to enforce payload shape stability.
+  - `contracts/cp4a.smoke-evidence.v1.schema.json`
+  - `scripts/verify_cp4a_smoke_evidence_schema.py`
+  - `tests/test_verify_cp4a_smoke_evidence_schema.py`
+  - `scripts/smoke_planner_fallback_runbook.sh`
+  - `.github/workflows/ci.yml`
+- Added fixture-backed CP4-A smoke evidence contract assertion in always-on contract schema coverage.
+  - `tests/fixtures/contracts/cp4a.smoke_evidence.contract.json`
+  - `tests/test_contract_schemas.py`
+  - `docs/research/CP4A_SMOKE_BASELINE_2026-02-15.json` (`schema_expected_tests` updated to `48`)
+- Added a fast CI quality gate step for JUnit verifier regression tests (`tests/test_verify_junit_totals.py`) to fail earlier than smoke.
+  - `.github/workflows/ci.yml`
+- Verified strict assertion behavior with negative control (`PLANNER_EXPECTED_TESTS='999'`) producing non-zero smoke exit.
+- Verified smoke-signature verifier negative control (`TAXONOMY_EXPECTED_SUMMARY='__missing_taxonomy_signature__'`) producing non-zero smoke exit.
+- Verified missing-baseline negative control (`CP4A_SMOKE_BASELINE_PATH='/tmp/does-not-exist-cp4a-baseline.json'`) producing non-zero smoke exit before suite execution.
+
+## Compatibility Notes
+- Legacy `fallback_reason` string is preserved for existing consumers.
+- Canonical machine-read field for policy logic remains `fallback_reason_code`.
+- `routing_telemetry_schema` remains `1.0.0` for this CP4-A pass.
+
+## Verification Gate
+Use repo-local targeted runs:
+- `bash scripts/run_planner_fallback_tests.sh`
+- `bash scripts/smoke_planner_fallback_runbook.sh`

@@ -1,0 +1,71 @@
+{
+  "schema_name": "AAS.Merlin.SeedStatus",
+  "schema_version": "1.0.0",
+  "workspace_root": "/mnt/c/Dev library/AaroneousAutomationSuite",
+  "policy": {
+    "decision": "allowed",
+    "allow_live_automation": true,
+    "allow_live_automation_default": true,
+    "reason": "live automation is enabled"
+  },
+  "paths": {
+    "status_file": "/mnt/c/Dev library/AaroneousAutomationSuite/artifacts/merlin_seed_status.json",
+    "merged_jsonl": "/mnt/c/Dev library/AaroneousAutomationSuite/guild/data/merlin_distill_merged.jsonl",
+    "merged_parquet": "/mnt/c/Dev library/AaroneousAutomationSuite/guild/data/merlin_distill_merged.parquet",
+    "log_file": "/mnt/c/Dev library/AaroneousAutomationSuite/logs/merlin_seed_task.log"
+  },
+  "status_file": {
+    "exists": true,
+    "mtime_utc": "2026-02-06T00:49:31Z",
+    "status_age_seconds": 1717300.652,
+    "stale": true,
+    "read_error": null
+  },
+  "status": {
+    "status": "running",
+    "target": 50000,
+    "current_total": 4641,
+    "updated_at": "2026-02-05T19:48:53Z"
+  },
+  "progress": {
+    "target_rounds": 50000,
+    "completed_rounds": 4641,
+    "remaining_rounds": 45359,
+    "completion_ratio": 0.09282,
+    "completion_percent": 9.28,
+    "source": "status_or_dataset_max",
+    "eta_seconds": 48630.0,
+    "throughput_per_min": 55.96
+  },
+  "dataset": {
+    "exists": true,
+    "line_count": 4641,
+    "mtime_utc": "2026-02-13T06:34:54Z"
+  },
+  "process": {
+    "active": false,
+    "count": 0,
+    "rows": []
+  },
+  "guidance": {
+    "schema_name": "AAS.Merlin.SeedGuidance",
+    "schema_version": "1.0.0",
+    "state": "attention",
+    "next_action": "start",
+    "recommendations": [
+      {
+        "id": "start_worker",
+        "severity": "high",
+        "message": "No active seed worker is running before target completion.",
+        "action": "Run merlin.seed.control with action=start and allow_live_automation=true."
+      },
+      {
+        "id": "stale_status",
+        "severity": "medium",
+        "message": "Seed status has not been updated recently.",
+        "action": "Inspect logs and consider merlin.seed.control action=restart if the worker is stuck."
+      }
+    ]
+  },
+  "updated_at": "2026-02-25T16:50:33Z"
+}

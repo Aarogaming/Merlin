@@ -1,0 +1,418 @@
+{
+  "generated_on": "2026-02-18",
+  "source": "docs/research/SUGGESTIONS_BIN.md#pass-3-repo-specific-suggestion-sweep-target-100",
+  "counts": {
+    "total": 100,
+    "top_15": 15,
+    "next_35": 35,
+    "later_50": 50
+  },
+  "tiers": {
+    "top_15": [
+      {
+        "id": "S001",
+        "summary": "Add centralized operation-envelope request validation middleware to remove repeated schema checks (targets: `merlin_api_server.py`, `contracts/aas.operation-envelope.v1.schema.json`)."
+      },
+      {
+        "id": "S003",
+        "summary": "Enforce bounded payload-size limits per operation to prevent oversized body abuse (targets: `merlin_api_server.py`, `merlin_settings.py`)."
+      },
+      {
+        "id": "S006",
+        "summary": "Add per-operation latency percentiles (p50/p95/p99) in API status output (targets: `merlin_api_server.py`, `merlin_metrics_dashboard.py`)."
+      },
+      {
+        "id": "S007",
+        "summary": "Split error taxonomy into transport, validation, auth, dependency, and policy classes (targets: `merlin_api_server.py`, `tests/test_operation_error_responses.py`)."
+      },
+      {
+        "id": "S014",
+        "summary": "Add per-operation rate limiting with clear retry hints (targets: `merlin_api_server.py`, `merlin_policy.py`)."
+      },
+      {
+        "id": "S020",
+        "summary": "Add endpoint conformance runner that validates request/response against fixture contracts (targets: `tests/test_operation_expected_responses.py`, `tests/fixtures/contracts`)."
+      },
+      {
+        "id": "S024",
+        "summary": "Move fallback reason strings to a shared enum module to prevent drift (targets: `merlin_routing_contract.py`, `merlin_adaptive_llm.py`)."
+      },
+      {
+        "id": "S025",
+        "summary": "Centralize route-policy logic into one helper used by adaptive/parallel/streaming backends (targets: `merlin_adaptive_llm.py`, `merlin_parallel_llm.py`, `merlin_streaming_llm.py`)."
+      },
+      {
+        "id": "S026",
+        "summary": "Make A/B assignment deterministic per conversation or correlation hash (targets: `merlin_ab_testing.py`, `merlin_adaptive_llm.py`)."
+      },
+      {
+        "id": "S027",
+        "summary": "Build explicit SSE parser state machine to handle comments/heartbeat/[DONE] frames (targets: `merlin_streaming_llm.py`, `tests/test_merlin_streaming_llm.py`)."
+      },
+      {
+        "id": "S033",
+        "summary": "Add early-cancel for losing branches in parallel model execution (targets: `merlin_parallel_llm.py`, `tests/test_merlin_parallel_llm.py`)."
+      },
+      {
+        "id": "S037",
+        "summary": "Add automatic DMS disable/enable policy based on rolling error budget (targets: `merlin_adaptive_llm.py`, `merlin_settings.py`)."
+      },
+      {
+        "id": "S041",
+        "summary": "Add session TTL and archival policy for old research-manager sessions (targets: `merlin_research_manager.py`, `merlin_settings.py`)."
+      },
+      {
+        "id": "S065",
+        "summary": "Enforce plugin manifest schema validation before plugin load (targets: `merlin_plugin_manager.py`, `plugins/*/manifest.json`)."
+      },
+      {
+        "id": "S093",
+        "summary": "Add coverage gate for critical modules (API, routing, research manager) (targets: `pytest.ini`, `.github/workflows/ci.yml`)."
+      }
+    ],
+    "next_35": [
+      {
+        "id": "S002",
+        "summary": "Add schema-version negotiation and explicit downgrade errors for incompatible envelopes (targets: `merlin_api_server.py`, `docs/protocols/operation-envelope-v1.md`)."
+      },
+      {
+        "id": "S004",
+        "summary": "Require `correlation_id` for all mutating operations and return deterministic validation errors when absent (targets: `merlin_api_server.py`, `tests/test_merlin_api_server.py`)."
+      },
+      {
+        "id": "S005",
+        "summary": "Add optional `Idempotency-Key` handling for safe retry of create/update style operations (targets: `merlin_api_server.py`, `docs/protocols/operation-envelope-v1.md`)."
+      },
+      {
+        "id": "S008",
+        "summary": "Add startup contract self-check that fails fast when required schemas are missing (targets: `merlin_api_server.py`, `scripts/sync_contract_schemas.py`)."
+      },
+      {
+        "id": "S009",
+        "summary": "Add endpoint to expose active capability flags with source (env/default/runtime) for debugging (targets: `merlin_api_server.py`, `docs/protocols/repo-capabilities-merlin-v1.md`)."
+      },
+      {
+        "id": "S010",
+        "summary": "Add API deprecation headers for operations planned for replacement (targets: `merlin_api_server.py`, `docs/protocols/compatibility-policy.md`)."
+      },
+      {
+        "id": "S011",
+        "summary": "Add OpenAPI-like exported spec snapshot for public Merlin operations (targets: `merlin_api_server.py`, `docs/protocols/README.md`)."
+      },
+      {
+        "id": "S012",
+        "summary": "Add operation replay diagnostics endpoint gated to local debug mode (targets: `merlin_api_server.py`, `merlin_settings.py`)."
+      },
+      {
+        "id": "S013",
+        "summary": "Add strict auth key rotation support with hot reload (targets: `merlin_auth.py`, `merlin_api_server.py`)."
+      },
+      {
+        "id": "S015",
+        "summary": "Add request audit metadata contract (`request_id`, `route`, `decision_version`) (targets: `merlin_api_server.py`, `merlin_audit.py`)."
+      },
+      {
+        "id": "S016",
+        "summary": "Add endpoint-level circuit breaker integration for unstable dependencies (targets: `merlin_api_server.py`, `merlin_self_healing.py`)."
+      },
+      {
+        "id": "S017",
+        "summary": "Add structured access logs with redaction of prompt/content fields (targets: `merlin_logger.py`, `merlin_api_server.py`)."
+      },
+      {
+        "id": "S018",
+        "summary": "Add HTTP timeout and keep-alive tuning defaults for production-like local loads (targets: `merlin_api_server.py`, `docker-compose.yml`)."
+      },
+      {
+        "id": "S019",
+        "summary": "Add operation-level feature flags for safer phased rollouts (targets: `merlin_settings.py`, `merlin_api_server.py`)."
+      },
+      {
+        "id": "S021",
+        "summary": "Replace character-based prompt buckets with optional token-aware buckets (targets: `merlin_adaptive_llm.py`, `merlin_parallel_llm.py`)."
+      },
+      {
+        "id": "S022",
+        "summary": "Add DMS cold-start warmup request and expose readiness state (targets: `merlin_llm_backends.py`, `merlin_settings.py`)."
+      },
+      {
+        "id": "S023",
+        "summary": "Add per-model timeout matrix (`short`, `medium`, `long`) (targets: `merlin_settings.py`, `merlin_llm_backends.py`)."
+      },
+      {
+        "id": "S028",
+        "summary": "Capture time-to-first-token and stream completion latency for streamed routes (targets: `merlin_streaming_llm.py`, `merlin_metrics_dashboard.py`)."
+      },
+      {
+        "id": "S029",
+        "summary": "Add quality-scoring hook interface to compare DMS vs control responses (targets: `merlin_adaptive_llm.py`, `merlin_quality_gates.py`)."
+      },
+      {
+        "id": "S030",
+        "summary": "Add cached-prefix prompt construction helper for repeated system prompts (targets: `merlin_llm_backends.py`, `merlin_settings.py`)."
+      },
+      {
+        "id": "S031",
+        "summary": "Add ultra-fast short-prompt lane that bypasses heavy routing checks (targets: `merlin_adaptive_llm.py`, `merlin_parallel_llm.py`)."
+      },
+      {
+        "id": "S032",
+        "summary": "Add prompt truncation + warning metadata for near-token-limit requests (targets: `merlin_llm_backends.py`, `merlin_routing_contract.py`)."
+      },
+      {
+        "id": "S034",
+        "summary": "Add shared retry/backoff utility with jitter and retry budget caps (targets: `merlin_utils.py`, `merlin_llm_backends.py`)."
+      },
+      {
+        "id": "S035",
+        "summary": "Add route policy version stamp in every routing metadata payload (targets: `merlin_routing_contract.py`, `merlin_adaptive_llm.py`)."
+      },
+      {
+        "id": "S036",
+        "summary": "Add router regression corpus with expected model selections (targets: `tests/test_merlin_adaptive_llm.py`, `tests/test_merlin_parallel_llm.py`)."
+      },
+      {
+        "id": "S038",
+        "summary": "Normalize usage parsing across OpenAI-compatible providers (`usage`, `cached_tokens`) (targets: `merlin_llm_backends.py`, `tests/test_merlin_llm_backends.py`)."
+      },
+      {
+        "id": "S039",
+        "summary": "Add provider response normalization layer before scoring/metadata emission (targets: `merlin_llm_backends.py`, `merlin_routing_contract.py`)."
+      },
+      {
+        "id": "S040",
+        "summary": "Add safety pre-check stage for high-risk prompts before model dispatch (targets: `merlin_policy.py`, `merlin_adaptive_llm.py`)."
+      },
+      {
+        "id": "S042",
+        "summary": "Add provenance fields (`created_by`, `source_operation`, `policy_version`) on research sessions (targets: `merlin_research_manager.py`, `merlin_api_server.py`)."
+      },
+      {
+        "id": "S043",
+        "summary": "Add confidence calibration helper for signal scoring (targets: `merlin_research_manager.py`, `tests/test_merlin_research_manager.py`)."
+      },
+      {
+        "id": "S044",
+        "summary": "Version brief output templates so brief schema changes stay traceable (targets: `merlin_research_manager.py`, `docs/protocols/operation-envelope-v1.md`)."
+      },
+      {
+        "id": "S045",
+        "summary": "Add explicit audit entries for read-only mode rejections (targets: `merlin_research_manager.py`, `merlin_audit.py`)."
+      },
+      {
+        "id": "S046",
+        "summary": "Add signal deduplication by stable claim hash to reduce noisy evidence (targets: `merlin_research_manager.py`, `merlin_utils.py`)."
+      },
+      {
+        "id": "S047",
+        "summary": "Track contradictory signals and expose conflict counts in briefs (targets: `merlin_research_manager.py`, `tests/test_merlin_research_manager.py`)."
+      },
+      {
+        "id": "S053",
+        "summary": "Expand operation contract fixtures for all research-manager success and error variants (targets: `tests/fixtures/contracts`, `tests/test_operation_expected_responses.py`)."
+      }
+    ],
+    "later_50": [
+      {
+        "id": "S048",
+        "summary": "Add causal chain rendering in brief output for hypothesis evidence links (targets: `merlin_research_manager.py`, `merlin_cli.py`)."
+      },
+      {
+        "id": "S049",
+        "summary": "Add export/import CLI for research sessions to JSON snapshots (targets: `merlin_cli.py`, `merlin_research_manager.py`)."
+      },
+      {
+        "id": "S050",
+        "summary": "Add session tagging and topic search filters in API/CLI (targets: `merlin_research_manager.py`, `merlin_cli.py`)."
+      },
+      {
+        "id": "S051",
+        "summary": "Add batch-mode CLI commands for repeated research operations (targets: `merlin_cli.py`, `tests/test_merlin_cli.py`)."
+      },
+      {
+        "id": "S052",
+        "summary": "Add webhook/event emitter for research session updates (targets: `merlin_research_manager.py`, `merlin_hub_client.py`)."
+      },
+      {
+        "id": "S054",
+        "summary": "Add cursor-based pagination for large research session lists (targets: `merlin_research_manager.py`, `merlin_api_server.py`)."
+      },
+      {
+        "id": "S055",
+        "summary": "Add search endpoint for research sessions by objective keyword (targets: `merlin_api_server.py`, `merlin_research_manager.py`)."
+      },
+      {
+        "id": "S056",
+        "summary": "Add optional background summarization queue for expensive brief generation (targets: `merlin_research_manager.py`, `merlin_tasks.py`)."
+      },
+      {
+        "id": "S057",
+        "summary": "Add risk-scoring rubric fields (`impact`, `uncertainty`, `time_horizon`) in session schema (targets: `merlin_research_manager.py`, `docs/research/*`)."
+      },
+      {
+        "id": "S058",
+        "summary": "Link research sessions to task IDs and planner artifacts for traceability (targets: `merlin_tasks.py`, `merlin_research_manager.py`)."
+      },
+      {
+        "id": "S059",
+        "summary": "Ingest planner fallback telemetry as structured research signals automatically (targets: `merlin_quality_gates.py`, `merlin_research_manager.py`)."
+      },
+      {
+        "id": "S060",
+        "summary": "Add CLI command to generate CP packet skeletons from session briefs (targets: `merlin_cli.py`, `docs/research`)."
+      },
+      {
+        "id": "S061",
+        "summary": "Add incremental hashing index updates for resource files to reduce full rescans (targets: `merlin_resource_indexer.py`, `plugins/resource_indexer/plugin.py`)."
+      },
+      {
+        "id": "S062",
+        "summary": "Add debounce/backpressure controls in file watching to prevent thrash (targets: `merlin_watcher.py`, `merlin_resource_indexer.py`)."
+      },
+      {
+        "id": "S063",
+        "summary": "Add retrieval relevance diagnostics (`top_k_hit_rate`, `source_diversity`) for RAG queries (targets: `merlin_rag.py`, `tests/test_merlin_rag.py`)."
+      },
+      {
+        "id": "S064",
+        "summary": "Normalize citation format for RAG responses with deterministic source IDs (targets: `merlin_rag.py`, `merlin_routing_contract.py`)."
+      },
+      {
+        "id": "S066",
+        "summary": "Add plugin permission tiers (`read`, `write`, `network`, `exec`) with policy checks (targets: `merlin_plugin_manager.py`, `merlin_policy.py`)."
+      },
+      {
+        "id": "S067",
+        "summary": "Add plugin execution timeout budgets and cancellation hooks (targets: `merlin_plugin_manager.py`, `merlin_tasks.py`)."
+      },
+      {
+        "id": "S068",
+        "summary": "Add plugin dependency compatibility checker in startup preflight (targets: `merlin_plugin_manager.py`, `scripts/check_secret_hygiene.py`)."
+      },
+      {
+        "id": "S069",
+        "summary": "Add plugin crash isolation and auto-restart with capped retries (targets: `merlin_plugin_manager.py`, `merlin_self_healing.py`)."
+      },
+      {
+        "id": "S070",
+        "summary": "Add plugin catalog API filters by capability and health state (targets: `merlin_plugin_manager.py`, `merlin_api_server.py`)."
+      },
+      {
+        "id": "S071",
+        "summary": "Add vector memory compaction and stale-vector cleanup routine (targets: `merlin_vector_memory.py`, `tests/test_merlin_vector_memory.py`)."
+      },
+      {
+        "id": "S072",
+        "summary": "Add vector-memory integrity checker script for index consistency (targets: `merlin_vector_memory.py`, `scripts/`)."
+      },
+      {
+        "id": "S073",
+        "summary": "Add schema migration utility for Merlin DB with rollback support (targets: `merlin_db.py`, `merlin_backup.py`)."
+      },
+      {
+        "id": "S074",
+        "summary": "Tune SQLite pragmas and WAL settings for better concurrent read/write behavior (targets: `merlin_db.py`, `merlin_settings.py`)."
+      },
+      {
+        "id": "S075",
+        "summary": "Add cache eviction telemetry and hit-rate metrics per cache namespace (targets: `merlin_cache.py`, `merlin_metrics_dashboard.py`)."
+      },
+      {
+        "id": "S076",
+        "summary": "Add backup integrity hash + verify command for archive confidence (targets: `merlin_backup.py`, `merlin_backup_to_drive.py`)."
+      },
+      {
+        "id": "S077",
+        "summary": "Add restore smoke test command to validate backup usability (targets: `merlin_backup.py`, `merlin_cli.py`)."
+      },
+      {
+        "id": "S078",
+        "summary": "Add schema version field in user profile JSON and migration helper (targets: `merlin_user_manager.py`, `merlin_users.json`)."
+      },
+      {
+        "id": "S079",
+        "summary": "Add voice benchmark dataset versioning and provenance fields (targets: `merlin_voice_benchmark.py`, `merlin_voice_sources.json`)."
+      },
+      {
+        "id": "S080",
+        "summary": "Add deterministic fallback-to-text metadata when voice routes fail (targets: `merlin_voice_router.py`, `merlin_voice.py`)."
+      },
+      {
+        "id": "S081",
+        "summary": "Generate typed frontend client contracts from operation fixtures to prevent drift (targets: `frontend/src/services`, `tests/fixtures/contracts`)."
+      },
+      {
+        "id": "S082",
+        "summary": "Add dashboard panel for fallback taxonomy counts and trend lines (targets: `frontend/src/components/AgentAnalytics.tsx`, `frontend/src/components/PluginAnalytics.tsx`)."
+      },
+      {
+        "id": "S083",
+        "summary": "Add research-manager session explorer page in frontend (targets: `frontend/src/pages`, `frontend/src/services/onboarding.ts`)."
+      },
+      {
+        "id": "S084",
+        "summary": "Add command palette for operation discovery and quick execution (targets: `frontend/src/App.tsx`, `frontend/src/components`)."
+      },
+      {
+        "id": "S085",
+        "summary": "Run responsive layout audit and fix overflow issues on narrow widths (targets: `frontend/src/components/*.css`, `frontend/src/index.css`)."
+      },
+      {
+        "id": "S086",
+        "summary": "Add frontend bundle-size budget check in CI (targets: `frontend/scripts/check-dist-size.js`, `.github/workflows/ci.yml`)."
+      },
+      {
+        "id": "S087",
+        "summary": "Add Tauri crash reporting hook with local opt-in upload (targets: `frontend/src-tauri/src/main.rs`, `frontend/src-tauri/tauri.conf.json`)."
+      },
+      {
+        "id": "S088",
+        "summary": "Add user-facing retry guidance for fallback cases in UI responses (targets: `frontend/src/components/SnapshotSummary.tsx`, `frontend/src/components/SystemInfo.tsx`)."
+      },
+      {
+        "id": "S089",
+        "summary": "Add accessibility pass for keyboard nav, labels, and contrast in core components (targets: `frontend/src/components`, `frontend/src/pages/Onboarding.tsx`)."
+      },
+      {
+        "id": "S090",
+        "summary": "Consolidate theme variables and remove duplicated style tokens (targets: `frontend/src/index.css`, `frontend/src/components/*.css`)."
+      },
+      {
+        "id": "S091",
+        "summary": "Add pre-commit tasks for schema sync, lint, and targeted contract tests (targets: `.pre-commit-config.yaml`, `scripts/sync_contract_schemas.py`)."
+      },
+      {
+        "id": "S092",
+        "summary": "Roll out stricter `mypy` config in phases by module criticality (targets: `mypy.ini`, `merlin_api_server.py`, `merlin_llm_backends.py`)."
+      },
+      {
+        "id": "S094",
+        "summary": "Add CI secret-scan policy report artifact and fail conditions (targets: `scripts/check_secret_hygiene.py`, `.github/workflows/ci.yml`)."
+      },
+      {
+        "id": "S095",
+        "summary": "Add dependency vulnerability scan and weekly report generation (targets: `requirements.txt`, `.github/workflows/ci.yml`)."
+      },
+      {
+        "id": "S096",
+        "summary": "Add release checklist automation script for artifacts/contracts/tests (targets: `scripts/`, `docs/AGENT_TRANSITION.md`)."
+      },
+      {
+        "id": "S097",
+        "summary": "Add changelog generation pipeline from tagged commits (targets: `setup.py`, `README.md`, `.github/workflows/ci.yml`)."
+      },
+      {
+        "id": "S098",
+        "summary": "Add standardized benchmark command pack for local performance snapshots (targets: `merlin_benchmark.py`, `scripts/`)."
+      },
+      {
+        "id": "S099",
+        "summary": "Add incident runbook templates per subsystem (API, routing, plugins, research manager) (targets: `RUNBOOK.md`, `docs/research`)."
+      },
+      {
+        "id": "S100",
+        "summary": "Add quarterly architecture drift review checklist with tracked actions (targets: `ARCHITECTURE.md`, `docs/MERLIN_LONG_TERM_ROADMAP.md`)."
+      }
+    ]
+  }
+}

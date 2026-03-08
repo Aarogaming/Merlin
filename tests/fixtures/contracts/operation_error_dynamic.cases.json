@@ -1,0 +1,65 @@
+{
+  "cases": [
+    {
+      "case_id": "assistant_tools_not_found_dynamic",
+      "operation_name": "assistant.tools.execute",
+      "request_fixture": "assistant.tools.execute.request.json",
+      "payload": {
+        "name": "custom_tool"
+      },
+      "setup": "assistant_tools_not_found_dynamic",
+      "expected_status": 404,
+      "expected_error": {
+        "code": "TOOL_NOT_FOUND",
+        "retryable": false,
+        "message_regex": "^Plugin custom_tool not found$"
+      }
+    },
+    {
+      "case_id": "plugins_execute_not_found_dynamic",
+      "operation_name": "merlin.plugins.execute",
+      "request_fixture": "merlin.plugins.execute.request.json",
+      "payload": {
+        "name": "missing_plugin"
+      },
+      "setup": "plugins_execute_not_found_dynamic",
+      "expected_status": 404,
+      "expected_error": {
+        "code": "PLUGIN_NOT_FOUND",
+        "retryable": false,
+        "message_regex": "^Plugin missing_plugin not found$"
+      }
+    },
+    {
+      "case_id": "command_execution_failed_dynamic",
+      "operation_name": "merlin.command.execute",
+      "request_fixture": "merlin.command.execute.request.json",
+      "payload": {
+        "command": "ls /missing"
+      },
+      "setup": "command_execution_failed_dynamic",
+      "expected_status": 400,
+      "expected_error": {
+        "code": "COMMAND_EXECUTION_FAILED",
+        "retryable": false,
+        "message_contains": "ls /missing"
+      }
+    },
+    {
+      "case_id": "user_create_exists_dynamic",
+      "operation_name": "merlin.user_manager.create",
+      "request_fixture": "merlin.user_manager.create.request.json",
+      "payload": {
+        "username": "bob",
+        "password": "pw"
+      },
+      "setup": "user_create_exists_dynamic",
+      "expected_status": 409,
+      "expected_error": {
+        "code": "USER_EXISTS",
+        "retryable": false,
+        "message_regex": "^User bob already exists$"
+      }
+    }
+  ]
+}

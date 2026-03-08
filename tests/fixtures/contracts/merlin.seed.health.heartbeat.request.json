@@ -1,0 +1,30 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "7d36c74e-e4fe-4895-9cf0-cb1a3df691fc",
+  "correlation_id": "2f084f5a-a061-4f3d-ab46-d212645be7d3",
+  "trace_id": "68967ea0-ae0f-4066-ab91-f1af4ab88697",
+  "timestamp_utc": "2026-02-25T12:00:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.seed.health.heartbeat",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "merlin-seed-health-heartbeat-2026-02-25-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "stale_after_seconds": 3600,
+    "write_event": false
+  }
+}

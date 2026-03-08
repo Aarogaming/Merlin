@@ -1,4 +1,4 @@
-# Task 81: Rewrite web UI using React (Placeholder for Python-based React-like UI or static server)
+# Task 81: Dashboard delivery bridge for static React or fallback HTML UI.
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
@@ -7,7 +7,7 @@ from merlin_metrics_dashboard import metrics_dashboard
 
 
 def setup_dashboard(app: FastAPI):
-    # Serve static files (React build would go here)
+    # Serve static files when a frontend build is present.
     if os.path.exists("frontend/dist"):
         app.mount(
             "/dashboard",
@@ -17,7 +17,7 @@ def setup_dashboard(app: FastAPI):
     else:
 
         @app.get("/dashboard", response_class=HTMLResponse)
-        async def dashboard_placeholder():
+        async def dashboard_fallback():
             return """
             <html>
                 <head>

@@ -1,0 +1,20 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "bf613f48-afee-4910-b0b2-4e8ae78b81d2",
+  "trace_id": "4a2b8a34-5f0d-40ad-b638-c0f241f84523",
+  "operation": {
+    "name": "merlin.alerts.list.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "alerts": [
+      {
+        "id": "1",
+        "message": "System stress high",
+        "severity": "warning",
+        "timestamp": 0
+      }
+    ]
+  }
+}

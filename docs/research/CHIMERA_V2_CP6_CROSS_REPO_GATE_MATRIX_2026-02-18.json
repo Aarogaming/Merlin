@@ -1,0 +1,127 @@
+{
+  "cycle_id": "CHIMERA-V2-RESEARCH-AND-EXECUTION-2026-02-15",
+  "phase": "CP6 Cross-Repo Orchestration Wave",
+  "generated_on": "2026-02-18",
+  "criteria": {
+    "six_block": "Agent return includes the required 6-block structure.",
+    "success_flow": "Repo evidence includes success-path coverage for research-manager envelope operations.",
+    "expected_failure_branch": "Repo evidence includes deterministic fallback/error branch coverage.",
+    "artifact_present": "Required CP6 status artifact exists in repo-local docs/research path.",
+    "live_probe": "Live capability probe to local Merlin endpoint succeeded.",
+    "live_chain_proof": "Live create -> signal -> brief chain completed against local Merlin endpoint.",
+    "gate_verdict": "PASS when all required criteria are true; CONDITIONAL_PASS when local evidence is complete but live proof is missing; FAIL when required evidence or artifacts are missing."
+  },
+  "repos": [
+    {
+      "repo": "ANDROIDAPP",
+      "six_block": true,
+      "success_flow": true,
+      "expected_failure_branch": true,
+      "artifact_present": true,
+      "live_probe": false,
+      "live_chain_proof": false,
+      "gate_verdict": "CONDITIONAL_PASS",
+      "blocking_reasons": [
+        "Local Merlin endpoint probe was not reachable in reported evidence.",
+        "No captured live create->signal->brief chain proof yet."
+      ],
+      "retry_packet": "docs/research/CHIMERA_V2_AGENT_OUTPUT_CP6_CONDITIONAL_PASS_LIVE_PROOF_2026-02-18.md"
+    },
+    {
+      "repo": "LIBRARY",
+      "six_block": true,
+      "success_flow": true,
+      "expected_failure_branch": true,
+      "artifact_present": true,
+      "live_probe": false,
+      "live_chain_proof": false,
+      "gate_verdict": "CONDITIONAL_PASS",
+      "blocking_reasons": [
+        "Local Merlin endpoint probe was not reachable in reported evidence.",
+        "No captured live create->signal->brief chain proof yet."
+      ],
+      "retry_packet": "docs/research/CHIMERA_V2_AGENT_OUTPUT_CP6_CONDITIONAL_PASS_LIVE_PROOF_2026-02-18.md"
+    },
+    {
+      "repo": "MAELSTROM",
+      "six_block": true,
+      "success_flow": true,
+      "expected_failure_branch": true,
+      "artifact_present": true,
+      "live_probe": false,
+      "live_chain_proof": false,
+      "gate_verdict": "CONDITIONAL_PASS",
+      "blocking_reasons": [
+        "Local Merlin endpoint probe was not reachable in reported evidence.",
+        "No captured live create->signal->brief chain proof yet."
+      ],
+      "retry_packet": "docs/research/CHIMERA_V2_AGENT_OUTPUT_CP6_CONDITIONAL_PASS_LIVE_PROOF_2026-02-18.md"
+    },
+    {
+      "repo": "HUB",
+      "six_block": false,
+      "success_flow": false,
+      "expected_failure_branch": false,
+      "artifact_present": false,
+      "live_probe": false,
+      "live_chain_proof": false,
+      "gate_verdict": "FAIL",
+      "blocking_reasons": [
+        "Hub repo scope/path not resolved in intake evidence.",
+        "Required Hub CP6 status artifact missing."
+      ],
+      "retry_packet": "docs/research/CHIMERA_V2_AGENT_OUTPUT_CP6_BLOCKED_REPOS_RECOVERY_2026-02-18.md"
+    },
+    {
+      "repo": "MYFORTRESS",
+      "six_block": false,
+      "success_flow": false,
+      "expected_failure_branch": false,
+      "artifact_present": false,
+      "live_probe": false,
+      "live_chain_proof": false,
+      "gate_verdict": "FAIL",
+      "blocking_reasons": [
+        "No detected Merlin research-manager consumer integration references.",
+        "Required CP6 status artifact missing."
+      ],
+      "retry_packet": "docs/research/CHIMERA_V2_AGENT_OUTPUT_CP6_BLOCKED_REPOS_RECOVERY_2026-02-18.md"
+    },
+    {
+      "repo": "WORKBENCH",
+      "six_block": false,
+      "success_flow": false,
+      "expected_failure_branch": false,
+      "artifact_present": false,
+      "live_probe": false,
+      "live_chain_proof": false,
+      "gate_verdict": "FAIL",
+      "blocking_reasons": [
+        "No detected Merlin research-manager consumer integration references.",
+        "Required CP6 status artifact missing."
+      ],
+      "retry_packet": "docs/research/CHIMERA_V2_AGENT_OUTPUT_CP6_BLOCKED_REPOS_RECOVERY_2026-02-18.md"
+    },
+    {
+      "repo": "AAS_PARENT",
+      "six_block": false,
+      "success_flow": false,
+      "expected_failure_branch": false,
+      "artifact_present": false,
+      "live_probe": false,
+      "live_chain_proof": false,
+      "gate_verdict": "FAIL",
+      "blocking_reasons": [
+        "No 6-block return packet was provided for AAS parent lane.",
+        "AAS parent CP6 binding status artifact not yet returned."
+      ],
+      "retry_packet": "docs/research/CHIMERA_V2_AGENT_OUTPUT_CP6_AAS_PARENT_RETURN_RECOVERY_2026-02-18.md"
+    }
+  ],
+  "summary": {
+    "pass": 0,
+    "conditional_pass": 3,
+    "fail": 4,
+    "total": 7
+  }
+}

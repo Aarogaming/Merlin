@@ -2,7 +2,7 @@ import shutil
 import subprocess
 import uuid
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import merlin_settings as settings
 from merlin_logger import merlin_logger
@@ -223,6 +223,36 @@ class MerlinVoiceRouter:
             "piper": PiperEngine(),
             "xtts": XttsEngine(),
         }
+        self._last_tts_metadata: dict[str, Any] = {
+            "fallback_to_text": False,
+            "fallback_reason_code": None,
+            "fallback_reason": None,
+            "attempted_engines": [],
+            "available_engines_attempted": [],
+            "selected_engine": None,
+        }
+
+    def _record_tts_metadata(
+        self,
+        *,
+        attempted_engines: list[str],
+        available_engines_attempted: list[str],
+        selected_engine: str | None,
+        fallback_to_text: bool,
+        fallback_reason_code: str | None,
+        fallback_reason: str | None,
+    ) -> None:
+        self._last_tts_metadata = {
+            "fallback_to_text": fallback_to_text,
+            "fallback_reason_code": fallback_reason_code,
+            "fallback_reason": fallback_reason,
+            "attempted_engines": attempted_engines,
+            "available_engines_attempted": available_engines_attempted,
+            "selected_engine": selected_engine,
+        }
+
+    def get_last_tts_metadata(self) -> dict[str, Any]:
+        return dict(self._last_tts_metadata)
 
     def _route_order(self, preferred: str | list[str] | None = None) -> list[str]:
         order: list[str] = []
@@ -253,12 +283,44 @@ class MerlinVoiceRouter:
         }
 
     def speak(self, text: str, engine: str | list[str] | None = None) -> bool:
+        attempted_engines: list[str] = []
+        available_engines_attempted: list[str] = []
+
         for name in self._route_order(engine):
-            engine = self._engines.get(name)
-            if not engine or not engine.is_available():
+            attempted_engines.append(name)
+            engine_instance = self._engines.get(name)
+            if not engine_instance or not engine_instance.is_available():
                 continue
-            if engine.speak(text):
+            available_engines_attempted.append(name)
+            if engine_instance.speak(text):
+                self._record_tts_metadata(
+                    attempted_engines=attempted_engines,
+                    available_engines_attempted=available_engines_attempted,
+                    selected_engine=name,
+                    fallback_to_text=False,
+                    fallback_reason_code=None,
+                    fallback_reason=None,
+                )
                 return True
+
+        fallback_reason_code = (
+            "voice_engine_unavailable"
+            if not available_engines_attempted
+            else "voice_engine_failed"
+        )
+        fallback_reason = (
+            "No configured voice engines are available."
+            if not available_engines_attempted
+            else "All available voice engines failed."
+        )
+        self._record_tts_metadata(
+            attempted_engines=attempted_engines,
+            available_engines_attempted=available_engines_attempted,
+            selected_engine=None,
+            fallback_to_text=True,
+            fallback_reason_code=fallback_reason_code,
+            fallback_reason=fallback_reason,
+        )
         return False
 
     def synthesize_to_file(
@@ -271,11 +333,43 @@ class MerlinVoiceRouter:
             output_path = _temp_voice_path("tts")
         elif not isinstance(output_path, Path):
             output_path = Path(output_path)
+        attempted_engines: list[str] = []
+        available_engines_attempted: list[str] = []
+
         for name in self._route_order(engine):
-            engine = self._engines.get(name)
-            if not engine or not engine.is_available():
+            attempted_engines.append(name)
+            engine_instance = self._engines.get(name)
+            if not engine_instance or not engine_instance.is_available():
                 continue
-            result = engine.synthesize_to_file(text, output_path)
+            available_engines_attempted.append(name)
+            result = engine_instance.synthesize_to_file(text, output_path)
             if result:
+                self._record_tts_metadata(
+                    attempted_engines=attempted_engines,
+                    available_engines_attempted=available_engines_attempted,
+                    selected_engine=name,
+                    fallback_to_text=False,
+                    fallback_reason_code=None,
+                    fallback_reason=None,
+                )
                 return result
+
+        fallback_reason_code = (
+            "voice_engine_unavailable"
+            if not available_engines_attempted
+            else "voice_engine_failed"
+        )
+        fallback_reason = (
+            "No configured voice engines are available."
+            if not available_engines_attempted
+            else "All available voice engines failed."
+        )
+        self._record_tts_metadata(
+            attempted_engines=attempted_engines,
+            available_engines_attempted=available_engines_attempted,
+            selected_engine=None,
+            fallback_to_text=True,
+            fallback_reason_code=fallback_reason_code,
+            fallback_reason=fallback_reason,
+        )
         return None

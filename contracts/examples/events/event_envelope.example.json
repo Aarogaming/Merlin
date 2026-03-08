@@ -1,0 +1,17 @@
+{
+  "schema_name": "AAS.Discovery.EventEnvelope",
+  "schema_version": "1.0.0",
+  "event_id": "evt_73c1af6d2fbd44ed9fdf",
+  "event_type": "discovery.run.completed",
+  "run_id": "run_20260224T052300Z_4f1c9ab2",
+  "timestamp_utc": "2026-02-24T05:24:40Z",
+  "stage": "run",
+  "status": "ok",
+  "payload": {
+    "status": "ok",
+    "counts": {
+      "topics_selected": 2,
+      "artifacts_written": 2
+    }
+  }
+}

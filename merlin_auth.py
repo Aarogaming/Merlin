@@ -2,6 +2,7 @@ import hashlib
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+from pathlib import Path
 from jose import jwt
 from passlib.context import CryptContext
 
@@ -30,3 +31,29 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+
+def parse_api_key_collection(raw: str | None) -> list[str]:
+    if raw is None:
+        return []
+    keys: list[str] = []
+    seen: set[str] = set()
+    normalized = raw.replace("\n", ",")
+    for token in normalized.split(","):
+        key = token.strip()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        keys.append(key)
+    return keys
+
+
+def load_api_key_collection_from_file(path: str | None) -> list[str]:
+    if not path:
+        return []
+    file_path = Path(path)
+    try:
+        content = file_path.read_text(encoding="utf-8")
+    except OSError:
+        return []
+    return parse_api_key_collection(content)

@@ -104,15 +104,24 @@ const SystemInfo = ({
     return 'bg-red-400';
   };
 
+  const hasHighUtilization =
+    Boolean(systemInfo && systemInfo.cpu_usage_percent >= 90) ||
+    Boolean(systemInfo && systemInfo.memory_usage_percent >= 90) ||
+    Boolean(systemInfo && systemInfo.disk_usage_percent >= 90);
+
+  const shouldShowRetryGuidance = Boolean(error) || hasHighUtilization;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-dark-secondary rounded-lg border border-dark-border p-6 space-y-4"
+      className="bg-dark-secondary rounded-lg border border-dark-border p-6 space-y-4 system-info-card"
+      role="region"
+      aria-label="System information panel"
     >
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xl font-bold text-gradient">MyFortress System Info</h2>
         <button
           onClick={() => fetchSystemInfo()}
@@ -130,6 +139,8 @@ const SystemInfo = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-start gap-3"
+          role="status"
+          aria-live="polite"
         >
           <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
           <div>
@@ -137,6 +148,26 @@ const SystemInfo = ({
             <p className="text-red-300 text-sm">{error}</p>
           </div>
         </motion.div>
+      )}
+
+      {shouldShowRetryGuidance && (
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 space-y-3 system-retry-guidance">
+          <p className="text-sm font-semibold text-amber-200">Retry Guidance</p>
+          <ul className="text-xs text-amber-100 space-y-1 list-disc pl-4">
+            <li>Confirm <code>{myFortressUrl}/system/info</code> is reachable from this host.</li>
+            <li>If usage remains high, wait for load to drop before re-querying diagnostics.</li>
+            <li>Retry manually after backend restarts to clear stale fallback readings.</li>
+          </ul>
+          <button
+            type="button"
+            onClick={() => fetchSystemInfo()}
+            disabled={loading}
+            className="btn-secondary text-xs px-3 py-1.5"
+            aria-label="Retry system information fetch"
+          >
+            {loading ? 'Retrying...' : 'Retry System Info Fetch'}
+          </button>
+        </div>
       )}
 
       {!loading && systemInfo && !error && (
@@ -239,11 +270,11 @@ const SystemInfo = ({
                 <Network size={18} className="text-orange-400" />
                 <span className="text-dark-muted">Network Interfaces</span>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 min-w-0">
                 {systemInfo.network_interfaces.map((iface) => (
                   <span
                     key={iface}
-                    className="bg-dark-secondary px-3 py-1 rounded-full text-sm text-light-muted"
+                    className="bg-dark-secondary px-3 py-1 rounded-full text-sm text-light-muted max-w-full break-all"
                   >
                     {iface}
                   </span>
@@ -262,7 +293,7 @@ const SystemInfo = ({
       )}
 
       {loading && !systemInfo && (
-        <div className="flex items-center justify-center py-8">
+        <div className="flex items-center justify-center py-8" aria-live="polite">
           <div className="text-center">
             <div className="animate-spin w-8 h-8 border-2 border-merlin-blue border-t-transparent rounded-full mx-auto mb-4" />
             <p className="text-dark-muted">Loading system information...</p>

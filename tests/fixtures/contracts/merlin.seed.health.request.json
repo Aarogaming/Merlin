@@ -1,0 +1,29 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "ad000884-67fb-468d-a954-7fcf4f47025f",
+  "correlation_id": "8f78d81f-9686-484f-af39-a84d7f2c7048",
+  "trace_id": "0ef5a31e-3111-4ff0-8cca-bde4d4f5a5bb",
+  "timestamp_utc": "2026-02-25T12:00:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.seed.health",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "merlin-seed-health-2026-02-25-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "stale_after_seconds": 3600
+  }
+}

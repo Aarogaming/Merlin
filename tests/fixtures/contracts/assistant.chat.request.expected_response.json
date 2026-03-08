@@ -1,0 +1,14 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "923ed680-c744-4343-a65a-a2e728ce6c75",
+  "trace_id": "5a5146d1-4f5c-47af-a8f0-659551240dbd",
+  "operation": {
+    "name": "assistant.chat.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "reply": "fixture-chat-reply",
+    "user_id": "fixture-user"
+  }
+}

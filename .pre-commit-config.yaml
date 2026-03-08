@@ -6,3 +6,38 @@ repos:
         entry: python3 scripts/check_git_size.py
         language: system
         stages: [pre-commit, pre-push]
+      - id: secret-hygiene-guard
+        name: Secret hygiene guard
+        entry: python3 scripts/check_secret_hygiene.py
+        language: system
+        stages: [pre-commit, pre-push]
+      - id: contract-schema-sync-guard
+        name: Contract schema sync guard
+        entry: python3 scripts/sync_contract_schemas.py --precommit
+        language: system
+        pass_filenames: false
+        stages: [pre-commit, pre-push]
+      - id: python-lint-check
+        name: Python lint check (py_compile)
+        entry: python3 -m py_compile merlin_api_server.py merlin_routing_contract.py merlin_research_manager.py merlin_llm_backends.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit, pre-push]
+      - id: targeted-contract-tests
+        name: Targeted contract tests
+        entry: bash -lc 'PYTHONPATH=/tmp/merlin_test_stubs:$PYTHONPATH python3 -m pytest -q -s tests/test_contract_schemas.py tests/test_operation_expected_responses.py tests/test_operation_error_responses.py tests/test_operation_error_specific_responses.py tests/test_operation_error_dynamic_responses.py'
+        language: system
+        pass_filenames: false
+        stages: [pre-commit, pre-push]
+      - id: routing-taxonomy-sync-guard
+        name: Routing taxonomy sync guard
+        entry: python3 scripts/verify_routing_taxonomy_sync.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit, pre-push]
+      - id: gitleaks-guard
+        name: Gitleaks guard
+        entry: bash scripts/run_gitleaks_hook.sh
+        language: system
+        pass_filenames: false
+        stages: [pre-commit, pre-push]

@@ -1,0 +1,101 @@
+{
+  "schema_name": "AAS.Merlin.SeedWatchdogRuntimeStatus",
+  "schema_version": "1.0.0",
+  "workspace_root": "/mnt/c/Dev library/AaroneousAutomationSuite",
+  "policy": {
+    "decision": "allowed",
+    "allow_live_automation": true,
+    "allow_live_automation_default": true,
+    "reason": "live automation is enabled"
+  },
+  "paths": {
+    "status_file": "/mnt/c/Dev library/AaroneousAutomationSuite/artifacts/merlin_seed_status.json",
+    "merged_jsonl": "/mnt/c/Dev library/AaroneousAutomationSuite/guild/data/merlin_distill_merged.jsonl",
+    "merged_parquet": "/mnt/c/Dev library/AaroneousAutomationSuite/guild/data/merlin_distill_merged.parquet",
+    "log_file": "/mnt/c/Dev library/AaroneousAutomationSuite/logs/merlin_seed_task.log",
+    "watchdog_log_file": "/mnt/c/Dev library/AaroneousAutomationSuite/logs/merlin_seed_watchdog_runtime.log",
+    "append_jsonl": "/mnt/c/Dev library/AaroneousAutomationSuite/artifacts/diagnostics/merlin_seed_watchdog_runtime_ticks.jsonl",
+    "output_json": "/mnt/c/Dev library/AaroneousAutomationSuite/artifacts/diagnostics/merlin_seed_watchdog_runtime_latest.json",
+    "heartbeat_file": "/mnt/c/Dev library/AaroneousAutomationSuite/artifacts/diagnostics/merlin_seed_health_heartbeat.jsonl"
+  },
+  "process": {
+    "active": true,
+    "count": 1,
+    "rows": [
+      {
+        "pid": 4242,
+        "command": "python scripts/run_merlin_seed_watchdog.py --workspace-root /mnt/c/Dev library/AaroneousAutomationSuite"
+      }
+    ]
+  },
+  "telemetry": {
+    "append_jsonl_exists": true,
+    "append_jsonl_line_count": 8,
+    "append_jsonl_mtime_utc": "2026-02-25T21:00:00Z",
+    "output_json_exists": true,
+    "output_json_mtime_utc": "2026-02-25T21:00:00Z",
+    "output_json_read_error": null,
+    "last_tick": {
+      "iteration": 8,
+      "watchdog": {
+        "schema_name": "AAS.Merlin.SeedWatchdogTick",
+        "decision": {
+          "outcome_status": "executed"
+        }
+      }
+    },
+    "last_report_summary": {
+      "total_ticks": 8,
+      "executed": 2,
+      "preview": 6
+    }
+  },
+  "health": {
+    "schema_name": "AAS.Merlin.SeedHealth",
+    "schema_version": "1.0.0",
+    "workspace_root": "/mnt/c/Dev library/AaroneousAutomationSuite",
+    "state": "attention",
+    "severity": "warn",
+    "policy_decision": "allowed",
+    "next_action": "start",
+    "recommended_control_action": "start",
+    "checks": {
+      "policy_allowed": true,
+      "status_stale": false,
+      "worker_active": false,
+      "progress_complete": false
+    },
+    "progress": {
+      "target_rounds": 50000,
+      "completed_rounds": 5712,
+      "remaining_rounds": 44288,
+      "completion_percent": 11.42
+    },
+    "worker": {
+      "active": false,
+      "count": 0
+    },
+    "staleness": {
+      "status_age_seconds": 45.0,
+      "stale_after_seconds": 3600.0,
+      "is_stale": false
+    },
+    "guidance": {
+      "schema_name": "AAS.Merlin.SeedGuidance",
+      "schema_version": "1.0.0",
+      "state": "attention",
+      "next_action": "start",
+      "recommendations": [
+        {
+          "id": "start_worker",
+          "severity": "high",
+          "message": "No active seed worker is running before target completion.",
+          "action": "Run merlin.seed.control with action=start and allow_live_automation=true."
+        }
+      ]
+    },
+    "status_snapshot_updated_at": "2026-02-25T20:59:55Z",
+    "updated_at": "2026-02-25T21:00:00Z"
+  },
+  "updated_at": "2026-02-25T21:00:00Z"
+}

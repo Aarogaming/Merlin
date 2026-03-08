@@ -1,0 +1,30 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "9f69e43e-bfe5-4f2e-8387-2304b2818b8d",
+  "correlation_id": "76e4f636-69a6-45f2-b45d-d76ad86ebb89",
+  "trace_id": "bde09d87-b8f5-449e-ab83-0e2a58d1871f",
+  "timestamp_utc": "2026-02-25T12:00:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.seed.watchdog.tick",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "merlin-seed-watchdog-tick-2026-02-25-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "stale_after_seconds": 3600,
+    "apply": false
+  }
+}

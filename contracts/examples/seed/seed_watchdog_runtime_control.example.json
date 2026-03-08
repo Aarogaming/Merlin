@@ -1,0 +1,40 @@
+{
+  "schema_name": "AAS.Merlin.SeedWatchdogRuntimeControl",
+  "schema_version": "1.0.0",
+  "action": "start",
+  "decision": "allowed",
+  "status": "started",
+  "message": "Seed watchdog runtime process started",
+  "dry_run": false,
+  "policy": {
+    "decision": "allowed",
+    "allow_live_automation": true,
+    "allow_live_automation_default": true,
+    "reason": "live automation is enabled"
+  },
+  "workspace_root": "/mnt/c/Dev library/AaroneousAutomationSuite",
+  "paths": {
+    "status_file": "/mnt/c/Dev library/AaroneousAutomationSuite/artifacts/merlin_seed_status.json",
+    "merged_jsonl": "/mnt/c/Dev library/AaroneousAutomationSuite/guild/data/merlin_distill_merged.jsonl",
+    "merged_parquet": "/mnt/c/Dev library/AaroneousAutomationSuite/guild/data/merlin_distill_merged.parquet",
+    "log_file": "/mnt/c/Dev library/AaroneousAutomationSuite/logs/merlin_seed_task.log",
+    "watchdog_log_file": "/mnt/c/Dev library/AaroneousAutomationSuite/logs/merlin_seed_watchdog_runtime.log",
+    "append_jsonl": "/mnt/c/Dev library/AaroneousAutomationSuite/artifacts/diagnostics/merlin_seed_watchdog_runtime_ticks.jsonl",
+    "output_json": "/mnt/c/Dev library/AaroneousAutomationSuite/artifacts/diagnostics/merlin_seed_watchdog_runtime_latest.json",
+    "heartbeat_file": "/mnt/c/Dev library/AaroneousAutomationSuite/artifacts/diagnostics/merlin_seed_health_heartbeat.jsonl"
+  },
+  "runtime": {
+    "stale_after_seconds": 3600.0,
+    "apply": true,
+    "dry_run_control": false,
+    "force": false,
+    "interval_seconds": 60.0,
+    "max_iterations": 0,
+    "emit_heartbeat": true
+  },
+  "start": {
+    "pid": 4545,
+    "command": "python scripts/run_merlin_seed_watchdog.py --workspace-root /mnt/c/Dev library/AaroneousAutomationSuite --apply --max-iterations 0"
+  },
+  "updated_at": "2026-02-25T21:00:05Z"
+}

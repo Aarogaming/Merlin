@@ -1,0 +1,14 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "5e1f2449-a184-40ff-a6d8-2479be3b98bc",
+  "trace_id": "4702825c-c6d8-46fe-9f0f-7dd5d2619fca",
+  "operation": {
+    "name": "merlin.voice.synthesize.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "path": "/tmp/merlin-fixture-voice.wav",
+    "filename": "merlin-fixture-voice.wav"
+  }
+}

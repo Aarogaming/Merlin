@@ -1,0 +1,22 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "4de5bcce-d7e7-4321-a34d-0118f0ff67b3",
+  "trace_id": "d1a8a48a-09d4-4173-a064-f5c1ed87f6e6",
+  "operation": {
+    "name": "merlin.llm.ab.list.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "tests": [
+      {
+        "test_id": "fixture-ab-test-id",
+        "name": "Fixture AB",
+        "variants": [
+          "routing",
+          "voting"
+        ]
+      }
+    ]
+  }
+}

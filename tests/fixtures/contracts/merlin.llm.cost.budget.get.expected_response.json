@@ -1,0 +1,15 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "18c49720-cfb2-4a3e-b956-19e7c16b3bc0",
+  "trace_id": "5c35b324-bfd0-4d26-83f0-a4731238aa8d",
+  "operation": {
+    "name": "merlin.llm.cost.budget.get.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "budget_limit": 100.0,
+    "current_month_spend": 12.5,
+    "percentage_used": 12.5
+  }
+}

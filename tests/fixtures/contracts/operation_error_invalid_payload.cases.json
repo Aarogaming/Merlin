@@ -1,0 +1,664 @@
+{
+  "cases": [
+    {
+      "operation_name": "assistant.chat.request",
+      "request_fixture": "assistant.chat.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "assistant.chat.request payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "assistant.tools.execute",
+      "request_fixture": "assistant.tools.execute.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "assistant.tools.execute payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.alerts.list",
+      "request_fixture": "merlin.alerts.list.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.alerts.list payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.command.execute",
+      "request_fixture": "merlin.command.execute.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.command.execute payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.context.get",
+      "request_fixture": "merlin.context.get.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.context.get payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.context.update",
+      "request_fixture": "merlin.context.update.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.context.update payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.discovery.run",
+      "request_fixture": "merlin.discovery.run.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.discovery.run payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.discovery.queue.status",
+      "request_fixture": "merlin.discovery.queue.status.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.discovery.queue.status payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.discovery.queue.drain",
+      "request_fixture": "merlin.discovery.queue.drain.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.discovery.queue.drain payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.discovery.queue.pause",
+      "request_fixture": "merlin.discovery.queue.pause.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.discovery.queue.pause payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.discovery.queue.resume",
+      "request_fixture": "merlin.discovery.queue.resume.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.discovery.queue.resume payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.discovery.queue.purge_deadletter",
+      "request_fixture": "merlin.discovery.queue.purge_deadletter.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.discovery.queue.purge_deadletter payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.knowledge.search",
+      "request_fixture": "merlin.knowledge.search.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.knowledge.search payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.seed.status",
+      "request_fixture": "merlin.seed.status.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.seed.status payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.seed.health",
+      "request_fixture": "merlin.seed.health.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.seed.health payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.seed.health.heartbeat",
+      "request_fixture": "merlin.seed.health.heartbeat.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.seed.health.heartbeat payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.seed.watchdog.tick",
+      "request_fixture": "merlin.seed.watchdog.tick.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.seed.watchdog.tick payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.seed.watchdog.status",
+      "request_fixture": "merlin.seed.watchdog.status.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.seed.watchdog.status payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.seed.watchdog.control",
+      "request_fixture": "merlin.seed.watchdog.control.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.seed.watchdog.control payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.seed.control",
+      "request_fixture": "merlin.seed.control.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.seed.control payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.dynamic_components.list",
+      "request_fixture": "merlin.dynamic_components.list.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.dynamic_components.list payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.history.get",
+      "request_fixture": "merlin.history.get.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.history.get payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.ab.complete",
+      "request_fixture": "merlin.llm.ab.complete.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.ab.complete payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.ab.create",
+      "request_fixture": "merlin.llm.ab.create.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.ab.create payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.ab.get",
+      "request_fixture": "merlin.llm.ab.get.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.ab.get payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.ab.list",
+      "request_fixture": "merlin.llm.ab.list.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.ab.list payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.ab.result",
+      "request_fixture": "merlin.llm.ab.result.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.ab.result payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.adaptive.feedback",
+      "request_fixture": "merlin.llm.adaptive.feedback.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.adaptive.feedback payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.adaptive.metrics",
+      "request_fixture": "merlin.llm.adaptive.metrics.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.adaptive.metrics payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.adaptive.reset",
+      "request_fixture": "merlin.llm.adaptive.reset.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.adaptive.reset payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.adaptive.status",
+      "request_fixture": "merlin.llm.adaptive.status.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.adaptive.status payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.cost.budget.get",
+      "request_fixture": "merlin.llm.cost.budget.get.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.cost.budget.get payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.cost.budget.set",
+      "request_fixture": "merlin.llm.cost.budget.set.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.cost.budget.set payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.cost.optimization.get",
+      "request_fixture": "merlin.llm.cost.optimization.get.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.cost.optimization.get payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.cost.pricing.set",
+      "request_fixture": "merlin.llm.cost.pricing.set.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.cost.pricing.set payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.cost.report",
+      "request_fixture": "merlin.llm.cost.report.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.cost.report payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.cost.thresholds.get",
+      "request_fixture": "merlin.llm.cost.thresholds.get.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.cost.thresholds.get payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.cost.thresholds.set",
+      "request_fixture": "merlin.llm.cost.thresholds.set.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.cost.thresholds.set payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.parallel.status",
+      "request_fixture": "merlin.llm.parallel.status.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.parallel.status payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.parallel.strategy",
+      "request_fixture": "merlin.llm.parallel.strategy.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.parallel.strategy payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.predictive.export",
+      "request_fixture": "merlin.llm.predictive.export.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.predictive.export payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.predictive.feedback",
+      "request_fixture": "merlin.llm.predictive.feedback.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.predictive.feedback payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.predictive.models",
+      "request_fixture": "merlin.llm.predictive.models.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.predictive.models payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.predictive.select",
+      "request_fixture": "merlin.llm.predictive.select.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.predictive.select payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.llm.predictive.status",
+      "request_fixture": "merlin.llm.predictive.status.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.llm.predictive.status payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.plugins.list",
+      "request_fixture": "merlin.plugins.list.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.plugins.list payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.plugins.execute",
+      "request_fixture": "merlin.plugins.execute.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.plugins.execute payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.research.manager.session.create",
+      "request_fixture": "merlin.research.manager.session.create.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.research.manager.session.create payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.research.manager.sessions.list",
+      "request_fixture": "merlin.research.manager.sessions.list.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.research.manager.sessions.list payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.research.manager.session.get",
+      "request_fixture": "merlin.research.manager.session.get.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.research.manager.session.get payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.research.manager.session.signal.add",
+      "request_fixture": "merlin.research.manager.session.signal.add.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.research.manager.session.signal.add payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.research.manager.brief.get",
+      "request_fixture": "merlin.research.manager.brief.get.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.research.manager.brief.get payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.rag.query",
+      "request_fixture": "merlin.rag.query.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.rag.query payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.search.query",
+      "request_fixture": "merlin.search.query.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.search.query payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.voice.status",
+      "request_fixture": "merlin.voice.status.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.voice.status payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.voice.synthesize",
+      "request_fixture": "merlin.voice.synthesize.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.voice.synthesize payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.voice.listen",
+      "request_fixture": "merlin.voice.listen.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.voice.listen payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.voice.transcribe",
+      "request_fixture": "merlin.voice.transcribe.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.voice.transcribe payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.tasks.create",
+      "request_fixture": "merlin.tasks.create.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.tasks.create payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.tasks.list",
+      "request_fixture": "merlin.tasks.list.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.tasks.list payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.user_manager.create",
+      "request_fixture": "merlin.user_manager.create.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.user_manager.create payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.user_manager.authenticate",
+      "request_fixture": "merlin.user_manager.authenticate.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.user_manager.authenticate payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.system_info.get",
+      "request_fixture": "merlin.system_info.get.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.system_info.get payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.genesis.logs",
+      "request_fixture": "merlin.genesis.logs.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.genesis.logs payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.genesis.manifest",
+      "request_fixture": "merlin.genesis.manifest.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.genesis.manifest payload must be an object",
+        "retryable": false
+      }
+    },
+    {
+      "operation_name": "merlin.aas.create_task",
+      "request_fixture": "merlin.aas.create_task.request.json",
+      "expected_status": 422,
+      "expected_error": {
+        "code": "INVALID_PAYLOAD",
+        "message": "merlin.aas.create_task payload must be an object",
+        "retryable": false
+      }
+    }
+  ]
+}

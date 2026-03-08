@@ -1,0 +1,183 @@
+Metadata-Version: 2.4
+Name: merlin-assistant
+Version: 0.1.0
+Summary: A modular personal AI assistant
+Home-page: https://github.com/Aarogaming/Merlin
+Author: Aaroneous
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: pydantic
+Requires-Dist: requests
+Requires-Dist: beautifulsoup4
+Requires-Dist: psutil
+Requires-Dist: redis
+Requires-Dist: prometheus-fastapi-instrumentator
+Requires-Dist: slowapi
+Requires-Dist: python-jose[cryptography]
+Requires-Dist: passlib[bcrypt]
+Requires-Dist: python-multipart
+Requires-Dist: pyttsx3
+Requires-Dist: SpeechRecognition
+Requires-Dist: loguru
+Requires-Dist: grpcio
+Requires-Dist: grpcio-tools
+Requires-Dist: numpy
+Requires-Dist: keyboard
+Requires-Dist: slack-bolt
+Requires-Dist: google-auth
+Requires-Dist: google-auth-oauthlib
+Requires-Dist: google-api-python-client
+Provides-Extra: dev
+Requires-Dist: black; extra == "dev"
+Requires-Dist: httpx; extra == "dev"
+Requires-Dist: jsonschema; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: types-requests; extra == "dev"
+Provides-Extra: web
+Requires-Dist: beautifulsoup4; extra == "web"
+Provides-Extra: desktop
+Requires-Dist: pyautogui; extra == "desktop"
+Provides-Extra: plugins-all
+Requires-Dist: beautifulsoup4; extra == "plugins-all"
+Requires-Dist: pyautogui; extra == "plugins-all"
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Merlin
+
+Merlin is a subproject in the Aaroneous Automation Suite (AAS) ecosystem.
+In the full workspace, Merlin is typically included as a git submodule and
+integrates with the AAS Hub via versioned APIs/contracts.
+
+## Canonical Docs
+
+The canonical documentation lives in the AAS superproject:
+
+- Start here: https://github.com/Aarogaming/AaroneousAutomationSuite/blob/master/docs/START_HERE.md
+- Docs index: https://github.com/Aarogaming/AaroneousAutomationSuite/blob/master/docs/INDEX.md
+
+## Transition Docs
+
+- Agent handoff/runbook: `docs/AGENT_TRANSITION.md`
+- Contributor guide: `CONTRIBUTING.md`
+- Inter-repo protocol baseline: `docs/protocols/README.md`
+- Gate governance pointer: `docs/GATE_GOVERNANCE_POINTER.md`
+
+## Repo Map
+
+- `frontend/`: Desktop UI package (see `frontend/README.md`)
+- `plugins/`: Merlin plugin implementations
+- `merlin_*.py`: Core services, CLIs, and integration layers
+
+## DMS Reasoning Endpoint
+
+Merlin supports an optional DMS-backed reasoning endpoint (OpenAI-compatible API)
+for long-context or high-complexity reasoning queries.
+
+Set these values in `.env`:
+
+```env
+DMS_ENABLED=true
+DMS_URL=http://localhost:8002/v1/chat/completions
+DMS_MODEL=nvidia/Qwen3-8B-DMS-8x
+DMS_API_KEY=
+DMS_MIN_PROMPT_CHARS=6000
+DMS_TASK_TYPES=analysis,code,planning
+DMS_AB_ENABLED=false
+DMS_AB_DMS_PERCENTAGE=50
+```
+
+Behavior:
+- DMS is only used when enabled and configured.
+- Routing prefers DMS for long prompts or high-complexity reasoning tasks.
+- If DMS is unavailable, Merlin falls back automatically to existing model routing.
+- Backends expose structured routing metadata fields: `selected_model`,
+  `prompt_size_bucket`, `dms_used`, `fallback_reason`.
+- A/B controls are optional and can be enabled with `DMS_AB_ENABLED=true` and
+  `DMS_AB_DMS_PERCENTAGE=<0-100>`.
+
+Example flows:
+- DMS route (enabled for this request): long analysis prompt with default routing
+  decision.
+  - Request:
+    - `{"messages":[{"role":"user","content":"Analyze this architecture migration plan in detail. [include detailed, long context here ...]"}]}`
+  - Expected metadata:
+    - `selected_model = "dms"`
+    - `dms_used = true`
+    - `prompt_size_bucket = "long"` or `"medium"`
+    - `fallback_reason = null`
+- No DMS route (short/simple or control bucket):
+  - Request:
+    - `{"messages":[{"role":"user","content":"Hello, summarize this in 1 sentence."]}`
+  - Expected metadata:
+    - `selected_model != "dms"`
+    - `dms_used = false`
+    - `prompt_size_bucket = "short"`
+    - `fallback_reason = null`
+
+For A/B analysis, check backend status:
+- `GET /merlin/llm/parallel/status`
+- `GET /merlin/llm/adaptive/status`
+
+Each includes `routing_metrics` with `ab_variants` (`dms`, `control`, `disabled`),
+throughput, and quality/latency aggregates.
+
+## Research Manager (Local)
+
+Merlin includes a local research-manager engine for hypothesis-driven planning,
+signal ingestion, and probability/foresight briefs.
+
+CLI examples:
+
+```bash
+python merlin_cli.py research create "Build local autonomy pilot" --constraint repo-local-only --horizon-days 14
+python merlin_cli.py research list --limit 10
+python merlin_cli.py research signal <session_id> --source routing-suite --claim "Planner fallback checks are green" --confidence 0.9 --supports h_execution_success
+python merlin_cli.py research brief <session_id>
+```
+
+HTTP endpoints:
+- `POST /merlin/research/manager/session`
+- `GET /merlin/research/manager/sessions`
+- `GET /merlin/research/manager/session/{session_id}`
+- `POST /merlin/research/manager/session/{session_id}/signal`
+- `GET /merlin/research/manager/session/{session_id}/brief`
+
+AAS envelope operations:
+- `merlin.research.manager.session.create`
+- `merlin.research.manager.sessions.list`
+- `merlin.research.manager.session.get`
+- `merlin.research.manager.session.signal.add`
+- `merlin.research.manager.brief.get`
+
+Controls:
+- Set `MERLIN_RESEARCH_MANAGER_READ_ONLY=1` to block write operations.
+- `session_id` must match `[A-Za-z0-9_-]{1,128}`.
+
+## Changelog Generation
+
+Generate a markdown changelog from git tags and commit history:
+
+```bash
+python merlin_changelog.py --output artifacts/changelog/changelog-from-tags.md
+```
+
+If Merlin is installed as a package, the console entrypoint is also available:
+
+```bash
+merlin-changelog --output artifacts/changelog/changelog-from-tags.md
+```

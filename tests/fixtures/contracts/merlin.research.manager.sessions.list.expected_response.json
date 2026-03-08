@@ -1,0 +1,24 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "a1754ca2-ecbe-43a0-9dfc-c16ab1294c11",
+  "trace_id": "2e3f3874-0602-4e7f-9a2f-f6ee67ae3f10",
+  "operation": {
+    "name": "merlin.research.manager.sessions.list.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "sessions": [
+      {
+        "session_id": "fixture-session-id",
+        "objective": "Fixture research objective",
+        "tags": [
+          "fixture-tag"
+        ],
+        "status": "active",
+        "signal_count": 1
+      }
+    ],
+    "next_cursor": null
+  }
+}

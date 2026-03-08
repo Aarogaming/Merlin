@@ -17,7 +17,8 @@ class ChronomancyPlugin:
         try:
             if spell_type == "retrace":
                 # Look at recent Git changes in a project
-                path = os.path.join("D:/Dev library/AaroneousAutomationSuite", target)
+                base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+                path = os.path.join(base_dir, target)
                 if not os.path.exists(path):
                     return {"error": "Target not found in the library."}
 

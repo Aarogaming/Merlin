@@ -1,0 +1,24 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "97c6f675-647a-4a6c-8254-0377d4f4f3f7",
+  "trace_id": "1822d21e-d071-41a7-89ac-f247220d19e8",
+  "operation": {
+    "name": "merlin.llm.predictive.export.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "model_data": {
+      "model_weights": {
+        "fixture-model": {
+          "task_type": 0.4
+        }
+      },
+      "training_data": [],
+      "feature_importance": {
+        "task_type": 0.9
+      },
+      "export_timestamp": "2026-02-14T00:00:00Z"
+    }
+  }
+}

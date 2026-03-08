@@ -1,0 +1,295 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "seed_status.schema.json",
+  "title": "AAS Merlin Seed Status",
+  "description": "Seed runtime telemetry and policy state for Merlin native model-evolution operations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "workspace_root",
+    "policy",
+    "paths",
+    "status_file",
+    "status",
+    "progress",
+    "dataset",
+    "process",
+    "guidance",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Merlin.SeedStatus"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "workspace_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "allow_live_automation",
+        "allow_live_automation_default",
+        "reason"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "allowed",
+            "stubbed"
+          ]
+        },
+        "allow_live_automation": {
+          "type": "boolean"
+        },
+        "allow_live_automation_default": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_file",
+        "merged_jsonl",
+        "merged_parquet",
+        "log_file"
+      ],
+      "properties": {
+        "status_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "merged_jsonl": {
+          "type": "string",
+          "minLength": 1
+        },
+        "merged_parquet": {
+          "type": "string",
+          "minLength": 1
+        },
+        "log_file": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "status_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exists",
+        "mtime_utc",
+        "status_age_seconds",
+        "stale",
+        "read_error"
+      ],
+      "properties": {
+        "exists": {
+          "type": "boolean"
+        },
+        "mtime_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "status_age_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "stale": {
+          "type": "boolean"
+        },
+        "read_error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "status": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "progress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_rounds",
+        "completed_rounds",
+        "remaining_rounds",
+        "completion_ratio",
+        "completion_percent",
+        "source",
+        "eta_seconds",
+        "throughput_per_min"
+      ],
+      "properties": {
+        "target_rounds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "completed_rounds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "remaining_rounds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completion_ratio": {
+          "type": "number",
+          "minimum": 0
+        },
+        "completion_percent": {
+          "type": "number",
+          "minimum": 0
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "none",
+            "status",
+            "dataset",
+            "status_or_dataset_max"
+          ]
+        },
+        "eta_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "throughput_per_min": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exists",
+        "line_count",
+        "mtime_utc"
+      ],
+      "properties": {
+        "exists": {
+          "type": "boolean"
+        },
+        "line_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mtime_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "active",
+        "count",
+        "rows"
+      ],
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "pid",
+              "command"
+            ],
+            "properties": {
+              "pid": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "command": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "guidance": {
+      "$ref": "seed_guidance.schema.json"
+    },
+    "log_tail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lines",
+        "line_limit",
+        "mtime_utc"
+      ],
+      "properties": {
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "line_limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mtime_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

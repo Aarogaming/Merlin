@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/contracts/discovery/seed.schema.json",
+  "title": "AAS Discovery Seed",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "seed_id",
+    "topic",
+    "source",
+    "created_at",
+    "profile",
+    "metadata"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Discovery.Seed"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "seed_id": {
+      "type": "string",
+      "pattern": "^seed_[A-Za-z0-9_-]{8,64}$"
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "profile": {
+      "type": "string",
+      "enum": [
+        "public",
+        "experimental"
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

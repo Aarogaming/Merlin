@@ -1,0 +1,12 @@
+INFO:     Started server process [45496]
+INFO:     Waiting for application startup.
+2026-02-24 23:03:49,539 - merlin - INFO - Loaded metrics for 2 models
+2026-02-24 23:03:49,539 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-02-24 23:03:49,541 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-02-24 23:03:49,541 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-02-24 23:04:14,868 - merlin - WARNING - Redis connection failed: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Falling back to in-memory cache.
+2026-02-24 23:04:14,869 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-02-24 23:04:14,870 - merlin - INFO - Loaded 2 historical metrics
+2026-02-24 23:04:14,870 - merlin - WARNING - Skipping Prometheus instrumentation at startup: Cannot add middleware after an application has started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)

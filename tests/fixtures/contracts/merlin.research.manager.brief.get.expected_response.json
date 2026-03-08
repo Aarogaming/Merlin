@@ -1,0 +1,48 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "7a4306f3-8e46-4f80-ab53-c1f4331760f9",
+  "trace_id": "51c900f8-fd28-4f28-9ffb-15cb3dc2d4b5",
+  "operation": {
+    "name": "merlin.research.manager.brief.get.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "brief": {
+      "session_id": "fixture-session-id",
+      "objective": "Fixture research objective",
+      "status": "active",
+      "brief_template_id": "research_manager.default",
+      "brief_template_version": "1.0.0",
+      "probability_of_success": 0.67,
+      "signal_count": 1,
+      "risk_rubric": {
+        "impact": 0.5,
+        "uncertainty": 0.5,
+        "time_horizon": "near_term"
+      },
+      "linked_task_ids": [
+        1
+      ],
+      "linked_tasks": [
+        {
+          "id": 1,
+          "title": "Fixture task"
+        }
+      ],
+      "planner_artifacts": [
+        "docs/research/fixture.md"
+      ],
+      "contradicting_signal_count": 0,
+      "conflict_count": 0,
+      "conflict_hypotheses": [],
+      "causal_chains": [
+        {
+          "hypothesis_id": "h_execution_success",
+          "supporting_count": 1,
+          "contradicting_count": 0
+        }
+      ]
+    }
+  }
+}

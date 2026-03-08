@@ -1,0 +1,16 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "c188f4ef-c7f2-4b95-bee5-137fcc869cab",
+  "trace_id": "4ce50749-c779-45d0-b6d7-762a0025f155",
+  "operation": {
+    "name": "merlin.plugins.execute.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "name": "demo",
+    "result": {
+      "ok": true
+    }
+  }
+}

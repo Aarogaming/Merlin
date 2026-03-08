@@ -1,0 +1,16 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "f1d2e7fe-375f-4b31-b155-3f0e5152e62c",
+  "trace_id": "e42044b2-9ce7-4ec7-9ad3-785eecb1613e",
+  "operation": {
+    "name": "merlin.llm.ab.complete.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "status": "completed",
+    "winner": {
+      "variant": "routing"
+    }
+  }
+}

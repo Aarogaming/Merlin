@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "seed_guidance.schema.json",
+  "title": "AAS Merlin Seed Guidance",
+  "description": "Machine-readable guidance for Merlin LLM/LLM-lite seed runtime actions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "state",
+    "next_action",
+    "recommendations"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Merlin.SeedGuidance"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "attention",
+        "blocked",
+        "complete"
+      ]
+    },
+    "next_action": {
+      "type": "string",
+      "enum": [
+        "observe",
+        "start",
+        "restart",
+        "stop",
+        "unblock_policy"
+      ]
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "severity",
+          "message",
+          "action"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

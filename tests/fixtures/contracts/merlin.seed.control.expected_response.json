@@ -1,0 +1,17 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "4d52d716-2683-4739-8f7d-998e9976f1d9",
+  "trace_id": "368865d9-0ecf-40c2-8769-547c09110aa7",
+  "operation": {
+    "name": "merlin.seed.control.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "control": {
+      "schema_name": "AAS.Merlin.SeedControl",
+      "decision": "allowed",
+      "status": "started"
+    }
+  }
+}

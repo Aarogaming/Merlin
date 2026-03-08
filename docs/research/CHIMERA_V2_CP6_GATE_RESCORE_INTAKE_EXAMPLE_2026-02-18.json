@@ -1,0 +1,30 @@
+{
+  "repos": [
+    {
+      "repo": "ANDROIDAPP",
+      "six_block": true,
+      "success_flow": true,
+      "expected_failure_branch": true,
+      "artifact_present": true,
+      "live_probe": true,
+      "live_chain_proof": true,
+      "notes": [
+        "Live capability probe succeeded.",
+        "Live create->signal->brief chain captured."
+      ]
+    },
+    {
+      "repo": "HUB",
+      "six_block": true,
+      "success_flow": true,
+      "expected_failure_branch": true,
+      "artifact_present": true,
+      "live_probe": false,
+      "live_chain_proof": false,
+      "notes": [
+        "Hub adapter and tests added.",
+        "Live Merlin endpoint still unavailable in environment."
+      ]
+    }
+  ]
+}

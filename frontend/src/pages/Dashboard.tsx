@@ -19,6 +19,7 @@ import SystemInfo from '../components/SystemInfo';
 import SnapshotSummary from '../components/SnapshotSummary';
 import AgentAnalytics from '../components/AgentAnalytics';
 import PluginAnalytics from '../components/PluginAnalytics';
+import MaturityStatusCard from '../components/MaturityStatusCard';
 import toast from 'react-hot-toast';
 
 const Dashboard = () => {
@@ -183,10 +184,12 @@ const Dashboard = () => {
         />
       </div>
 
+      <MaturityStatusCard card={dashboardData.maturity_status_card} />
+
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
         {/* Latency Chart */}
-        <div className="card">
+        <div className="card min-w-0 overflow-x-auto">
           <h3 className="text-lg font-semibold mb-4 text-merlin-blue">Model Latency</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={latencyData}>
@@ -206,7 +209,7 @@ const Dashboard = () => {
         </div>
 
         {/* Success Rate Chart */}
-        <div className="card">
+        <div className="card min-w-0 overflow-x-auto">
           <h3 className="text-lg font-semibold mb-4 text-merlin-green">Success Rates</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={latencyData}>
@@ -233,9 +236,9 @@ const Dashboard = () => {
       </div>
 
       {/* Request Distribution & Model Performance */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
         {/* Request Distribution Pie Chart */}
-        <div className="card">
+        <div className="card min-w-0 overflow-x-auto">
           <h3 className="text-lg font-semibold mb-4 text-merlin-purple">Request Distribution</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>

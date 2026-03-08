@@ -21,6 +21,11 @@ This policy governs cross-repo operation contracts used by Merlin integrations.
 
 - Minimum deprecation period: two release cycles or 30 days (whichever is longer) before removal.
 - Deprecations must be documented in this folder and in repo release notes/changelog if present.
+- Deprecated operations must emit response headers for machine-readable migration:
+  - `Deprecation: true`
+  - `Sunset: <ISO-8601 UTC timestamp>`
+  - `X-Merlin-Replacement-Operation: <operation.name>`
+  - `Link: <docs/protocols/compatibility-policy.md>; rel="deprecation-policy"`
 
 ## Change Checklist
 

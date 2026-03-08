@@ -1,0 +1,20 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "a9b77f1f-c29a-4a95-a91a-3f2cc485f2d1",
+  "trace_id": "d9a5e3f3-1a2e-4718-b74a-a88e8e42ee17",
+  "operation": {
+    "name": "merlin.discovery.run.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "report": {
+      "schema_name": "AAS.Discovery.RunReport",
+      "profile": "public",
+      "allow_live_automation": true,
+      "publish_result": {
+        "schema_name": "AAS.Discovery.PublishResult"
+      }
+    }
+  }
+}

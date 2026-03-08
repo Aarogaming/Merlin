@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "seed_health.schema.json",
+  "title": "AAS Merlin Seed Health",
+  "description": "Watchdog-style seed runtime health summary derived from policy, progress, and guidance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "workspace_root",
+    "state",
+    "severity",
+    "policy_decision",
+    "next_action",
+    "recommended_control_action",
+    "checks",
+    "progress",
+    "worker",
+    "staleness",
+    "guidance",
+    "status_snapshot_updated_at",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Merlin.SeedHealth"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "workspace_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "attention",
+        "blocked",
+        "complete"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "warn",
+        "critical"
+      ]
+    },
+    "policy_decision": {
+      "type": "string",
+      "enum": [
+        "allowed",
+        "stubbed"
+      ]
+    },
+    "next_action": {
+      "type": "string",
+      "enum": [
+        "observe",
+        "start",
+        "restart",
+        "stop",
+        "unblock_policy"
+      ]
+    },
+    "recommended_control_action": {
+      "type": "string",
+      "enum": [
+        "none",
+        "start",
+        "restart",
+        "stop"
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_allowed",
+        "status_stale",
+        "worker_active",
+        "progress_complete"
+      ],
+      "properties": {
+        "policy_allowed": {
+          "type": "boolean"
+        },
+        "status_stale": {
+          "type": "boolean"
+        },
+        "worker_active": {
+          "type": "boolean"
+        },
+        "progress_complete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "progress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_rounds",
+        "completed_rounds",
+        "remaining_rounds",
+        "completion_percent"
+      ],
+      "properties": {
+        "target_rounds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "completed_rounds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "remaining_rounds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completion_percent": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "worker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "active",
+        "count"
+      ],
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "staleness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_age_seconds",
+        "stale_after_seconds",
+        "is_stale"
+      ],
+      "properties": {
+        "status_age_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "stale_after_seconds": {
+          "type": "number",
+          "minimum": 1
+        },
+        "is_stale": {
+          "type": "boolean"
+        }
+      }
+    },
+    "guidance": {
+      "$ref": "seed_guidance.schema.json"
+    },
+    "status_snapshot_updated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

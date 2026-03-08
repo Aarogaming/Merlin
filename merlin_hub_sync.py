@@ -11,9 +11,17 @@ class MerlinHubSync:
         self.sync_interval = int(os.getenv("MERLIN_SYNC_INTERVAL", "60"))
 
     def send_heartbeat(self):
-        # In a real implementation, this would call a Heartbeat gRPC method
         merlin_logger.info("Sending heartbeat to AAS Hub...")
-        # self.client.stub.Heartbeat(...)
+        has_bridge = any(
+            getattr(self.client, attr_name, None) is not None
+            for attr_name in ("bridge_client", "grpc_client")
+        )
+        if not has_bridge:
+            merlin_logger.warning(
+                "Heartbeat skipped: Hub client gRPC channel unavailable"
+            )
+            return False
+        return True
 
     def sync_tasks(self):
         merlin_logger.info("Syncing tasks with AAS Hub...")

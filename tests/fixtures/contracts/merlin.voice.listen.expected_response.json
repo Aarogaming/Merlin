@@ -1,0 +1,13 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "f2751f2f-2748-43cd-abf5-572ce4ebf388",
+  "trace_id": "0b50af5a-799d-414b-a6f5-84e7ddb2f65d",
+  "operation": {
+    "name": "merlin.voice.listen.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "text": "fixture-heard"
+  }
+}

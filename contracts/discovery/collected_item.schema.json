@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/contracts/discovery/collected_item.schema.json",
+  "title": "AAS Discovery Collected Item",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "item_id",
+    "seed_id",
+    "title",
+    "url",
+    "canonical_url",
+    "canonical_key",
+    "snippet",
+    "source",
+    "collector",
+    "collected_at"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "AAS.Discovery.CollectedItem"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "item_id": {
+      "type": "string",
+      "pattern": "^item_[A-Za-z0-9_-]{8,64}$"
+    },
+    "seed_id": {
+      "type": "string",
+      "pattern": "^seed_[A-Za-z0-9_-]{8,64}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "canonical_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "canonical_key": {
+      "type": "string",
+      "pattern": "^ck_[a-f0-9]{24}$"
+    },
+    "snippet": {
+      "type": "string",
+      "maxLength": 8000
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "collector": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

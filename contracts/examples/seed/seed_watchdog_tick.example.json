@@ -1,0 +1,69 @@
+{
+  "schema_name": "AAS.Merlin.SeedWatchdogTick",
+  "schema_version": "1.0.0",
+  "workspace_root": "/mnt/c/Dev library/AaroneousAutomationSuite",
+  "health": {
+    "schema_name": "AAS.Merlin.SeedHealth",
+    "schema_version": "1.0.0",
+    "workspace_root": "/mnt/c/Dev library/AaroneousAutomationSuite",
+    "state": "attention",
+    "severity": "warn",
+    "policy_decision": "allowed",
+    "next_action": "start",
+    "recommended_control_action": "start",
+    "checks": {
+      "policy_allowed": true,
+      "status_stale": false,
+      "worker_active": false,
+      "progress_complete": false
+    },
+    "progress": {
+      "target_rounds": 50000,
+      "completed_rounds": 5712,
+      "remaining_rounds": 44288,
+      "completion_percent": 11.42
+    },
+    "worker": {
+      "active": false,
+      "count": 0
+    },
+    "staleness": {
+      "status_age_seconds": 45.0,
+      "stale_after_seconds": 3600.0,
+      "is_stale": false
+    },
+    "guidance": {
+      "schema_name": "AAS.Merlin.SeedGuidance",
+      "schema_version": "1.0.0",
+      "state": "attention",
+      "next_action": "start",
+      "recommendations": [
+        {
+          "id": "start_worker",
+          "severity": "high",
+          "message": "No active seed worker is running before target completion.",
+          "action": "Run merlin.seed.control with action=start and allow_live_automation=true."
+        }
+      ]
+    },
+    "status_snapshot_updated_at": "2026-02-25T18:00:00Z",
+    "updated_at": "2026-02-25T18:00:45Z"
+  },
+  "decision": {
+    "recommended_control_action": "start",
+    "apply_requested": true,
+    "dry_run_control": false,
+    "force": false,
+    "action_taken": "start",
+    "outcome_status": "executed",
+    "reason": "Control action 'start' executed."
+  },
+  "control_result": {
+    "schema_name": "AAS.Merlin.SeedControl",
+    "schema_version": "1.0.0",
+    "action": "start",
+    "decision": "allowed",
+    "status": "started"
+  },
+  "updated_at": "2026-02-25T18:00:45Z"
+}

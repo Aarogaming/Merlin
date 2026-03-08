@@ -22,9 +22,9 @@ try:
 except ImportError:
     UAF_AVAILABLE = False
 
-    # Graceful degradation - define stubs
+    # Graceful degradation - define local fallback types.
     @dataclass
-    class AgentRequest:
+    class AgentRequest:  # type: ignore[no-redef]
         task_type: str
         description: str
         context: Optional[Dict[str, Any]] = None
@@ -34,7 +34,7 @@ except ImportError:
         agent_hint: Optional[str] = None
 
     @dataclass
-    class AgentResult:
+    class AgentResult:  # type: ignore[no-redef]
         ok: bool
         output: str
         metadata: Dict[str, Any]
@@ -149,7 +149,7 @@ class MerlinUAFAdapter:
         task = "\n".join(prompt_parts)
 
         # Build constraints
-        constraints = {}
+        constraints: Dict[str, Any] = {}
         if max_tokens:
             constraints["max_tokens"] = max_tokens
         if temperature:

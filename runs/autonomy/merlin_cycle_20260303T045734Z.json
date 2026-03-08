@@ -1,0 +1,140 @@
+{
+  "module_name": "Merlin",
+  "cycle_id": "20260303T045734Z",
+  "started_utc": "2026-03-03T04:57:34.321200+00:00",
+  "finished_utc": "2026-03-03T04:58:07.149337+00:00",
+  "profile": "autonomous-v1",
+  "throttled": false,
+  "throttle_reason": null,
+  "resource_policy": {
+    "threshold_percent": 90.0,
+    "consecutive_seconds": 30,
+    "clear_below_percent": 80.0,
+    "clear_seconds": 30,
+    "sample_interval_sec": 5
+  },
+  "resource_samples": [
+    {
+      "timestamp_utc": "2026-03-03T04:57:34.322199+00:00",
+      "cpu_percent": 0.0,
+      "memory_percent": 73.0
+    },
+    {
+      "timestamp_utc": "2026-03-03T04:57:41.409093+00:00",
+      "cpu_percent": 70.16,
+      "memory_percent": 74.0
+    },
+    {
+      "timestamp_utc": "2026-03-03T04:57:46.538699+00:00",
+      "cpu_percent": 65.18,
+      "memory_percent": 74.0
+    },
+    {
+      "timestamp_utc": "2026-03-03T04:57:51.951652+00:00",
+      "cpu_percent": 65.45,
+      "memory_percent": 75.0
+    },
+    {
+      "timestamp_utc": "2026-03-03T04:57:57.023783+00:00",
+      "cpu_percent": 67.59,
+      "memory_percent": 75.0
+    },
+    {
+      "timestamp_utc": "2026-03-03T04:58:02.075087+00:00",
+      "cpu_percent": 64.15,
+      "memory_percent": 74.0
+    }
+  ],
+  "tasks": [
+    {
+      "name": "Check governance guardrails",
+      "command": [
+        "bash",
+        "C:\\Dev library\\AaroneousAutomationSuite\\Merlin\\scripts\\check_governance_guardrails.sh"
+      ],
+      "heavy": false,
+      "status": "failed",
+      "duration_sec": 2.078,
+      "exit_code": 127,
+      "skipped_reason": null,
+      "stdout_tail": "",
+      "stderr_tail": "/bin/bash: C:\\Dev library\\AaroneousAutomationSuite\\Merlin\\scripts\\check_governance_guardrails.sh: No such file or directory\n"
+    },
+    {
+      "name": "Check secret hygiene",
+      "command": [
+        "python",
+        "C:\\Dev library\\AaroneousAutomationSuite\\Merlin\\scripts\\check_secret_hygiene.py"
+      ],
+      "heavy": false,
+      "status": "ok",
+      "duration_sec": 0.125,
+      "exit_code": 0,
+      "skipped_reason": null,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "name": "Check vector memory integrity",
+      "command": [
+        "python",
+        "C:\\Dev library\\AaroneousAutomationSuite\\Merlin\\scripts\\check_vector_memory_integrity.py"
+      ],
+      "heavy": false,
+      "status": "failed",
+      "duration_sec": 0.406,
+      "exit_code": 1,
+      "skipped_reason": null,
+      "stdout_tail": "{\n  \"collection_name\": \"merlin_memory\",\n  \"storage_file\": \"merlin_memory.json\",\n  \"total_entries\": 30770,\n  \"invalid_entries\": 0,\n  \"invalid_indices\": [],\n  \"duplicate_entries\": 28960,\n  \"oldest_timestamp\": 1770872871.8866806,\n  \"newest_timestamp\": 1772037179.3105323\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "Verify contract schemas",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "tests/test_contract_schemas.py",
+        "-v"
+      ],
+      "heavy": false,
+      "status": "failed",
+      "duration_sec": 0.047,
+      "exit_code": 1,
+      "skipped_reason": null,
+      "stdout_tail": "",
+      "stderr_tail": "Traceback (most recent call last):\n  File \"C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python310\\lib\\runpy.py\", line 187, in _run_module_as_main\n    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)\n  File \"C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python310\\lib\\runpy.py\", line 146, in _get_module_details\n    return _get_module_details(pkg_main_name, error)\n  File \"C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python310\\lib\\runpy.py\", line 110, in _get_module_details\n    __import__(pkg_name)\n  File \"C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\pytest\\__init__.py\", line 8, in <module>\n    from _pytest._code import ExceptionInfo\nImportError: cannot import name 'ExceptionInfo' from '_pytest._code' (unknown location)\n"
+    },
+    {
+      "name": "Verify discovery contract schemas",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "tests/test_discovery_contract_schemas.py",
+        "-v"
+      ],
+      "heavy": false,
+      "status": "failed",
+      "duration_sec": 0.047,
+      "exit_code": 1,
+      "skipped_reason": null,
+      "stdout_tail": "",
+      "stderr_tail": "Traceback (most recent call last):\n  File \"C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python310\\lib\\runpy.py\", line 187, in _run_module_as_main\n    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)\n  File \"C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python310\\lib\\runpy.py\", line 146, in _get_module_details\n    return _get_module_details(pkg_main_name, error)\n  File \"C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python310\\lib\\runpy.py\", line 110, in _get_module_details\n    __import__(pkg_name)\n  File \"C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\pytest\\__init__.py\", line 8, in <module>\n    from _pytest._code import ExceptionInfo\nImportError: cannot import name 'ExceptionInfo' from '_pytest._code' (unknown location)\n"
+    },
+    {
+      "name": "Generate dependency audit report",
+      "command": [
+        "python",
+        "C:\\Dev library\\AaroneousAutomationSuite\\Merlin\\scripts\\generate_dependency_audit_report.py"
+      ],
+      "heavy": true,
+      "status": "failed",
+      "duration_sec": 0.063,
+      "exit_code": 2,
+      "skipped_reason": null,
+      "stdout_tail": "",
+      "stderr_tail": "usage: generate_dependency_audit_report.py [-h] --audit-json AUDIT_JSON\n                                           --output OUTPUT [--strict]\ngenerate_dependency_audit_report.py: error: the following arguments are required: --audit-json, --output\n"
+    }
+  ]
+}

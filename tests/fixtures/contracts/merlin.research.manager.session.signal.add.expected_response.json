@@ -1,0 +1,31 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "ff7d113b-5800-48b4-ab26-3d8e6b12da8b",
+  "trace_id": "f3bc80ca-903a-4e99-b706-fb2e48e3247e",
+  "operation": {
+    "name": "merlin.research.manager.session.signal.add.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "session_id": "fixture-session-id",
+    "signal": {
+      "signal_id": "fixture-signal-id",
+      "source": "routing-smoke",
+      "claim": "Fallback and telemetry checks are passing.",
+      "confidence": 0.9
+    },
+    "hypotheses": [
+      {
+        "id": "h_execution_success",
+        "probability": 0.67,
+        "confidence": 0.51
+      }
+    ],
+    "next_actions": [
+      "Collect targeted evidence on h_execution_success.",
+      "Run adversarial challenge against dependency assumptions.",
+      "Publish decision packet with go/no-go thresholds."
+    ]
+  }
+}

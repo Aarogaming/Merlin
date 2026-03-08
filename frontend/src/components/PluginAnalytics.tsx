@@ -38,11 +38,57 @@ interface PluginAnalyticsData {
   global_stats: GlobalStats;
   top_plugins: PluginMetrics[];
   comparative_analysis: ComparativeAnalysis;
+  fallback_taxonomy_counts?: Record<string, unknown>;
   error?: string;
 }
 
+interface FallbackTrendPoint {
+  timestamp: number;
+  counts: Record<string, number>;
+}
+
+const FALLBACK_TREND_MAX_POINTS = 20;
+const FALLBACK_TAXONOMY_COLORS = ['#2563eb', '#d97706', '#16a34a', '#dc2626', '#7c3aed'];
+
+const normalizeFallbackTaxonomyCounts = (value: unknown): Record<string, number> => {
+  if (!value || typeof value !== 'object') {
+    return {};
+  }
+  const normalized: Record<string, number> = {};
+  for (const [key, rawCount] of Object.entries(value)) {
+    const count = Number(rawCount);
+    if (Number.isFinite(count) && count >= 0) {
+      normalized[key] = Math.round(count);
+    }
+  }
+  return normalized;
+};
+
+const formatFallbackTaxonomyLabel = (taxonomy: string): string =>
+  taxonomy
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+const buildSparklinePoints = (samples: number[]): string => {
+  if (!samples.length) {
+    return '';
+  }
+  const max = Math.max(...samples, 1);
+  const denominator = Math.max(samples.length - 1, 1);
+  return samples
+    .map((value, index) => {
+      const x = (index / denominator) * 100;
+      const y = 28 - (value / max) * 24;
+      return `${x.toFixed(2)},${y.toFixed(2)}`;
+    })
+    .join(' ');
+};
+
 const PluginAnalytics: React.FC = () => {
   const [data, setData] = useState<PluginAnalyticsData | null>(null);
+  const [fallbackTrend, setFallbackTrend] = useState<FallbackTrendPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -57,6 +103,17 @@ const PluginAnalytics: React.FC = () => {
         setError(result.error);
       } else {
         setData(result);
+        const normalizedCounts = normalizeFallbackTaxonomyCounts(result.fallback_taxonomy_counts);
+        if (Object.keys(normalizedCounts).length > 0) {
+          setFallbackTrend((previousTrend) => {
+            const nextSample: FallbackTrendPoint = {
+              timestamp: Date.now(),
+              counts: normalizedCounts,
+            };
+            const nextTrend = [...previousTrend, nextSample];
+            return nextTrend.slice(-FALLBACK_TREND_MAX_POINTS);
+          });
+        }
         setError(null);
       }
     } catch (err) {
@@ -122,12 +179,18 @@ const PluginAnalytics: React.FC = () => {
     );
   }
 
+  const fallbackTaxonomyEntries = Object.entries(
+    normalizeFallbackTaxonomyCounts(data.fallback_taxonomy_counts)
+  ).sort((left, right) => right[1] - left[1]);
+  const fallbackTaxonomyTop = fallbackTaxonomyEntries.slice(0, 3);
+  const fallbackTrendReady = fallbackTrend.length > 1 && fallbackTaxonomyTop.length > 0;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" role="region" aria-label="Plugin analytics">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-800">Plugin Analytics</h2>
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-gray-600">
           Last updated: {new Date(data.timestamp).toLocaleTimeString()}
         </span>
       </div>
@@ -188,6 +251,83 @@ const PluginAnalytics: React.FC = () => {
         </motion.div>
       </div>
 
+      {/* Fallback Taxonomy Panel */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45 }}
+        className="bg-white rounded-lg shadow-md p-6"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="text-xl font-semibold text-gray-900">Fallback Taxonomy</h3>
+          <span className="text-xs text-gray-600">
+            {fallbackTaxonomyEntries.length
+              ? `${fallbackTaxonomyEntries.length} categories observed`
+              : 'No fallback events reported'}
+          </span>
+        </div>
+        {fallbackTaxonomyEntries.length ? (
+          <>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {fallbackTaxonomyEntries.map(([taxonomy, count], index) => (
+                <div key={taxonomy} className="rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
+                  <div className="text-xs text-gray-700">{formatFallbackTaxonomyLabel(taxonomy)}</div>
+                  <div className="text-lg font-semibold text-gray-900">{count.toLocaleString()}</div>
+                  <div
+                    className="mt-2 h-1 rounded"
+                    style={{ backgroundColor: FALLBACK_TAXONOMY_COLORS[index % FALLBACK_TAXONOMY_COLORS.length] }}
+                    aria-hidden="true"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-4">
+              <p className="text-xs text-gray-700 mb-2">Trend line (recent refreshes)</p>
+              {fallbackTrendReady ? (
+                <div className="space-y-2">
+                  {fallbackTaxonomyTop.map(([taxonomy, count], index) => {
+                    const color = FALLBACK_TAXONOMY_COLORS[index % FALLBACK_TAXONOMY_COLORS.length];
+                    const samples = fallbackTrend.map((point) => point.counts[taxonomy] ?? 0);
+                    return (
+                      <div
+                        key={taxonomy}
+                        className="grid grid-cols-[minmax(120px,1fr)_4fr_auto] items-center gap-3"
+                      >
+                        <span className="text-xs text-gray-700 truncate">
+                          {formatFallbackTaxonomyLabel(taxonomy)}
+                        </span>
+                        <svg
+                          className="w-full h-8 overflow-visible"
+                          viewBox="0 0 100 28"
+                          role="img"
+                          aria-label={`${formatFallbackTaxonomyLabel(taxonomy)} trend`}
+                        >
+                          <polyline
+                            fill="none"
+                            stroke={color}
+                            strokeWidth="2"
+                            points={buildSparklinePoints(samples)}
+                          />
+                        </svg>
+                        <span className="text-xs text-gray-700">{count.toLocaleString()}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-xs text-gray-600">
+                  Collecting trend data. Refresh a few more times to display spark lines.
+                </p>
+              )}
+            </div>
+          </>
+        ) : (
+          <p className="mt-3 text-sm text-gray-600">
+            No fallback taxonomy counts are currently available in this analytics payload.
+          </p>
+        )}
+      </motion.div>
+
       {/* Comparative Analysis */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -198,43 +338,43 @@ const PluginAnalytics: React.FC = () => {
         <h3 className="text-xl font-semibold text-gray-800 mb-4">🏆 Comparative Analysis</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <div className="text-sm text-gray-500">⚡ Fastest</div>
+            <div className="text-sm text-gray-700">⚡ Fastest</div>
             <div className="font-semibold text-gray-800">
               {data.comparative_analysis.fastest_plugin}
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">🐌 Slowest</div>
+            <div className="text-sm text-gray-700">🐌 Slowest</div>
             <div className="font-semibold text-gray-800">
               {data.comparative_analysis.slowest_plugin}
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">✅ Most Reliable</div>
+            <div className="text-sm text-gray-700">✅ Most Reliable</div>
             <div className="font-semibold text-gray-800">
               {data.comparative_analysis.most_reliable}
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">⚠️ Least Reliable</div>
+            <div className="text-sm text-gray-700">⚠️ Least Reliable</div>
             <div className="font-semibold text-gray-800">
               {data.comparative_analysis.least_reliable}
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">📈 Most Used</div>
+            <div className="text-sm text-gray-700">📈 Most Used</div>
             <div className="font-semibold text-gray-800">
               {data.comparative_analysis.most_used}
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">📉 Least Used</div>
+            <div className="text-sm text-gray-700">📉 Least Used</div>
             <div className="font-semibold text-gray-800">
               {data.comparative_analysis.least_used}
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">💚 Healthiest</div>
+            <div className="text-sm text-gray-700">💚 Healthiest</div>
             <div className="font-semibold text-gray-800">
               {data.comparative_analysis.healthiest}
             </div>
@@ -265,37 +405,37 @@ const PluginAnalytics: React.FC = () => {
                     <span className="text-2xl">{getCategoryIcon(plugin.category)}</span>
                     <div>
                       <h4 className="font-semibold text-gray-800">{plugin.plugin_name}</h4>
-                      <p className="text-sm text-gray-500 capitalize">{plugin.category}</p>
+                      <p className="text-sm text-gray-600 capitalize">{plugin.category}</p>
                     </div>
                   </div>
                   
                   <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-4">
                     <div>
-                      <div className="text-xs text-gray-500">Invocations</div>
+                      <div className="text-xs text-gray-700">Invocations</div>
                       <div className="font-semibold text-gray-800">
                         {plugin.total_invocations.toLocaleString()}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500">Success Rate</div>
+                      <div className="text-xs text-gray-700">Success Rate</div>
                       <div className="font-semibold text-green-600">
                         {plugin.success_rate.toFixed(1)}%
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500">Avg Time</div>
+                      <div className="text-xs text-gray-700">Avg Time</div>
                       <div className="font-semibold text-gray-800">
                         {plugin.avg_execution_time_ms.toFixed(1)}ms
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500">Errors</div>
+                      <div className="text-xs text-gray-700">Errors</div>
                       <div className="font-semibold text-red-600">
                         {plugin.failed_invocations}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500">Health Score</div>
+                      <div className="text-xs text-gray-700">Health Score</div>
                       <div className={`font-semibold ${getHealthColor(plugin.health_score)}`}>
                         {plugin.health_score.toFixed(1)}
                       </div>

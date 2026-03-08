@@ -1,0 +1,18 @@
+{
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "correlation_id": "4e0de76b-37f8-4f2e-a7bf-c9d0a6cc8f1d",
+  "trace_id": "6f2d843e-3d84-48a7-9a44-f45d24a78ad9",
+  "operation": {
+    "name": "merlin.discovery.queue.pause.result",
+    "version": "1.0.0"
+  },
+  "payload": {
+    "pause": {
+      "schema_name": "AAS.Discovery.QueuePause",
+      "status": {
+        "paused": true
+      }
+    }
+  }
+}

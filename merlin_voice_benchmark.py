@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 import statistics
+from typing import Any
 import wave
 
 import merlin_settings as settings
@@ -24,6 +25,7 @@ ENGINE_MAP = {
     "piper": PiperEngine,
     "pyttsx3": Pyttsx3Engine,
 }
+DEFAULT_SOURCE_CATALOG_PATH = Path("merlin_voice_sources.json")
 
 
 @dataclass
@@ -58,6 +60,67 @@ def _load_prompts(path: Path | None) -> list[str]:
             if cleaned:
                 lines.append(cleaned)
     return lines
+
+
+def _load_source_catalog(path: Path | None) -> dict[str, Any]:
+    if path is None:
+        path = DEFAULT_SOURCE_CATALOG_PATH
+    if not path.exists():
+        return {
+            "schema_name": "AAS.VoiceSourceCatalog",
+            "schema_version": "1.0.0",
+            "dataset_version": "unknown",
+            "provenance": {
+                "catalog_path": str(path),
+                "status": "missing",
+            },
+            "sources": [],
+        }
+
+    with path.open("r", encoding="utf-8") as handle:
+        payload = json.load(handle)
+    if not isinstance(payload, dict):
+        raise ValueError("Voice source catalog must be a JSON object.")
+    sources = payload.get("sources")
+    if not isinstance(sources, list):
+        payload["sources"] = []
+    return payload
+
+
+def _build_dataset_metadata(
+    *,
+    catalog: dict[str, Any],
+    source_catalog_path: Path | None,
+    selected_source_ids: list[str],
+    override_dataset_version: str | None,
+) -> dict[str, Any]:
+    catalog_sources = catalog.get("sources", [])
+    selected_set = {source_id.strip() for source_id in selected_source_ids if source_id.strip()}
+    selected_sources = []
+    for source in catalog_sources:
+        if not isinstance(source, dict):
+            continue
+        source_id = str(source.get("id", "")).strip()
+        if selected_set and source_id not in selected_set:
+            continue
+        selected_sources.append(source)
+
+    dataset_version = (
+        override_dataset_version.strip()
+        if override_dataset_version and override_dataset_version.strip()
+        else str(catalog.get("dataset_version", "unknown"))
+    )
+    return {
+        "dataset_version": dataset_version,
+        "source_catalog_path": str(source_catalog_path or DEFAULT_SOURCE_CATALOG_PATH),
+        "source_catalog_schema": {
+            "schema_name": catalog.get("schema_name"),
+            "schema_version": catalog.get("schema_version"),
+        },
+        "selected_source_ids": sorted(selected_set),
+        "selected_sources": selected_sources,
+        "provenance": catalog.get("provenance", {}),
+    }
 
 
 def _audio_duration(path: Path) -> float | None:
@@ -158,10 +221,31 @@ def main() -> None:
         default=None,
         help="Directory for generated audio and results JSON",
     )
+    parser.add_argument(
+        "--dataset-version",
+        type=str,
+        default=None,
+        help="Optional dataset version override for benchmark report metadata",
+    )
+    parser.add_argument(
+        "--source-catalog",
+        type=str,
+        default=str(DEFAULT_SOURCE_CATALOG_PATH),
+        help="Voice source catalog JSON path",
+    )
+    parser.add_argument(
+        "--source-id",
+        dest="source_ids",
+        action="append",
+        default=[],
+        help="Source ID to include from catalog (repeatable)",
+    )
     args = parser.parse_args()
 
     prompt_path = Path(args.prompts) if args.prompts else None
     prompts = _load_prompts(prompt_path)
+    source_catalog_path = Path(args.source_catalog) if args.source_catalog else None
+    source_catalog = _load_source_catalog(source_catalog_path)
 
     output_dir = (
         Path(args.output_dir)
@@ -197,6 +281,12 @@ def main() -> None:
         "engines": engines,
         "prompts": prompts,
         "runs_per_prompt": args.runs,
+        "dataset": _build_dataset_metadata(
+            catalog=source_catalog,
+            source_catalog_path=source_catalog_path,
+            selected_source_ids=args.source_ids,
+            override_dataset_version=args.dataset_version,
+        ),
         "results": [result.__dict__ for result in results],
         "summary": summary,
     }

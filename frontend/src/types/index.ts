@@ -22,6 +22,22 @@ export interface SummaryStats {
   best_model: string | null;
   model_count: number;
   active_models: number;
+  maturity_tier?: string;
+  maturity_readiness_status?: string;
+  maturity_regression_status?: string;
+}
+
+export interface MaturityStatusCard {
+  tier: string;
+  policy_version: string;
+  readiness_status: string;
+  regression_status: string;
+  recommended_action: string;
+  recommended_tier: string;
+  critical_failure_count: number;
+  missing_promotion_gate_count: number;
+  report_generated_at?: string | null;
+  report_path?: string | null;
 }
 
 export interface DashboardStatus {
@@ -31,6 +47,7 @@ export interface DashboardStatus {
   learning_mode: boolean;
   models: Record<string, ModelMetrics>;
   summary: SummaryStats;
+  maturity_status_card?: MaturityStatusCard;
 }
 
 export interface ModelRequest {

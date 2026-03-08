@@ -1,0 +1,77 @@
+{
+  "schema_name": "AAS.Discovery.RunReport",
+  "schema_version": "1.0.0",
+  "run_id": "run_20260224T052300Z_4f1c9ab2",
+  "profile": "public",
+  "allow_live_automation": true,
+  "merlin_mode": "local",
+  "started_at": "2026-02-24T05:23:00Z",
+  "completed_at": "2026-02-24T05:24:40Z",
+  "status": "ok",
+  "counts": {
+    "seeds_added": 2,
+    "work_promoted": 2,
+    "work_claimed": 2,
+    "items_collected": 4,
+    "items_scored": 4,
+    "topics_selected": 2,
+    "artifacts_generated": 2,
+    "artifacts_written": 2,
+    "artifacts_skipped": 0,
+    "blocked_by_policy": 0,
+    "failed": 0
+  },
+  "policy": {
+    "profile": "public",
+    "allow_live_automation": true,
+    "collector_decisions": {
+      "local_fixture": {
+        "decision": "allowed",
+        "reason": "offline collector enabled"
+      },
+      "rss": {
+        "decision": "blocked",
+        "reason": "network collectors are disabled in public profile"
+      }
+    },
+    "publisher_decisions": {
+      "stage_only": {
+        "decision": "allowed",
+        "reason": "stage-only publisher is always available"
+      },
+      "pr": {
+        "decision": "blocked",
+        "reason": "live publisher is disabled in public profile"
+      }
+    },
+    "dry_run": false,
+    "no_write": false
+  },
+  "publish_result": {
+    "schema_name": "AAS.Discovery.PublishResult",
+    "schema_version": "1.0.0",
+    "run_id": "run_20260224T052300Z_4f1c9ab2",
+    "publisher_mode": "stage_only",
+    "status": "staged",
+    "blocked_by_policy": false,
+    "decision": "allowed",
+    "message": "artifacts staged in working tree",
+    "created_paths": [
+      "knowledge/research/2026/02/24/policy-gated-discovery-pipelines-for-local-first-repositories.md"
+    ]
+  },
+  "plan": [
+    {
+      "artifact_id": "artifact_4de97f6f292cc8cb",
+      "path": "knowledge/research/2026/02/24/policy-gated-discovery-pipelines-for-local-first-repositories.md",
+      "action": "CREATE",
+      "valid": true
+    }
+  ],
+  "paths": {
+    "output_root": "/tmp/aas-discovery",
+    "knowledge_root": "/tmp/aas-discovery/knowledge",
+    "queue_root": "/tmp/aas-discovery/queue",
+    "run_dir": "/tmp/aas-discovery/runs/run_20260224T052300Z_4f1c9ab2"
+  }
+}
