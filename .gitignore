@@ -31,3 +31,6 @@ dist/
 
 # Runtime outputs
 logs/
+merlin_tasks.json
+artifacts/research_manager/sessions/
+artifacts/diagnostics/

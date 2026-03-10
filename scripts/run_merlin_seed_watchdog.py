@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -137,6 +138,61 @@ def _append_jsonl(path: Path, payload: dict[str, Any]) -> None:
         handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
 
 
+def _pid_running(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    return True
+
+
+def _acquire_lock(lock_path: Path) -> int | None:
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_data = {
+        "pid": os.getpid(),
+        "started_at": _utc_now_iso(),
+    }
+    flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY
+    try:
+        fd = os.open(str(lock_path), flags)
+    except FileExistsError:
+        try:
+            existing = json.loads(lock_path.read_text(encoding="utf-8"))
+            existing_pid = int(existing.get("pid", 0))
+        except Exception:
+            existing_pid = 0
+        if existing_pid and _pid_running(existing_pid):
+            print(
+                f"Watchdog lock active at {lock_path} (pid={existing_pid}); exiting duplicate instance."
+            )
+            return None
+        try:
+            lock_path.unlink()
+        except FileNotFoundError:
+            pass
+        fd = os.open(str(lock_path), flags)
+
+    with os.fdopen(fd, "w", encoding="utf-8") as handle:
+        json.dump(lock_data, handle, ensure_ascii=False, indent=2)
+        handle.write("\n")
+    return fd
+
+
+def _release_lock(fd: int | None, lock_path: Path) -> None:
+    if fd is None:
+        return
+    try:
+        os.close(fd)
+    except OSError:
+        pass
+    try:
+        lock_path.unlink()
+    except FileNotFoundError:
+        pass
+
+
 def main() -> int:
     args = _build_parser().parse_args()
     raw_max_iterations = int(args.max_iterations)
@@ -148,51 +204,70 @@ def main() -> int:
     stale_after_seconds = max(1.0, float(args.stale_after_seconds))
 
     access = build_seed_access(workspace_root=args.workspace_root)
+    if args.output_json:
+        output_path = Path(args.output_json)
+        if not output_path.is_absolute():
+            output_path = access.workspace_root / output_path
+        lock_path = output_path.with_suffix(".lock")
+    else:
+        lock_path = (
+            access.workspace_root
+            / "artifacts"
+            / "diagnostics"
+            / "merlin_seed_watchdog_runtime.lock"
+        )
+    lock_fd = _acquire_lock(lock_path)
+    if lock_fd is None:
+        return 0
+
     tick_records: list[dict[str, Any]] = []
 
-    iteration = 0
-    while True:
-        iteration += 1
-        watchdog_payload = access.watchdog(
-            status_file=args.status_file,
-            merged_jsonl=args.merged_jsonl,
-            merged_parquet=args.merged_parquet,
-            log_file=args.log_file,
-            allow_live_automation=args.allow_live_automation,
-            stale_after_seconds=stale_after_seconds,
-            apply=bool(args.apply),
-            force=bool(args.force),
-            dry_run_control=bool(args.dry_run_control),
-        )
-
-        heartbeat_payload = None
-        if args.emit_heartbeat:
-            heartbeat_payload = access.heartbeat(
+    try:
+        iteration = 0
+        while True:
+            iteration += 1
+            watchdog_payload = access.watchdog(
                 status_file=args.status_file,
                 merged_jsonl=args.merged_jsonl,
                 merged_parquet=args.merged_parquet,
                 log_file=args.log_file,
                 allow_live_automation=args.allow_live_automation,
                 stale_after_seconds=stale_after_seconds,
-                heartbeat_file=args.heartbeat_file,
-                write_event=True,
+                apply=bool(args.apply),
+                force=bool(args.force),
+                dry_run_control=bool(args.dry_run_control),
             )
 
-        record = {
-            "iteration": iteration,
-            "watchdog": watchdog_payload,
-            "heartbeat": heartbeat_payload,
-            "tick_at": _utc_now_iso(),
-        }
-        tick_records.append(record)
+            heartbeat_payload = None
+            if args.emit_heartbeat:
+                heartbeat_payload = access.heartbeat(
+                    status_file=args.status_file,
+                    merged_jsonl=args.merged_jsonl,
+                    merged_parquet=args.merged_parquet,
+                    log_file=args.log_file,
+                    allow_live_automation=args.allow_live_automation,
+                    stale_after_seconds=stale_after_seconds,
+                    heartbeat_file=args.heartbeat_file,
+                    write_event=True,
+                )
 
-        if args.append_jsonl:
-            _append_jsonl(Path(args.append_jsonl), record)
+            record = {
+                "iteration": iteration,
+                "watchdog": watchdog_payload,
+                "heartbeat": heartbeat_payload,
+                "tick_at": _utc_now_iso(),
+            }
+            tick_records.append(record)
 
-        if not infinite_mode and iteration >= max_iterations:
-            break
-        if interval_seconds > 0:
-            time.sleep(interval_seconds)
+            if args.append_jsonl:
+                _append_jsonl(Path(args.append_jsonl), record)
+
+            if not infinite_mode and iteration >= max_iterations:
+                break
+            if interval_seconds > 0:
+                time.sleep(interval_seconds)
+    finally:
+        _release_lock(lock_fd, lock_path)
 
     outcomes = [
         str(
@@ -235,11 +310,14 @@ def main() -> int:
         Path(args.output_json)
         if args.output_json
         else (
-            Path("artifacts")
+            access.workspace_root
+            / "artifacts"
             / "diagnostics"
             / f"seed_watchdog_loop_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         )
     )
+    if not output_path.is_absolute():
+        output_path = access.workspace_root / output_path
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 

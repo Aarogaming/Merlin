@@ -632,6 +632,9 @@ class MerlinSeedAccess:
         if not tokens:
             return []
 
+        if os.name == "nt":
+            return self._list_processes_windows(tokens=tokens)
+
         try:
             result = subprocess.run(
                 ["ps", "-eo", "pid=,args="],
@@ -665,6 +668,122 @@ class MerlinSeedAccess:
                 continue
 
             matches.append({"pid": pid, "command": command.strip()})
+
+        return matches
+
+    def _list_processes_windows(self, *, tokens: tuple[str, ...]) -> list[dict[str, Any]]:
+        try:
+            result = subprocess.run(
+                [
+                    "powershell",
+                    "-NoProfile",
+                    "-Command",
+                    (
+                        "Get-CimInstance Win32_Process | "
+                        "Select-Object ProcessId,ParentProcessId,ExecutablePath,CommandLine | "
+                        "ConvertTo-Json -Compress"
+                    ),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+        except OSError:
+            return []
+
+        output = (result.stdout or "").strip()
+        if not output:
+            return []
+
+        try:
+            parsed = json.loads(output)
+        except ValueError:
+            return []
+
+        rows: list[dict[str, Any]]
+        if isinstance(parsed, list):
+            rows = [row for row in parsed if isinstance(row, dict)]
+        elif isinstance(parsed, dict):
+            rows = [parsed]
+        else:
+            rows = []
+
+        def _command_tail(value: str) -> str:
+            command = value.strip()
+            if not command:
+                return ""
+            if command.startswith('"'):
+                closing = command.find('"', 1)
+                if closing != -1:
+                    return command[closing + 1 :].strip().lower()
+            parts = command.split(maxsplit=1)
+            if len(parts) == 2:
+                return parts[1].strip().lower()
+            return ""
+
+        candidate_rows: list[dict[str, Any]] = []
+        for row in rows:
+            raw_pid = row.get("ProcessId")
+            raw_parent_pid = row.get("ParentProcessId")
+            command = str(row.get("CommandLine") or "").strip()
+            executable_path = str(row.get("ExecutablePath") or "").strip()
+
+            try:
+                pid = int(raw_pid)
+            except (TypeError, ValueError):
+                continue
+
+            try:
+                parent_pid = int(raw_parent_pid)
+            except (TypeError, ValueError):
+                parent_pid = 0
+
+            normalized_command = command.lower()
+            if not normalized_command:
+                continue
+            if all(token not in normalized_command for token in tokens):
+                continue
+            if "get-ciminstance win32_process" in normalized_command:
+                continue
+
+            candidate_rows.append(
+                {
+                    "pid": pid,
+                    "parent_pid": parent_pid,
+                    "command": command,
+                    "executable_path": executable_path,
+                    "command_tail": _command_tail(command),
+                }
+            )
+
+        rows_by_pid = {int(row["pid"]): row for row in candidate_rows}
+        skip_pids: set[int] = set()
+
+        for row in candidate_rows:
+            pid = int(row["pid"])
+            parent_pid = int(row.get("parent_pid", 0))
+            if parent_pid <= 0:
+                continue
+            parent = rows_by_pid.get(parent_pid)
+            if not parent:
+                continue
+
+            row_tail = str(row.get("command_tail") or "")
+            parent_tail = str(parent.get("command_tail") or "")
+            if not row_tail or row_tail != parent_tail:
+                continue
+
+            # Windows venv python often appears as a parent redirector process
+            # and the base interpreter appears as the child. Collapse this pair
+            # to a single logical process by keeping the parent PID.
+            skip_pids.add(pid)
+
+        matches: list[dict[str, Any]] = []
+        for row in candidate_rows:
+            pid = int(row["pid"])
+            if pid in skip_pids:
+                continue
+            matches.append({"pid": pid, "command": str(row["command"]).strip()})
 
         return matches
 
@@ -1206,6 +1325,40 @@ class MerlinSeedAccess:
                 "killed": [],
                 "errors": [],
                 "remaining": [],
+            }
+
+        if os.name == "nt":
+            terminated: list[int] = []
+            errors: list[str] = []
+            for pid in target_pids:
+                try:
+                    result = subprocess.run(
+                        ["taskkill", "/PID", str(pid), "/T", "/F"],
+                        check=False,
+                        capture_output=True,
+                        text=True,
+                    )
+                except OSError as exc:
+                    errors.append(f"pid {pid}: {exc}")
+                    continue
+
+                if result.returncode == 0:
+                    terminated.append(pid)
+                else:
+                    stderr = (result.stderr or "").strip()
+                    if stderr:
+                        errors.append(f"pid {pid}: {stderr}")
+
+            time.sleep(0.2)
+            remaining_rows = self._list_processes(match_tokens=match_tokens)
+            remaining = [row for row in remaining_rows if int(row["pid"]) in target_pids]
+
+            return {
+                "before_count": len(before),
+                "terminated": terminated,
+                "killed": terminated,
+                "errors": errors,
+                "remaining": remaining,
             }
 
         terminated: list[int] = []
