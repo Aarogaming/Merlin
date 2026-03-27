@@ -34,3 +34,7 @@ logs/
 merlin_tasks.json
 artifacts/research_manager/sessions/
 artifacts/diagnostics/
+
+# Pytest temp files (Windows path fragments leaked into working tree)
+CUsersaarog*
+pytest-of-*/

@@ -28,7 +28,9 @@ def launch_merlin(index: bool = False):
 
     # 3. Start API Server
     print("\nStep 3: Starting Merlin API Server...")
+    print(f"DEBUG: PYTHONPATH={os.environ.get('PYTHONPATH')}")
     try:
+        port = os.getenv("MERLIN_API_PORT", "8001")
         # Use uvicorn directly if possible, or subprocess
         cmd = [
             sys.executable,
@@ -38,10 +40,10 @@ def launch_merlin(index: bool = False):
             "--host",
             "0.0.0.0",
             "--port",
-            "8000",
+            port,
         ]
         print(f"Executing: {' '.join(cmd)}")
-        subprocess.run(cmd)
+        subprocess.run(cmd, env=os.environ)
     except KeyboardInterrupt:
         print("\nMerlin shutting down...")
     except Exception as e:

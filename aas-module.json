@@ -1,23 +1,23 @@
-{
-  "id": "merlin",
-  "name": "Merlin",
-  "kernel": {
-    "type": "process",
-    "manager": "core.merlin_manager.MerlinManager"
-  },
-  "plugins": {
-    "paths": [
-      "Merlin/plugins"
-    ]
-  },
-  "hive": {
-    "swarm_enabled": true,
-    "verify_interval_sec": 20,
-    "repair_backoff_sec": 5,
-    "max_recursive_repairs": 3
-  },
-  "metadata": {
-    "owner": "AAS",
-    "description": "Merlin module kernel + plugin hive"
-  }
+﻿{
+    "id":  "merlin",
+    "name":  "Merlin",
+    "kernel":  {
+                   "type":  "process",
+                   "manager":  "core.merlin_manager.MerlinManager"
+               },
+    "plugins":  {
+                    "paths":  [
+                                  "Merlin/plugins"
+                              ]
+                },
+    "hive":  {
+                 "swarm_enabled":  true,
+                 "verify_interval_sec":  20,
+                 "repair_backoff_sec":  5,
+                 "max_recursive_repairs":  3
+             },
+    "metadata":  {
+                     "owner":  "AAS",
+                     "description":  "Merlin module kernel + plugin hive"
+                 }
 }

@@ -4,6 +4,7 @@ Bridges Merlin's existing LLM backends with the Unified Agent Framework.
 """
 
 import sys
+import os
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from dataclasses import dataclass
@@ -57,9 +58,26 @@ class MerlinUAFAdapter:
         self.uaf_enabled = enable_uaf and UAF_AVAILABLE
 
         if self.uaf_enabled:
-            # Initialize UAF orchestrator with auto-discovery
+            # Cloud configuration for Gemini and OpenAI
+            cloud_config = {
+                "gemini": {
+                    "enabled": bool(os.getenv("GEMINI_API_KEY")),
+                    "api_key": os.getenv("GEMINI_API_KEY"),
+                    "model": os.getenv("GEMINI_MODEL", "gemini-flash-latest")
+                },
+                "openai": {
+                    "enabled": bool(os.getenv("OPENAI_API_KEY")),
+                    "api_key": os.getenv("OPENAI_API_KEY"),
+                    "model": os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+                }
+            }
+
+            # Initialize UAF orchestrator with auto-discovery and cloud delegates
             self.orchestrator = UnifiedAgentOrchestrator(
-                enable_lmstudio=True, enable_opencode=True
+                enable_lmstudio=True, 
+                enable_opencode=True,
+                enable_cloud=True,
+                cloud_config=cloud_config
             )
             self.bridge = MerlinUAFBridge(orchestrator=self.orchestrator)
         else:

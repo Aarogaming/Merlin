@@ -3,13 +3,53 @@ import os
 from datetime import datetime
 from typing import List, Dict, Any, Callable
 from merlin_logger import merlin_logger
+from manager_health_protocol import (
+    HealthCheckResult,
+    HealthStatus,
+    LifecycleState,
+    LifecycleStateMixin,
+    StatusPayloadBuilder,
+)
 
 
-class MerlinTaskManager:
+class MerlinTaskManager(LifecycleStateMixin):
     def __init__(self, tasks_file="merlin_tasks.json"):
+        LifecycleStateMixin.__init__(self)
+        self._transition_state(LifecycleState.STARTING)
         self.tasks_file = tasks_file
         self.tasks = self._load_tasks()
         self._cancel_hooks: dict[int, Callable[[], None]] = {}
+        self._transition_state(LifecycleState.RUNNING)
+
+    def get_status(self) -> Dict:
+        """Return standardised status payload."""
+        return (
+            StatusPayloadBuilder("MerlinTaskManager")
+            .with_lifecycle_state(self._lifecycle_state)
+            .with_health_status(
+                HealthStatus.HEALTHY if self.is_running() else HealthStatus.DEGRADED
+            )
+            .with_metrics({
+                "task_count": len(self.tasks),
+                "tasks_file": self.tasks_file,
+            })
+            .build()
+        )
+
+    def health_check(self) -> HealthCheckResult:
+        """Return a named-check health report."""
+        is_running = self.is_running()
+        tasks_list_ok = isinstance(self.tasks, list)
+        all_ok = is_running and tasks_list_ok
+        return HealthCheckResult(
+            status=HealthStatus.HEALTHY if all_ok else HealthStatus.DEGRADED,
+            is_healthy=all_ok,
+            message="MerlinTaskManager is operational" if all_ok else "One or more checks failed",
+            checks={
+                "lifecycle_running": is_running,
+                "tasks_list_ok": tasks_list_ok,
+            },
+        )
 
     def _load_tasks(self) -> List[Dict[str, Any]]:
         if os.path.exists(self.tasks_file):

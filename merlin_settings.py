@@ -239,7 +239,7 @@ def _parse_maturity_operation_allowlists(
 
 # API Connectivity
 MERLIN_API_HOST = os.getenv("MERLIN_API_HOST", "0.0.0.0")
-MERLIN_API_PORT = _coerce_positive_int(os.getenv("MERLIN_API_PORT"), 8000)
+MERLIN_API_PORT = _coerce_positive_int(os.getenv("MERLIN_API_PORT"), 8001)
 MERLIN_HTTP_KEEP_ALIVE_TIMEOUT_S = _coerce_positive_int(
     os.getenv("MERLIN_HTTP_KEEP_ALIVE_TIMEOUT_S"), 15
 )

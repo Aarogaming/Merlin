@@ -1,76 +1,80 @@
-{
-  "schemaName": "PluginManifest",
-  "schemaVersion": "1.0.0",
-  "name": "merlin",
-  "version": "0.1.0",
-  "description": "Merlin AI assistant service",
-  "entry": "merlin_api_server.py",
-  "type": "service",
-  "enabled": true,
-  "capabilities": [
-    {
-      "schemaName": "Capability",
-      "schemaVersion": "1.0.0",
-      "name": "assistant.chat",
-      "version": "1.0.0",
-      "description": "Conversational assistant API"
-    },
-    {
-      "schemaName": "Capability",
-      "schemaVersion": "1.0.0",
-      "name": "assistant.tools",
-      "version": "1.0.0",
-      "description": "Tool-use and plugin execution"
-    },
-    {
-      "schemaName": "Capability",
-      "schemaVersion": "1.0.0",
-      "name": "merlin.rag",
-      "version": "1.0.0",
-      "description": "RAG search over indexed resources"
-    },
-    {
-      "schemaName": "Capability",
-      "schemaVersion": "1.0.0",
-      "name": "merlin.voice",
-      "version": "1.0.0",
-      "description": "Voice utilities (TTS/STT)"
-    },
-    {
-      "schemaName": "Capability",
-      "schemaVersion": "1.0.0",
-      "name": "merlin.resource_indexer",
-      "version": "1.0.0",
-      "description": "Resource scan and index operations"
-    },
-    {
-      "schemaName": "Capability",
-      "schemaVersion": "1.0.0",
-      "name": "merlin.tasks",
-      "version": "1.0.0",
-      "description": "Local task management"
-    },
-    {
-      "schemaName": "Capability",
-      "schemaVersion": "1.0.0",
-      "name": "merlin.tools",
-      "version": "1.0.0",
-      "description": "Plugin tool registry"
-    },
-    {
-      "schemaName": "Capability",
-      "schemaVersion": "1.0.0",
-      "name": "merlin.user_manager",
-      "version": "1.0.0",
-      "description": "User management and authentication"
-    }
-  ],
-  "interfaces": [
-    {
-      "type": "http",
-      "version": "1.0.0",
-      "endpoint": "http://localhost:8001"
-    }
-  ],
-  "tags": ["assistant", "service"]
+﻿{
+    "schemaName":  "PluginManifest",
+    "schemaVersion":  "1.0.0",
+    "name":  "merlin",
+    "version":  "2.0.0",
+    "description":  "Merlin AI assistant service",
+    "entry":  "merlin_api_server.py",
+    "type":  "service",
+    "enabled":  true,
+    "capabilities":  [
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "assistant.chat",
+                             "version":  "1.0.0",
+                             "description":  "Conversational assistant API"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "assistant.tools",
+                             "version":  "1.0.0",
+                             "description":  "Tool-use and plugin execution"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.rag",
+                             "version":  "1.0.0",
+                             "description":  "RAG search over indexed resources"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.voice",
+                             "version":  "1.0.0",
+                             "description":  "Voice utilities (TTS/STT)"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.resource_indexer",
+                             "version":  "1.0.0",
+                             "description":  "Resource scan and index operations"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.tasks",
+                             "version":  "1.0.0",
+                             "description":  "Local task management"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.tools",
+                             "version":  "1.0.0",
+                             "description":  "Plugin tool registry"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.user_manager",
+                             "version":  "1.0.0",
+                             "description":  "User management and authentication"
+                         }
+                     ],
+    "interfaces":  [
+                       {
+                           "type":  "http",
+                           "version":  "1.0.0",
+                           "endpoint":  "http://localhost:8001"
+                       }
+                   ],
+    "tags":  [
+                 "assistant",
+                 "service"
+             ],
+    "python_version":  "\u003e=3.12"
 }

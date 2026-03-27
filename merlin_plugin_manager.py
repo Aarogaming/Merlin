@@ -17,6 +17,13 @@ from pathlib import Path
 from typing import Any
 
 import merlin_settings as settings
+from manager_health_protocol import (
+    HealthCheckResult,
+    HealthStatus,
+    LifecycleState,
+    LifecycleStateMixin,
+    StatusPayloadBuilder,
+)
 
 try:
     from merlin_policy import PLUGIN_PERMISSION_TIERS, policy_manager
@@ -336,7 +343,7 @@ class MerlinPlugin:
         }
 
 
-class PluginManager:
+class PluginManager(LifecycleStateMixin):
     def __init__(
         self,
         plugin_dir="plugins",
@@ -346,6 +353,8 @@ class PluginManager:
         execution_mode: str | None = None,
         process_pool_size: int | None = None,
     ):
+        LifecycleStateMixin.__init__(self)
+        self._transition_state(LifecycleState.STARTING)
         requested_plugin_dir = Path(plugin_dir)
         self._plugin_directories = self._resolve_plugin_directories(
             requested_plugin_dir
@@ -380,6 +389,41 @@ class PluginManager:
             else int(getattr(settings, "MERLIN_PLUGIN_RESTART_MAX_ATTEMPTS", 2))
         )
         self._restart_budget = RestartBudget(max_attempts=restart_limit)
+        self._transition_state(LifecycleState.RUNNING)
+
+    def get_status(self) -> dict:
+        """Return standardised status payload."""
+        return (
+            StatusPayloadBuilder("PluginManager")
+            .with_lifecycle_state(self._lifecycle_state)
+            .with_health_status(
+                HealthStatus.HEALTHY if self.is_running() else HealthStatus.DEGRADED
+            )
+            .with_metrics({
+                "plugins_loaded": len(self.plugins),
+                "load_failures": len(self._plugin_load_failures),
+                "execution_mode": str(self.execution_mode),
+                "process_pool_size": self.process_pool_size,
+            })
+            .build()
+        )
+
+    def health_check(self) -> HealthCheckResult:
+        """Return a named-check health report."""
+        is_running = self.is_running()
+        plugin_dir_ok = any(d.exists() for d in self._plugin_directories)
+        no_failures = len(self._plugin_load_failures) == 0
+        all_ok = is_running and plugin_dir_ok
+        return HealthCheckResult(
+            status=HealthStatus.HEALTHY if all_ok else HealthStatus.DEGRADED,
+            is_healthy=all_ok,
+            message="PluginManager is operational" if all_ok else "One or more checks failed",
+            checks={
+                "lifecycle_running": is_running,
+                "plugin_directory_exists": plugin_dir_ok,
+                "no_load_failures": no_failures,
+            },
+        )
 
     @staticmethod
     def _is_default_plugins_dir(path: Path) -> bool:

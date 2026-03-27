@@ -1,6 +1,13 @@
 import os
 from enum import Enum
 from typing import Any
+from manager_health_protocol import (
+    HealthCheckResult,
+    HealthStatus,
+    LifecycleState,
+    LifecycleStateMixin,
+    StatusPayloadBuilder,
+)
 
 
 class ExecutionMode(Enum):
@@ -14,14 +21,47 @@ class ExecutionMode(Enum):
 PLUGIN_PERMISSION_TIERS = {"read", "write", "network", "exec"}
 
 
-class ExecutionPolicyManager:
+class ExecutionPolicyManager(LifecycleStateMixin):
     def __init__(self):
+        LifecycleStateMixin.__init__(self)
+        self._transition_state(LifecycleState.STARTING)
         self.mode = self._determine_mode()
         self.blocked_commands = [
             "rm -rf /",
             "format",
             "del /s /q C:\\",
         ]  # Example dangerous commands
+        self._transition_state(LifecycleState.RUNNING)
+
+    def get_status(self) -> dict:
+        """Return standardised status payload."""
+        return (
+            StatusPayloadBuilder("ExecutionPolicyManager")
+            .with_lifecycle_state(self._lifecycle_state)
+            .with_health_status(
+                HealthStatus.HEALTHY if self.is_running() else HealthStatus.DEGRADED
+            )
+            .with_metrics({
+                "execution_mode": self.mode.value,
+                "blocked_commands_count": len(self.blocked_commands),
+            })
+            .build()
+        )
+
+    def health_check(self) -> HealthCheckResult:
+        """Return a named-check health report."""
+        is_running = self.is_running()
+        mode_ok = self.mode is not None
+        all_ok = is_running and mode_ok
+        return HealthCheckResult(
+            status=HealthStatus.HEALTHY if all_ok else HealthStatus.DEGRADED,
+            is_healthy=all_ok,
+            message="ExecutionPolicyManager is operational" if all_ok else "One or more checks failed",
+            checks={
+                "lifecycle_running": is_running,
+                "mode_configured": mode_ok,
+            },
+        )
 
     def _determine_mode(self) -> ExecutionMode:
         mode_str = os.environ.get("MERLIN_EXECUTION_MODE", "safe").lower()

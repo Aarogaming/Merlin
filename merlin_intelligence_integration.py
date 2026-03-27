@@ -12,6 +12,13 @@ import os
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from loguru import logger
+from manager_health_protocol import (
+    HealthCheckResult,
+    HealthStatus,
+    LifecycleState,
+    LifecycleStateMixin,
+    StatusPayloadBuilder,
+)
 
 # Add AAS core to path for intelligence client
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -27,7 +34,7 @@ except ImportError:
     SimpleIntelligenceClient = None
 
 
-class MerlinIntelligenceManager:
+class MerlinIntelligenceManager(LifecycleStateMixin):
     """
     Merlin's interface to the AAS Shared Intelligence Service.
 
@@ -37,6 +44,8 @@ class MerlinIntelligenceManager:
 
     def __init__(self, aas_hub_url: str = "http://localhost:8000"):
         """Initialize Merlin's intelligence manager."""
+        LifecycleStateMixin.__init__(self)
+        self._transition_state(LifecycleState.STARTING)
         self.aas_hub_url = aas_hub_url
         self.client = None
         self.simple_client = None
@@ -53,6 +62,41 @@ class MerlinIntelligenceManager:
             logger.warning(
                 "🧙‍♂️ Merlin Intelligence Manager running in standalone mode"
             )
+        self._transition_state(LifecycleState.RUNNING)
+
+    def get_status(self) -> Dict:
+        """Return standardised status payload."""
+        return (
+            StatusPayloadBuilder("MerlinIntelligenceManager")
+            .with_lifecycle_state(self._lifecycle_state)
+            .with_health_status(
+                HealthStatus.HEALTHY if self.is_running() else HealthStatus.DEGRADED
+            )
+            .with_metrics({
+                "aas_hub_url": self.aas_hub_url,
+                "client_available": self.client is not None,
+                "cache_entries": len(self.intelligence_cache),
+                "standalone_mode": self.client is None,
+            })
+            .build()
+        )
+
+    def health_check(self) -> HealthCheckResult:
+        """Return a named-check health report."""
+        is_running = self.is_running()
+        cache_ok = isinstance(self.intelligence_cache, dict)
+        hub_url_set = bool(self.aas_hub_url)
+        all_ok = is_running and cache_ok and hub_url_set
+        return HealthCheckResult(
+            status=HealthStatus.HEALTHY if all_ok else HealthStatus.DEGRADED,
+            is_healthy=all_ok,
+            message="MerlinIntelligenceManager is operational" if all_ok else "One or more checks failed",
+            checks={
+                "lifecycle_running": is_running,
+                "cache_initialised": cache_ok,
+                "hub_url_configured": hub_url_set,
+            },
+        )
 
     async def get_system_awareness(self) -> Dict[str, Any]:
         """

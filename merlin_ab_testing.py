@@ -8,6 +8,13 @@ from dataclasses import dataclass, field
 from collections import defaultdict
 from merlin_logger import merlin_logger
 from merlin_streaming_llm import streaming_llm_backend
+from manager_health_protocol import (
+    HealthCheckResult,
+    HealthStatus,
+    LifecycleState,
+    LifecycleStateMixin,
+    StatusPayloadBuilder,
+)
 
 
 @dataclass
@@ -120,13 +127,46 @@ class ABTest:
         return None
 
 
-class ABTestingManager:
+class ABTestingManager(LifecycleStateMixin):
     def __init__(self):
+        LifecycleStateMixin.__init__(self)
+        self._transition_state(LifecycleState.STARTING)
         self.tests_file = "artifacts/ab_tests.json"
         self.active_tests: Dict[str, ABTest] = {}
         self.test_history: List[ABTest] = []
         self.load_tests()
+        self._transition_state(LifecycleState.RUNNING)
         merlin_logger.info(f"AB Testing Manager: {len(self.active_tests)} active tests")
+
+    def get_status(self) -> Dict:
+        """Return standardised status payload."""
+        return (
+            StatusPayloadBuilder("ABTestingManager")
+            .with_lifecycle_state(self._lifecycle_state)
+            .with_health_status(
+                HealthStatus.HEALTHY if self.is_running() else HealthStatus.DEGRADED
+            )
+            .with_metrics({
+                "active_tests": len(self.active_tests),
+                "test_history_count": len(self.test_history),
+            })
+            .build()
+        )
+
+    def health_check(self) -> HealthCheckResult:
+        """Return a named-check health report."""
+        is_running = self.is_running()
+        storage_ok = isinstance(self.active_tests, dict)
+        all_ok = is_running and storage_ok
+        return HealthCheckResult(
+            status=HealthStatus.HEALTHY if all_ok else HealthStatus.DEGRADED,
+            is_healthy=all_ok,
+            message="ABTestingManager is operational" if all_ok else "One or more checks failed",
+            checks={
+                "lifecycle_running": is_running,
+                "active_tests_dict_ok": storage_ok,
+            },
+        )
 
     def load_tests(self):
         if os.path.exists(self.tests_file):
@@ -215,6 +255,33 @@ class ABTestingManager:
         )
 
         return test_id
+
+    def create_retrieval_profile_test(
+        self,
+        profile_a: str,
+        profile_b: str,
+        test_name: str = "retrieval_profile_abtest",
+        duration_hours: int = 24,
+    ) -> str:
+        return self.create_test(
+            name=test_name,
+            variants=[profile_a, profile_b],
+            weights=[0.5, 0.5],
+            duration_hours=duration_hours,
+        )
+
+    def recommend_variant(
+        self, test_id: str, default_variant: Optional[str] = None
+    ) -> Optional[str]:
+        variant = self.get_variant(test_id)
+        if variant is not None:
+            return variant
+        if default_variant is not None:
+            return default_variant
+        test = self.active_tests.get(test_id)
+        if test and test.variants:
+            return test.variants[0]
+        return None
 
     def get_variant(self, test_id: str) -> Optional[str]:
         if test_id not in self.active_tests:

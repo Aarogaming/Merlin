@@ -10,6 +10,13 @@ from collections import deque
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
+from manager_health_protocol import (
+    HealthCheckResult,
+    HealthStatus,
+    LifecycleState,
+    LifecycleStateMixin,
+    StatusPayloadBuilder,
+)
 
 try:
     from merlin_audit import log_read_only_rejection
@@ -211,7 +218,7 @@ def _memory_reinforcement_multiplier(signal: dict[str, Any]) -> float:
     return _clamp(1.0 + bonus, 1.0, MEMORY_MAX_REINFORCEMENT_MULTIPLIER)
 
 
-class ResearchManager:
+class ResearchManager(LifecycleStateMixin):
     """
     Local research manager for hypothesis-driven execution.
 
@@ -228,6 +235,8 @@ class ResearchManager:
         brief_queue_enabled: bool | None = None,
         event_emitter: Callable[[dict[str, Any]], Any] | None = None,
     ):
+        LifecycleStateMixin.__init__(self)
+        self._transition_state(LifecycleState.STARTING)
         self.storage_root = Path(storage_root)
         self.sessions_dir = self.storage_root / "sessions"
         self.archive_dir = self.storage_root / "archive"
@@ -256,6 +265,44 @@ class ResearchManager:
         self._brief_jobs: dict[str, dict[str, Any]] = {}
         self._brief_job_queue: deque[str] = deque()
         self.event_emitter = event_emitter
+        self._transition_state(LifecycleState.RUNNING)
+
+    def get_status(self) -> dict:
+        """Return standardised status payload."""
+        session_count = sum(1 for _ in self.sessions_dir.glob("*.json")) if self.sessions_dir.exists() else 0
+        return (
+            StatusPayloadBuilder("ResearchManager")
+            .with_lifecycle_state(self._lifecycle_state)
+            .with_health_status(
+                HealthStatus.HEALTHY if self.is_running() else HealthStatus.DEGRADED
+            )
+            .with_metrics({
+                "session_count": session_count,
+                "allow_writes": self.allow_writes,
+                "session_ttl_days": self.session_ttl_days,
+                "auto_archive": self.auto_archive,
+                "brief_queue_enabled": self.brief_queue_enabled,
+                "pending_briefs": len(self._brief_job_queue),
+            })
+            .build()
+        )
+
+    def health_check(self) -> HealthCheckResult:
+        """Return a named-check health report."""
+        is_running = self.is_running()
+        sessions_dir_ok = self.sessions_dir.exists()
+        archive_dir_ok = self.archive_dir.exists()
+        all_ok = is_running and sessions_dir_ok and archive_dir_ok
+        return HealthCheckResult(
+            status=HealthStatus.HEALTHY if all_ok else HealthStatus.DEGRADED,
+            is_healthy=all_ok,
+            message="ResearchManager is operational" if all_ok else "One or more checks failed",
+            checks={
+                "lifecycle_running": is_running,
+                "sessions_dir_exists": sessions_dir_ok,
+                "archive_dir_exists": archive_dir_ok,
+            },
+        )
 
     def create_session(
         self,

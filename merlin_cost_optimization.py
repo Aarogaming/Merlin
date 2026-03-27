@@ -7,6 +7,13 @@ from dataclasses import dataclass, field
 from collections import defaultdict
 from merlin_logger import merlin_logger
 from merlin_predictive_selection import predictive_model_selector
+from manager_health_protocol import (
+    HealthCheckResult,
+    HealthStatus,
+    LifecycleState,
+    LifecycleStateMixin,
+    StatusPayloadBuilder,
+)
 
 
 @dataclass
@@ -31,8 +38,10 @@ class UsageMetrics:
     cost_efficiency_score: float  # Lower is better
 
 
-class CostOptimizationManager:
+class CostOptimizationManager(LifecycleStateMixin):
     def __init__(self):
+        LifecycleStateMixin.__init__(self)
+        self._transition_state(LifecycleState.STARTING)
         self.pricing_file = "artifacts/model_pricing.json"
         self.usage_file = "artifacts/model_usage.json"
         self.optimization_log_file = "artifacts/cost_optimization_log.json"
@@ -54,8 +63,43 @@ class CostOptimizationManager:
         self.load_usage()
         self.cleanup_old_usage()
 
+        self._transition_state(LifecycleState.RUNNING)
         merlin_logger.info(
             f"Cost Optimization Manager: {len(self.model_pricing)} models, budget: ${self.budget_limit}"
+        )
+
+    def get_status(self) -> Dict:
+        """Return standardised status payload."""
+        return (
+            StatusPayloadBuilder("CostOptimizationManager")
+            .with_lifecycle_state(self._lifecycle_state)
+            .with_health_status(
+                HealthStatus.HEALTHY if self.is_running() else HealthStatus.DEGRADED
+            )
+            .with_metrics({
+                "models_tracked": len(self.model_pricing),
+                "budget_limit": self.budget_limit,
+                "warning_threshold": self.cost_thresholds["warning"],
+                "critical_threshold": self.cost_thresholds["critical"],
+            })
+            .build()
+        )
+
+    def health_check(self) -> HealthCheckResult:
+        """Return a named-check health report."""
+        is_running = self.is_running()
+        pricing_ok = isinstance(self.model_pricing, dict)
+        budget_ok = self.budget_limit > 0
+        all_ok = is_running and pricing_ok and budget_ok
+        return HealthCheckResult(
+            status=HealthStatus.HEALTHY if all_ok else HealthStatus.DEGRADED,
+            is_healthy=all_ok,
+            message="CostOptimizationManager is operational" if all_ok else "One or more checks failed",
+            checks={
+                "lifecycle_running": is_running,
+                "pricing_store_ok": pricing_ok,
+                "budget_configured": budget_ok,
+            },
         )
 
     def load_pricing(self):

@@ -104,3 +104,26 @@ def test_complete_test_updates_history_and_summary(tmp_path):
     assert summary["active_tests"] == 0
     assert summary["completed_tests"] == 1
     assert summary["variant_winners"] == {"routing": 1}
+
+
+def test_create_retrieval_profile_test_uses_even_split(tmp_path):
+    manager = _make_manager(tmp_path)
+
+    test_id = manager.create_retrieval_profile_test(
+        profile_a="hybrid", profile_b="vector", test_name="retrieval-profile"
+    )
+
+    assert test_id in manager.active_tests
+    test = manager.active_tests[test_id]
+    assert test.name == "retrieval-profile"
+    assert test.variants == ["hybrid", "vector"]
+    assert test.weights == [0.5, 0.5]
+
+
+def test_recommend_variant_falls_back_to_default(tmp_path):
+    manager = _make_manager(tmp_path)
+
+    assert (
+        manager.recommend_variant("missing-test", default_variant="hybrid")
+        == "hybrid"
+    )

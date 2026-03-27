@@ -3,6 +3,13 @@ from __future__ import annotations
 import json
 import os
 from typing import Any, Dict, List, Optional, Tuple
+from manager_health_protocol import (
+    HealthCheckResult,
+    HealthStatus,
+    LifecycleState,
+    LifecycleStateMixin,
+    StatusPayloadBuilder,
+)
 
 try:
     from merlin_auth import get_password_hash, verify_password
@@ -20,12 +27,47 @@ from merlin_logger import merlin_logger
 USER_SCHEMA_VERSION = 1
 
 
-class MerlinUserManager:
+class MerlinUserManager(LifecycleStateMixin):
     def __init__(self, users_file: str = "merlin_users.json"):
+        LifecycleStateMixin.__init__(self)
+        self._transition_state(LifecycleState.STARTING)
         self.users_file = users_file
         self.users = self._load_users()
         if not self.users:
             self.create_user("admin", "admin123", role="admin")
+        self._transition_state(LifecycleState.RUNNING)
+
+    def get_status(self) -> Dict:
+        """Return standardised status payload."""
+        return (
+            StatusPayloadBuilder("MerlinUserManager")
+            .with_lifecycle_state(self._lifecycle_state)
+            .with_health_status(
+                HealthStatus.HEALTHY if self.is_running() else HealthStatus.DEGRADED
+            )
+            .with_metrics({
+                "user_count": len(self.users),
+                "users_file": self.users_file,
+            })
+            .build()
+        )
+
+    def health_check(self) -> HealthCheckResult:
+        """Return a named-check health report."""
+        is_running = self.is_running()
+        users_list_ok = isinstance(self.users, list)
+        has_users = len(self.users) > 0
+        all_ok = is_running and users_list_ok and has_users
+        return HealthCheckResult(
+            status=HealthStatus.HEALTHY if all_ok else HealthStatus.DEGRADED,
+            is_healthy=all_ok,
+            message="MerlinUserManager is operational" if all_ok else "One or more checks failed",
+            checks={
+                "lifecycle_running": is_running,
+                "users_list_ok": users_list_ok,
+                "has_users": has_users,
+            },
+        )
 
     @staticmethod
     def _migrate_user_record(user: Dict[str, Any]) -> Tuple[Dict[str, Any], bool]:

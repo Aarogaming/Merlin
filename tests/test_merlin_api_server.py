@@ -117,6 +117,110 @@ def test_health_and_chat(monkeypatch):
     assert invalid.status_code == 422
 
 
+def test_create_retrieval_profile_abtest_endpoint_success(monkeypatch):
+    class DummyABManager:
+        def __init__(self):
+            self.active_tests = {
+                "test_123": type(
+                    "DummyTest",
+                    (),
+                    {
+                        "variants": ["hybrid", "vector"],
+                        "name": "retrieval_profile_abtest",
+                    },
+                )()
+            }
+
+        def create_retrieval_profile_test(
+            self,
+            profile_a: str,
+            profile_b: str,
+            test_name: str = "retrieval_profile_abtest",
+            duration_hours: int = 24,
+        ) -> str:
+            return "test_123"
+
+    monkeypatch.setattr(api_server, "_get_ab_manager", lambda: DummyABManager())
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/abtest/retrieval-profile/create",
+        json={
+            "profile_a": "hybrid",
+            "profile_b": "vector",
+            "test_name": "retrieval_profile_abtest",
+        },
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "success"
+    assert payload["test_id"] == "test_123"
+    assert payload["variants"] == ["hybrid", "vector"]
+    assert payload["test_name"] == "retrieval_profile_abtest"
+
+
+def test_create_retrieval_profile_abtest_endpoint_contract_fixture(monkeypatch):
+    class DummyABManager:
+        def __init__(self):
+            self.active_tests = {
+                "test_123": type(
+                    "DummyTest",
+                    (),
+                    {
+                        "variants": ["hybrid", "vector"],
+                        "name": "retrieval_profile_abtest",
+                    },
+                )()
+            }
+
+        def create_retrieval_profile_test(
+            self,
+            profile_a: str,
+            profile_b: str,
+            test_name: str = "retrieval_profile_abtest",
+            duration_hours: int = 24,
+        ) -> str:
+            return "test_123"
+
+    monkeypatch.setattr(api_server, "_get_ab_manager", lambda: DummyABManager())
+    client = TestClient(api_server.app)
+
+    request_fixture = load_contract_fixture(
+        "merlin.abtest.retrieval_profile.create.request.json"
+    )
+    expected_fixture = load_contract_fixture(
+        "merlin.abtest.retrieval_profile.create.expected_response.json"
+    )
+
+    response = client.post(
+        "/abtest/retrieval-profile/create",
+        json=request_fixture,
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    assert response.json() == expected_fixture
+
+
+def test_create_retrieval_profile_abtest_endpoint_unavailable(monkeypatch):
+    def _raise_import_error():
+        raise ImportError("ab subsystem missing")
+
+    monkeypatch.setattr(api_server, "_get_ab_manager", _raise_import_error)
+    client = TestClient(api_server.app)
+
+    response = client.post(
+        "/abtest/retrieval-profile/create",
+        json={"profile_a": "hybrid", "profile_b": "vector"},
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 503
+    assert "A/B testing subsystem unavailable" in response.json()["error"]
+
+
 def test_is_valid_api_key_accepts_rotated_keys_from_env(monkeypatch):
     monkeypatch.setenv("MERLIN_API_KEY_ROTATION_STRICT", "true")
     monkeypatch.setenv("MERLIN_API_KEY", "primary-key")

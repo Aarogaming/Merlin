@@ -1,4 +1,17 @@
 # Merlin REST API server for Unity/Unreal integration
+import os
+import sys
+from pathlib import Path
+
+# Ensure shared core modules are importable
+_MERLIN_ROOT = Path(__file__).resolve().parent
+_REPO_ROOT = _MERLIN_ROOT.parent
+_CORE_PATH = _REPO_ROOT / "core"
+if str(_CORE_PATH) not in sys.path:
+    sys.path.insert(0, str(_CORE_PATH))
+if str(_MERLIN_ROOT) not in sys.path:
+    sys.path.insert(0, str(_MERLIN_ROOT))
+
 from fastapi import (
     FastAPI,
     Request,
@@ -750,6 +763,53 @@ app.add_exception_handler(
 # Register UAF router if available
 if UAF_ENDPOINTS_AVAILABLE and uaf_router is not None:
     app.include_router(uaf_router)
+
+# --- Retrieval Profile ABTest creation endpoint ---
+_ab_manager: Any | None = None
+
+class RetrievalProfileABTestRequest(BaseModel):
+    profile_a: str
+    profile_b: str
+    test_name: str = "retrieval_profile_abtest"
+
+
+def _get_ab_manager() -> Any:
+    global _ab_manager
+    if _ab_manager is None:
+        from merlin_ab_testing import ABTestingManager
+
+        _ab_manager = ABTestingManager()
+    return _ab_manager
+
+
+@app.post("/abtest/retrieval-profile/create")
+async def create_retrieval_profile_abtest(request: RetrievalProfileABTestRequest):
+    if not request.profile_a or not request.profile_b:
+        raise HTTPException(
+            status_code=400,
+            detail="Both profile_a and profile_b are required.",
+        )
+    try:
+        ab_manager = _get_ab_manager()
+        test_id = ab_manager.create_retrieval_profile_test(
+            profile_a=request.profile_a,
+            profile_b=request.profile_b,
+            test_name=request.test_name,
+        )
+        test = ab_manager.active_tests[test_id]
+        return {
+            "status": "success",
+            "test_id": test_id,
+            "variants": test.variants,
+            "test_name": test.name,
+        }
+    except ImportError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=f"A/B testing subsystem unavailable: {exc}",
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # UAF Dashboard endpoint
