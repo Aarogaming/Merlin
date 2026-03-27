@@ -1,0 +1,56 @@
+﻿{
+    "schemaName":  "PluginManifest",
+    "schemaVersion":  "1.0.0",
+    "name":  "kernel",
+    "version":  "2.0.0",
+    "description":  "Merlin hive kernel plugin",
+    "entry":  "plugin.py",
+    "type":  "plugin",
+    "capabilities":  [
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.hive.status",
+                             "version":  "0.1.0"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.hive.plugins",
+                             "version":  "0.1.0"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.round.table",
+                             "version":  "0.1.0"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.planning.audit",
+                             "version":  "0.1.0"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.ops.evaluate",
+                             "version":  "0.1.0"
+                         }
+                     ],
+    "extensions":  {
+                       "aas":  {
+                                   "hive":  "merlin",
+                                   "visibility":  "global",
+                                   "exports":  [
+                                                   "merlin.hive.status",
+                                                   "merlin.hive.plugins",
+                                                   "merlin.round.table",
+                                                   "merlin.planning.audit",
+                                                   "merlin.ops.evaluate"
+                                               ],
+                                   "kernel":  true
+                               }
+                   },
+    "python_version":  "\u003e=3.12"
+}

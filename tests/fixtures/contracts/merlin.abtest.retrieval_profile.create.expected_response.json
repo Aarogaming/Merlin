@@ -1,0 +1,9 @@
+{
+  "status": "success",
+  "test_id": "test_123",
+  "variants": [
+    "hybrid",
+    "vector"
+  ],
+  "test_name": "retrieval_profile_abtest"
+}

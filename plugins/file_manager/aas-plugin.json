@@ -1,0 +1,49 @@
+﻿{
+    "schemaName":  "PluginManifest",
+    "schemaVersion":  "1.0.0",
+    "name":  "file_manager",
+    "version":  "2.0.0",
+    "description":  "File management utilities for Merlin",
+    "entry":  "plugin.py",
+    "type":  "plugin",
+    "capabilities":  [
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.file.list",
+                             "version":  "0.1.0"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.file.delete",
+                             "version":  "0.1.0"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.file.move",
+                             "version":  "0.1.0"
+                         },
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.file.open",
+                             "version":  "0.1.0"
+                         }
+                     ],
+    "extensions":  {
+                       "aas":  {
+                                   "hive":  "merlin",
+                                   "visibility":  "global",
+                                   "exports":  [
+                                                   "merlin.file.list",
+                                                   "merlin.file.delete",
+                                                   "merlin.file.move",
+                                                   "merlin.file.open"
+                                               ],
+                                   "kernel":  "merlin"
+                               }
+                   },
+    "python_version":  "\u003e=3.12"
+}

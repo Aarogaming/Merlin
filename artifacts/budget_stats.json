@@ -1,0 +1,9 @@
+{
+  "date": "2026-03-27",
+  "spending": {},
+  "total_today": 0,
+  "limits": {
+    "delegate:create_gemini_delegate": 5.0,
+    "delegate:create_openai_delegate": 3.0
+  }
+}

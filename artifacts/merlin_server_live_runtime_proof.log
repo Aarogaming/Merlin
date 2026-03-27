@@ -18511,3 +18511,1126 @@ INFO:     127.0.0.1:54038 - "POST /merlin/operations HTTP/1.1" 200 OK
 2026-03-27 00:32:33,418 - merlin - INFO - AUDIT: operation.dispatch by api_server
 2026-03-27 00:32:33,477 - merlin - INFO - HTTP access
 INFO:     127.0.0.1:54039 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [33736]
+INFO:     Waiting for application startup.
+2026-03-27 00:41:29,836 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 00:41:29,836 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 00:41:29,837 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 00:41:29,838 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 00:41:29,838 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 00:41:29,839 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 00:41:29,839 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 00:41:31,336 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42163 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 00:41:33,401 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42168 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 00:41:35,497 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 00:41:35,498 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42171 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 00:41:37,573 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 00:41:37,573 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42180 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 00:41:39,657 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 00:41:39,658 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42187 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 00:41:41,710 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 00:41:41,711 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42199 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [43856]
+INFO:     Waiting for application startup.
+2026-03-27 00:41:55,350 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 00:41:55,351 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 00:41:55,353 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 00:41:55,353 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 00:41:55,354 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 00:41:55,355 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 00:41:55,356 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 00:41:55,637 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42225 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 00:41:55,664 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42230 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 00:41:55,721 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 00:41:55,722 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42231 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 00:41:55,744 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 00:41:55,744 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42232 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 00:41:55,758 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 00:41:55,759 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42234 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 00:41:55,774 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 00:41:55,774 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:42235 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [8684]
+INFO:     Waiting for application startup.
+2026-03-27 01:11:37,079 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 01:11:37,080 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 01:11:37,082 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 01:11:37,082 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 01:11:37,083 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 01:11:37,084 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 01:11:37,084 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 01:11:38,491 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47506 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 01:11:40,552 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47509 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 01:11:42,664 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:11:42,665 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47536 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:11:44,726 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:11:44,727 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47545 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:11:46,771 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:11:46,772 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47556 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:11:48,817 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:11:48,818 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47558 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+2026-03-27 01:11:52,150 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47576 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 01:11:52,153 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47577 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 01:11:52,172 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:11:52,173 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47578 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:11:52,188 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:11:52,188 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47579 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:11:52,203 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:11:52,203 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47581 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:11:52,207 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:11:52,208 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:47582 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [15460]
+INFO:     Waiting for application startup.
+2026-03-27 01:41:30,564 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 01:41:30,565 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 01:41:30,566 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 01:41:30,566 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 01:41:30,566 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 01:41:30,567 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 01:41:30,567 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 01:41:32,090 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45122 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 01:41:34,142 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45178 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 01:41:36,271 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:41:36,272 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45180 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:41:38,349 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:41:38,349 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45186 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:41:40,400 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:41:40,400 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45189 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:41:42,480 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:41:42,481 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45191 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [45028]
+INFO:     Waiting for application startup.
+2026-03-27 01:41:54,927 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 01:41:54,927 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 01:41:54,928 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 01:41:54,928 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 01:41:54,929 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 01:41:54,930 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 01:41:54,930 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 01:41:55,430 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:52637 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 01:41:55,433 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:52643 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 01:41:55,482 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:41:55,483 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:52644 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:41:55,487 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:41:55,487 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:52645 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:41:55,505 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:41:55,506 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:52646 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 01:41:55,521 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 01:41:55,521 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:52647 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [33572]
+INFO:     Waiting for application startup.
+2026-03-27 02:11:29,542 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 02:11:29,542 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 02:11:29,544 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 02:11:29,544 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 02:11:29,545 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 02:11:29,546 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 02:11:29,546 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 02:11:30,994 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22599 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 02:11:33,042 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22602 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 02:11:35,117 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:11:35,117 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22604 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:11:37,191 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:11:37,192 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22607 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:11:39,259 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:11:39,259 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22611 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:11:41,312 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:11:41,313 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22613 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [10072]
+INFO:     Waiting for application startup.
+2026-03-27 02:11:54,967 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 02:11:54,967 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 02:11:54,968 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 02:11:54,968 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 02:11:54,969 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 02:11:54,970 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 02:11:54,970 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 02:11:55,483 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22638 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 02:11:55,511 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22642 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 02:11:55,556 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:11:55,556 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22643 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:11:55,574 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:11:55,574 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22644 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:11:55,577 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:11:55,578 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22645 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:11:55,604 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:11:55,605 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:22646 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [44744]
+INFO:     Waiting for application startup.
+2026-03-27 02:41:26,884 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 02:41:26,884 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 02:41:26,885 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 02:41:26,885 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 02:41:26,886 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 02:41:26,887 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 02:41:26,887 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 02:41:28,326 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9855 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 02:41:30,407 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9858 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 02:41:32,516 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:41:32,516 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9863 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:41:34,590 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:41:34,590 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9876 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:41:36,642 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:41:36,643 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9879 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:41:38,724 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:41:38,725 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9882 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [32696]
+INFO:     Waiting for application startup.
+2026-03-27 02:41:55,060 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 02:41:55,060 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 02:41:55,062 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 02:41:55,062 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 02:41:55,062 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 02:41:55,063 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 02:41:55,063 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 02:41:55,516 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9901 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 02:41:55,529 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9905 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 02:41:55,574 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:41:55,574 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9906 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:41:55,593 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:41:55,593 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9907 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:41:55,607 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:41:55,607 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9908 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 02:41:55,622 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 02:41:55,622 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:9909 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [23748]
+INFO:     Waiting for application startup.
+2026-03-27 03:11:27,811 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 03:11:27,812 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 03:11:27,813 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 03:11:27,813 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 03:11:27,813 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 03:11:27,814 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 03:11:27,815 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 03:11:29,342 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45936 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 03:11:31,393 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45938 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 03:11:33,486 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:11:33,486 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45941 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:11:35,544 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:11:35,545 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45969 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:11:37,610 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:11:37,610 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45972 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:11:39,675 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:11:39,676 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45983 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [14496]
+INFO:     Waiting for application startup.
+2026-03-27 03:11:56,161 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 03:11:56,161 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 03:11:56,162 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 03:11:56,162 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 03:11:56,163 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 03:11:56,164 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 03:11:56,164 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 03:11:56,462 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:46014 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 03:11:56,489 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:46018 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 03:11:56,528 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:11:56,529 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:46019 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:11:56,552 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:11:56,553 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:46020 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:11:56,567 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:11:56,567 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:46021 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:11:56,582 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:11:56,583 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:46022 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [20676]
+INFO:     Waiting for application startup.
+2026-03-27 03:41:29,321 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 03:41:29,322 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 03:41:29,323 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 03:41:29,323 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 03:41:29,324 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 03:41:29,325 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 03:41:29,325 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 03:41:30,822 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:36968 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 03:41:32,888 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:36970 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 03:41:34,968 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:41:34,968 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:36973 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:41:37,026 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:41:37,026 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:36976 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:41:39,078 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:41:39,078 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:36980 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:41:41,145 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:41:41,145 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:36990 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [13908]
+INFO:     Waiting for application startup.
+2026-03-27 03:41:58,256 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 03:41:58,257 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 03:41:58,258 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 03:41:58,258 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 03:41:58,259 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 03:41:58,260 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 03:41:58,260 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 03:41:58,493 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:37015 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 03:41:58,521 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:37018 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 03:41:58,560 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:41:58,560 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:37019 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:41:58,584 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:41:58,584 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:37020 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:41:58,598 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:41:58,599 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:37021 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 03:41:58,614 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 03:41:58,614 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:37022 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [19616]
+INFO:     Waiting for application startup.
+2026-03-27 04:11:27,459 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 04:11:27,459 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 04:11:27,460 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 04:11:27,461 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 04:11:27,461 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 04:11:27,462 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 04:11:27,462 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 04:11:28,986 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40340 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 04:11:31,037 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40350 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 04:11:33,130 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:11:33,130 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40353 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:11:35,192 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:11:35,192 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40356 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:11:37,243 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:11:37,243 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40359 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:11:39,309 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:11:39,310 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40362 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [27496]
+INFO:     Waiting for application startup.
+2026-03-27 04:11:54,869 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 04:11:54,869 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 04:11:54,870 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 04:11:54,870 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 04:11:54,871 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 04:11:54,872 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 04:11:54,872 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 04:11:54,877 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40387 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 04:11:54,891 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40391 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 04:11:54,930 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:11:54,930 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40392 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:11:54,954 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:11:54,954 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40393 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:11:54,969 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:11:54,969 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40394 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:11:54,984 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:11:54,984 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:40395 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [31804]
+INFO:     Waiting for application startup.
+2026-03-27 04:41:32,998 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 04:41:32,998 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 04:41:32,999 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 04:41:32,999 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 04:41:33,000 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 04:41:33,000 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 04:41:33,001 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 04:41:34,529 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25945 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 04:41:36,581 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25947 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 04:41:38,689 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:41:38,689 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25950 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:41:40,751 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:41:40,751 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25961 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:41:42,803 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:41:42,803 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25964 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:41:44,871 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:41:44,871 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25967 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [29028]
+INFO:     Waiting for application startup.
+2026-03-27 04:41:57,770 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 04:41:57,770 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 04:41:57,771 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 04:41:57,771 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 04:41:57,772 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 04:41:57,772 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 04:41:57,773 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 04:41:57,918 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25984 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 04:41:57,931 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25987 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 04:41:57,971 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:41:57,971 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25988 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:41:57,994 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:41:57,994 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25989 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:41:58,008 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:41:58,009 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25990 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 04:41:58,024 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 04:41:58,024 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25991 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [42920]
+INFO:     Waiting for application startup.
+2026-03-27 05:11:25,966 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 05:11:25,966 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 05:11:25,967 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 05:11:25,967 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 05:11:25,968 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 05:11:25,969 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 05:11:25,969 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 05:11:27,317 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:20272 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 05:11:29,383 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:20282 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 05:11:31,493 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:11:31,493 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:20284 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:11:33,568 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:11:33,569 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:51688 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:11:35,636 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:11:35,636 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:51691 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:11:37,721 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:11:37,721 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:51693 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [19552]
+INFO:     Waiting for application startup.
+2026-03-27 05:11:55,574 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 05:11:55,574 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 05:11:55,575 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 05:11:55,575 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 05:11:55,576 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 05:11:55,577 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 05:11:55,577 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 05:11:55,908 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:51710 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 05:11:55,935 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:51714 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 05:11:55,975 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:11:55,976 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:51715 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:11:55,998 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:11:55,999 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:51716 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:11:56,013 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:11:56,013 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:51717 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:11:56,028 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:11:56,028 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:51718 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [17072]
+INFO:     Waiting for application startup.
+2026-03-27 05:41:25,181 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 05:41:25,182 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 05:41:25,183 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 05:41:25,183 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 05:41:25,184 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 05:41:25,185 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 05:41:25,185 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 05:41:26,719 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7481 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 05:41:28,797 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7487 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 05:41:30,903 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:41:30,903 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7490 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:41:32,972 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:41:32,972 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7494 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:41:35,020 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:41:35,021 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7505 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:41:37,100 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:41:37,100 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7507 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [26568]
+INFO:     Waiting for application startup.
+2026-03-27 05:41:54,940 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 05:41:54,941 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 05:41:54,942 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 05:41:54,942 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 05:41:54,942 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 05:41:54,943 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 05:41:54,944 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 05:41:55,459 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7527 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 05:41:55,486 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7531 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 05:41:55,526 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:41:55,526 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7532 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:41:55,550 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:41:55,550 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7533 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:41:55,564 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:41:55,564 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7534 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 05:41:55,579 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 05:41:55,579 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7535 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [24020]
+INFO:     Waiting for application startup.
+2026-03-27 06:11:27,304 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 06:11:27,304 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 06:11:27,305 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 06:11:27,305 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 06:11:27,306 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 06:11:27,307 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 06:11:27,307 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 06:11:28,036 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12259 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 06:11:30,103 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12261 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 06:11:32,181 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:11:32,182 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12264 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:11:34,237 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:11:34,237 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12268 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:11:36,305 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:11:36,305 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12271 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:11:38,356 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:11:38,356 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12274 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [42780]
+INFO:     Waiting for application startup.
+2026-03-27 06:11:54,928 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 06:11:54,929 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 06:11:54,930 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 06:11:54,930 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 06:11:54,930 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 06:11:54,931 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 06:11:54,931 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 06:11:55,370 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12326 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 06:11:55,398 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12330 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 06:11:55,437 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:11:55,438 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12331 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:11:55,461 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:11:55,461 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12332 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:11:55,475 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:11:55,476 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12333 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:11:55,490 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:11:55,491 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:12334 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [8372]
+INFO:     Waiting for application startup.
+2026-03-27 06:41:26,220 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 06:41:26,220 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 06:41:26,221 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 06:41:26,221 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 06:41:26,222 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 06:41:26,223 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 06:41:26,223 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 06:41:27,556 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25720 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 06:41:29,605 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25722 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 06:41:31,700 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:41:31,701 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25724 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:41:33,761 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:41:33,761 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25728 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:41:35,828 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:41:35,829 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25731 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:41:37,893 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:41:37,894 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25733 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [4368]
+INFO:     Waiting for application startup.
+2026-03-27 06:41:57,778 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 06:41:57,779 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 06:41:57,780 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 06:41:57,780 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 06:41:57,780 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 06:41:57,781 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 06:41:57,781 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 06:41:57,920 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25752 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 06:41:57,948 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25755 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 06:41:57,989 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:41:57,989 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25756 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:41:57,992 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:41:57,993 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25757 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:41:57,995 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:41:57,995 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25758 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 06:41:57,997 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 06:41:57,997 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:25759 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [27540]
+INFO:     Waiting for application startup.
+2026-03-27 07:11:27,362 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 07:11:27,362 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 07:11:27,363 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 07:11:27,363 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 07:11:27,364 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 07:11:27,365 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 07:11:27,365 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 07:11:28,903 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63656 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 07:11:30,953 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63658 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 07:11:33,047 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:11:33,047 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63661 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:11:35,111 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:11:35,112 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63664 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:11:37,188 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:11:37,188 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63667 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:11:39,257 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:11:39,257 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63670 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [29000]
+INFO:     Waiting for application startup.
+2026-03-27 07:11:55,630 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 07:11:55,631 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 07:11:55,632 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 07:11:55,632 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 07:11:55,632 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 07:11:55,633 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 07:11:55,633 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 07:11:55,915 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63701 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 07:11:55,943 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63705 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 07:11:55,982 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:11:55,983 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63706 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:11:56,006 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:11:56,006 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63707 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:11:56,020 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:11:56,020 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63708 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:11:56,035 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:11:56,035 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:63709 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [8488]
+INFO:     Waiting for application startup.
+2026-03-27 07:41:26,983 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 07:41:26,983 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 07:41:26,984 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 07:41:26,984 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 07:41:26,985 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 07:41:26,986 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 07:41:26,986 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 07:41:28,446 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55639 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 07:41:30,510 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55649 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 07:41:32,593 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:41:32,593 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55651 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:41:34,666 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:41:34,666 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55661 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:41:36,733 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:41:36,734 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55664 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:41:38,802 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:41:38,803 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55667 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [36308]
+INFO:     Waiting for application startup.
+2026-03-27 07:41:55,175 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 07:41:55,175 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 07:41:55,176 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 07:41:55,177 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 07:41:55,177 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 07:41:55,178 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 07:41:55,178 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 07:41:55,597 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55691 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 07:41:55,625 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55701 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 07:41:55,666 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:41:55,667 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55702 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:41:55,670 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:41:55,670 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55703 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:41:55,687 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:41:55,687 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55704 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 07:41:55,702 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 07:41:55,703 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:55705 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [40064]
+INFO:     Waiting for application startup.
+2026-03-27 08:11:25,352 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 08:11:25,352 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 08:11:25,353 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 08:11:25,353 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 08:11:25,354 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 08:11:25,354 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 08:11:25,355 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 08:11:26,859 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41461 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 08:11:28,916 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41463 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 08:11:30,991 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:11:30,991 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41465 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:11:33,059 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:11:33,060 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41469 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:11:35,106 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:11:35,106 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41472 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:11:37,170 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:11:37,170 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41474 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [22244]
+INFO:     Waiting for application startup.
+2026-03-27 08:11:55,102 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 08:11:55,102 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 08:11:55,103 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 08:11:55,103 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 08:11:55,104 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 08:11:55,105 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 08:11:55,105 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 08:11:55,477 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41490 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 08:11:55,505 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41494 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 08:11:55,545 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:11:55,546 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41495 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:11:55,568 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:11:55,568 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41496 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:11:55,583 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:11:55,584 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41497 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:11:55,598 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:11:55,598 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:41498 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [48804]
+INFO:     Waiting for application startup.
+2026-03-27 08:41:26,230 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 08:41:26,230 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 08:41:26,231 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 08:41:26,231 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 08:41:26,232 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 08:41:26,232 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 08:41:26,233 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 08:41:27,716 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:44992 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 08:41:29,778 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:44994 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 08:41:31,888 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:41:31,889 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45004 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:41:33,944 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:41:33,945 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45008 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:41:36,006 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:41:36,006 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45015 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:41:38,056 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:41:38,057 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45018 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [48656]
+INFO:     Waiting for application startup.
+2026-03-27 08:41:55,108 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 08:41:55,108 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 08:41:55,109 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 08:41:55,109 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 08:41:55,110 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 08:41:55,111 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 08:41:55,111 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 08:41:55,576 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45038 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 08:41:55,589 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45043 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 08:41:55,630 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:41:55,630 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45044 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:41:55,652 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:41:55,652 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45045 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:41:55,666 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:41:55,667 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45046 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 08:41:55,682 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 08:41:55,682 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:45047 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [43716]
+INFO:     Waiting for application startup.
+2026-03-27 09:11:27,194 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 09:11:27,195 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 09:11:27,196 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 09:11:27,196 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 09:11:27,197 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 09:11:27,198 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 09:11:27,198 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 09:11:28,703 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:5714 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 09:11:30,776 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:5716 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 09:11:32,879 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:11:32,879 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:5718 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:11:34,944 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:11:34,944 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:5722 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:11:37,004 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:11:37,005 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:5725 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:11:39,064 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:11:39,064 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:5728 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [45588]
+INFO:     Waiting for application startup.
+2026-03-27 09:11:55,048 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 09:11:55,048 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 09:11:55,050 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 09:11:55,050 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 09:11:55,050 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 09:11:55,051 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 09:11:55,051 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 09:11:55,512 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:5768 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 09:11:55,539 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:57433 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 09:11:55,581 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:11:55,582 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:57434 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:11:55,586 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:11:55,586 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:57435 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:11:55,589 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:11:55,589 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:57436 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:11:55,617 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:11:55,617 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:57437 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [51544]
+INFO:     Waiting for application startup.
+2026-03-27 09:41:29,242 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 09:41:29,242 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 09:41:29,243 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 09:41:29,243 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 09:41:29,244 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 09:41:29,245 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 09:41:29,245 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 09:41:30,621 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31771 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 09:41:32,688 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31773 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 09:41:34,782 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:41:34,782 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31776 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:41:36,857 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:41:36,857 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31779 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:41:38,910 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:41:38,911 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31783 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:41:40,975 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:41:40,975 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31785 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [52084]
+INFO:     Waiting for application startup.
+2026-03-27 09:41:55,083 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 09:41:55,083 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 09:41:55,084 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 09:41:55,084 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 09:41:55,085 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 09:41:55,086 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 09:41:55,086 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 09:41:55,476 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31833 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 09:41:55,489 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31837 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 09:41:55,516 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:41:55,516 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31838 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:41:55,537 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:41:55,537 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31839 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:41:55,551 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:41:55,552 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31840 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 09:41:55,567 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 09:41:55,567 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:31841 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [50836]
+INFO:     Waiting for application startup.
+2026-03-27 10:11:26,117 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 10:11:26,117 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 10:11:26,118 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 10:11:26,118 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 10:11:26,119 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 10:11:26,120 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 10:11:26,120 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 10:11:27,612 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7438 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 10:11:29,677 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7440 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 10:11:31,773 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:11:31,774 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7442 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:11:33,825 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:11:33,825 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7452 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:11:35,895 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:11:35,895 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7455 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:11:37,964 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:11:37,964 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7457 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [54572]
+INFO:     Waiting for application startup.
+2026-03-27 10:11:55,212 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 10:11:55,213 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 10:11:55,214 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 10:11:55,214 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 10:11:55,215 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 10:11:55,216 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 10:11:55,216 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 10:11:55,668 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7499 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 10:11:55,695 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7504 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 10:11:55,740 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:11:55,740 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7505 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:11:55,758 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:11:55,759 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7506 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:11:55,773 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:11:55,774 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7507 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:11:55,788 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:11:55,788 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:7508 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [44304]
+INFO:     Waiting for application startup.
+2026-03-27 10:41:32,560 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 10:41:32,561 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 10:41:32,562 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 10:41:32,562 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 10:41:32,563 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 10:41:32,564 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 10:41:32,565 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 10:41:33,948 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3253 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 10:41:35,997 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3255 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 10:41:38,091 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:41:38,092 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3258 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:41:40,151 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:41:40,151 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3265 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:41:42,203 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:41:42,278 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3284 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:41:44,353 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:41:44,353 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3288 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content
+INFO:     Started server process [47344]
+INFO:     Waiting for application startup.
+2026-03-27 10:41:55,526 - merlin - INFO - Loaded metrics for 2 models
+2026-03-27 10:41:55,526 - merlin - INFO - Adaptive LLM Backend: 4 models, learning: True
+2026-03-27 10:41:55,527 - merlin - INFO - Loaded 3 models: ['mistral', 'nomic', 'llama3.2']
+2026-03-27 10:41:55,527 - merlin - INFO - Parallel LLM Backend initialized with 3 models, strategy: voting
+2026-03-27 10:41:55,528 - merlin - WARNING - Redis package unavailable. Falling back to in-memory cache.
+2026-03-27 10:41:55,529 - merlin - INFO - Streaming LLM Backend: 3 models, strategy: voting
+2026-03-27 10:41:55,529 - merlin - INFO - Loaded 2 historical metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-27 10:41:55,978 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3309 - "GET /health HTTP/1.1" 200 OK
+2026-03-27 10:41:56,006 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3313 - "GET /merlin/operations/capabilities HTTP/1.1" 200 OK
+2026-03-27 10:41:56,051 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:41:56,052 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3314 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:41:56,056 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:41:56,056 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3315 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:41:56,084 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:41:56,084 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3316 - "POST /merlin/operations HTTP/1.1" 200 OK
+2026-03-27 10:41:56,099 - merlin - INFO - AUDIT: operation.dispatch by api_server
+2026-03-27 10:41:56,100 - merlin - INFO - HTTP access
+INFO:     127.0.0.1:3317 - "POST /merlin/operations HTTP/1.1" 422 Unprocessable Content

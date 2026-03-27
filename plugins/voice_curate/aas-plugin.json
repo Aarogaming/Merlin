@@ -1,0 +1,28 @@
+﻿{
+    "schemaName":  "PluginManifest",
+    "schemaVersion":  "1.0.0",
+    "name":  "voice_curate",
+    "version":  "2.0.0",
+    "description":  "Curate local voice references for Merlin datasets",
+    "entry":  "plugin.py",
+    "type":  "plugin",
+    "capabilities":  [
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.voice.curate_local",
+                             "version":  "0.1.0"
+                         }
+                     ],
+    "extensions":  {
+                       "aas":  {
+                                   "hive":  "merlin",
+                                   "visibility":  "global",
+                                   "exports":  [
+                                                   "merlin.voice.curate_local"
+                                               ],
+                                   "kernel":  "merlin"
+                               }
+                   },
+    "python_version":  "\u003e=3.12"
+}

@@ -1,0 +1,28 @@
+﻿{
+    "schemaName":  "PluginManifest",
+    "schemaVersion":  "1.0.0",
+    "name":  "voice_source_eval",
+    "version":  "2.0.0",
+    "description":  "Evaluate Merlin voice sources against benchmark harness",
+    "entry":  "plugin.py",
+    "type":  "plugin",
+    "capabilities":  [
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.voice.source_eval",
+                             "version":  "0.1.0"
+                         }
+                     ],
+    "extensions":  {
+                       "aas":  {
+                                   "hive":  "merlin",
+                                   "visibility":  "global",
+                                   "exports":  [
+                                                   "merlin.voice.source_eval"
+                                               ],
+                                   "kernel":  "merlin"
+                               }
+                   },
+    "python_version":  "\u003e=3.12"
+}

@@ -1,0 +1,38 @@
+{
+  "schema_name": "AAS.MaturityPromotionDemotionReport",
+  "schema_version": "1.0.0",
+  "generated_at": "2026-03-14T07:51:51.110363+00:00",
+  "policy_version": "mdmm-2026-02-22",
+  "current_tier": "M0",
+  "recommended_action": "hold",
+  "recommended_tier": "M0",
+  "summary": {
+    "promotion_ready": false,
+    "demotion_required": false,
+    "critical_failure_count": 0,
+    "missing_promotion_gate_count": 3
+  },
+  "evidence": {
+    "contract_suite_status": "unknown",
+    "release_checklist_status": "unknown",
+    "smoke_evidence_status": "unknown",
+    "regression_failures": 0,
+    "policy_violations": 0,
+    "error_budget_breached": false,
+    "fallback_error_rate": 0.0,
+    "release_checklist_report": null,
+    "smoke_evidence_report": null,
+    "release_checklist_report_error": null,
+    "smoke_evidence_report_error": null
+  },
+  "thresholds": {
+    "max_fallback_error_rate": 0.05,
+    "max_regression_failures": 0,
+    "max_policy_violations": 0
+  },
+  "rationale": [
+    "contract suite status must be pass",
+    "release checklist report status must be pass",
+    "smoke evidence report status must be pass"
+  ]
+}

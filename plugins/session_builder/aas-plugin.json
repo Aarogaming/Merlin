@@ -1,0 +1,35 @@
+﻿{
+    "schemaName":  "PluginManifest",
+    "schemaVersion":  "1.0.0",
+    "name":  "session_builder",
+    "version":  "2.0.0",
+    "description":  "Build Merlin session datasets from event logs",
+    "entry":  "plugin.py",
+    "type":  "plugin",
+    "capabilities":  [
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.session.build",
+                             "version":  "0.1.0"
+                         }
+                     ],
+    "python_dependencies":  [
+                                {
+                                    "module":  "core.integrations.maelstrom_ipc",
+                                    "package":  "merlin-assistant",
+                                    "extra":  "plugins-all"
+                                }
+                            ],
+    "extensions":  {
+                       "aas":  {
+                                   "hive":  "merlin",
+                                   "visibility":  "global",
+                                   "exports":  [
+                                                   "merlin.session.build"
+                                               ],
+                                   "kernel":  "merlin"
+                               }
+                   },
+    "python_version":  "\u003e=3.12"
+}

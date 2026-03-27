@@ -1,0 +1,5 @@
+{
+  "profile_a": "hybrid",
+  "profile_b": "vector",
+  "test_name": "retrieval_profile_abtest"
+}
