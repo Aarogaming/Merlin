@@ -5,6 +5,7 @@ import multiprocessing as mp
 import os
 import pickle
 import re
+import sys
 import threading
 from collections.abc import Callable
 from concurrent.futures import (
@@ -442,6 +443,10 @@ class PluginManager(LifecycleStateMixin):
         local_plugins_dir = Path(__file__).resolve().parent / "plugins"
         if local_plugins_dir.exists():
             candidates.append(local_plugins_dir)
+
+        sys_prefix_plugins_dir = Path(sys.prefix) / "plugins"
+        if sys_prefix_plugins_dir.exists():
+            candidates.append(sys_prefix_plugins_dir)
 
         spec = importlib.util.find_spec("plugins")
         if spec is not None and spec.submodule_search_locations:
