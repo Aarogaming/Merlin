@@ -64,11 +64,20 @@ This repo adopts the AAS inter-repo protocol baseline for synchronous operations
 - Retry budget: `2` retries by default.
 - Escalate as `blocked` after two missed heartbeat intervals.
 
+## Agent Courtesy Practice
+
+- Leave touched files better than found (small cleanup, clearer naming/comments, and stale-noise reduction).
+- Add or adjust tests/validators for behavioral changes.
+- Update operator-facing docs/runbooks when behavior, commands, or policy changes.
+- Preserve collaborator context; do not revert unrelated changes or use destructive git actions.
+- Include concise handoff details with risks, assumptions, and next actions.
+
 ## Conformance checks
 
 - `python3 scripts/validate_agent_interop_contract.py`
 - `python3 scripts/validate_agent_interop_contract.py --require-additive-fixtures`
 - `python3 scripts/validate_agent_interop_contract.py --require-additive-fixtures --require-minor-coverage 0,1`
+- `python3 scripts/validate_agent_courtesy.py --enforce-diff`
 
 ## Artifact location convention
 
