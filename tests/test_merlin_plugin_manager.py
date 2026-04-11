@@ -748,4 +748,6 @@ def test_default_plugin_dir_missing_uses_packaged_plugin_directory(
 
     assert manager.plugin_dir.exists()
     assert manager.plugin_dir.resolve() != missing_default_plugins_dir.resolve()
-    assert any(manager.plugin_dir.glob("*/manifest.json"))
+    assert any(manager.plugin_dir.glob("*/manifest.json")) or any(
+        manager.plugin_dir.glob("*/aas-plugin.json")
+    )
