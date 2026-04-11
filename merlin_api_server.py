@@ -767,6 +767,7 @@ if UAF_ENDPOINTS_AVAILABLE and uaf_router is not None:
 # --- Retrieval Profile ABTest creation endpoint ---
 _ab_manager: Any | None = None
 
+
 class RetrievalProfileABTestRequest(BaseModel):
     profile_a: str
     profile_b: str

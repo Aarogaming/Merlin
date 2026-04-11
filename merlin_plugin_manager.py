@@ -420,9 +420,11 @@ class PluginManager(LifecycleStateMixin):
         return HealthCheckResult(
             status=HealthStatus.HEALTHY if all_ok else HealthStatus.DEGRADED,
             is_healthy=all_ok,
-            message="PluginManager is operational"
-            if all_ok
-            else "One or more checks failed",
+            message=(
+                "PluginManager is operational"
+                if all_ok
+                else "One or more checks failed"
+            ),
             checks={
                 "lifecycle_running": is_running,
                 "plugin_directory_exists": plugin_dir_ok,
