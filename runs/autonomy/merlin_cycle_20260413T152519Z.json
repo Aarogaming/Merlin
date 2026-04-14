@@ -1,0 +1,159 @@
+{
+  "module_name": "Merlin",
+  "cycle_id": "20260413T152519Z",
+  "started_utc": "2026-04-13T15:25:19.832825+00:00",
+  "finished_utc": "2026-04-13T15:26:02.130997+00:00",
+  "profile": "autonomous-v1",
+  "throttled": false,
+  "throttle_reason": null,
+  "resource_policy": {
+    "threshold_percent": 90.0,
+    "consecutive_seconds": 30,
+    "clear_below_percent": 80.0,
+    "clear_seconds": 30,
+    "sample_interval_sec": 5
+  },
+  "resource_samples": [
+    {
+      "timestamp_utc": "2026-04-13T15:25:19.834590+00:00",
+      "cpu_percent": 0.0,
+      "memory_percent": 47.0
+    },
+    {
+      "timestamp_utc": "2026-04-13T15:25:29.074417+00:00",
+      "cpu_percent": 51.97,
+      "memory_percent": 50.0
+    },
+    {
+      "timestamp_utc": "2026-04-13T15:25:34.138403+00:00",
+      "cpu_percent": 47.44,
+      "memory_percent": 50.0
+    },
+    {
+      "timestamp_utc": "2026-04-13T15:25:39.254569+00:00",
+      "cpu_percent": 46.79,
+      "memory_percent": 51.0
+    },
+    {
+      "timestamp_utc": "2026-04-13T15:25:44.334642+00:00",
+      "cpu_percent": 45.46,
+      "memory_percent": 51.0
+    },
+    {
+      "timestamp_utc": "2026-04-13T15:25:50.821379+00:00",
+      "cpu_percent": 51.73,
+      "memory_percent": 50.0
+    },
+    {
+      "timestamp_utc": "2026-04-13T15:25:57.077755+00:00",
+      "cpu_percent": 41.52,
+      "memory_percent": 50.0
+    }
+  ],
+  "tasks": [
+    {
+      "name": "Check governance guardrails",
+      "command": [
+        "bash",
+        "scripts/check_governance_guardrails.sh"
+      ],
+      "heavy": false,
+      "status": "ok",
+      "duration_sec": 4.238,
+      "exit_code": 0,
+      "skipped_reason": null,
+      "stdout_tail": "check_governance_guardrails: ok\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "Emit federation heartbeat",
+      "command": [
+        "python",
+        "C:\\Dev library\\AaroneousAutomationSuite\\Merlin\\scripts\\emit_federation_heartbeat.py"
+      ],
+      "heavy": false,
+      "status": "ok",
+      "duration_sec": 0.064,
+      "exit_code": 0,
+      "skipped_reason": null,
+      "stdout_tail": "C:\\Dev library\\AaroneousAutomationSuite\\Merlin\\runs\\autonomy\\merlin_federation_heartbeat_20260413T152529Z.json\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "Check secret hygiene",
+      "command": [
+        "python",
+        "C:\\Dev library\\AaroneousAutomationSuite\\Merlin\\scripts\\check_secret_hygiene.py"
+      ],
+      "heavy": false,
+      "status": "ok",
+      "duration_sec": 0.116,
+      "exit_code": 0,
+      "skipped_reason": null,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "name": "Check vector memory integrity",
+      "command": [
+        "python",
+        "C:\\Dev library\\AaroneousAutomationSuite\\Merlin\\scripts\\check_vector_memory_integrity.py"
+      ],
+      "heavy": false,
+      "status": "ok",
+      "duration_sec": 0.08,
+      "exit_code": 0,
+      "skipped_reason": null,
+      "stdout_tail": "{\n  \"collection_name\": \"merlin_memory\",\n  \"storage_file\": \"merlin_memory.json\",\n  \"total_entries\": 0,\n  \"invalid_entries\": 0,\n  \"invalid_indices\": [],\n  \"duplicate_entries\": 0,\n  \"oldest_timestamp\": null,\n  \"newest_timestamp\": null\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "Verify contract schemas",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "tests/test_contract_schemas.py",
+        "-v"
+      ],
+      "heavy": false,
+      "status": "ok",
+      "duration_sec": 1.486,
+      "exit_code": 0,
+      "skipped_reason": null,
+      "stdout_tail": "tract_schemas.py::test_operation_request_fixtures_match_operation_envelope_schema PASSED [  9%]\ntests/test_contract_schemas.py::test_routing_metadata_schema_fragment_matches_embedded_envelope_definition PASSED [ 18%]\ntests/test_contract_schemas.py::test_cp4a_smoke_baseline_is_well_formed PASSED [ 27%]\ntests/test_contract_schemas.py::test_cp4a_smoke_evidence_fixture_matches_schema_contract PASSED [ 36%]\ntests/test_contract_schemas.py::test_chat_with_metadata_expected_fixture_materializes_valid_operation_envelope PASSED [ 45%]\ntests/test_contract_schemas.py::test_supported_operations_have_request_fixtures PASSED [ 54%]\ntests/test_contract_schemas.py::test_operation_capabilities_matches_manifest_schema PASSED [ 63%]\ntests/test_contract_schemas.py::test_operation_response_success_matches_operation_envelope_schema PASSED [ 72%]\ntests/test_contract_schemas.py::test_operation_response_error_matches_operation_envelope_schema PASSED [ 81%]\ntests/test_contract_schemas.py::test_operation_response_chat_with_metadata_matches_embedded_schema PASSED [ 90%]\ntests/test_contract_schemas.py::test_operation_response_chat_with_invalid_metadata_fails_embedded_schema PASSED [100%]\n\n============================== warnings summary ===============================\n..\\..\\..\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\starlette\\formparsers.py:12\n  C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\starlette\\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.\n    import multipart\n\n<string>:4\n<string>:4\n<string>:4\n<string>:4\n<string>:4\n<string>:4\n  <string>:4: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================= 11 passed, 7 warnings in 0.62s ========================\n",
+      "stderr_tail": "C:\\Users\\aarog\\AppData\\Roaming\\Python\\Python313\\site-packages\\pytest_asyncio\\plugin.py:247: PytestDeprecationWarning: The configuration option \"asyncio_default_fixture_loop_scope\" is unset.\nThe event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: \"function\", \"class\", \"module\", \"package\", \"session\"\n\n  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))\n"
+    },
+    {
+      "name": "Verify discovery contract schemas",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "tests/test_discovery_contract_schemas.py",
+        "-v"
+      ],
+      "heavy": false,
+      "status": "ok",
+      "duration_sec": 1.256,
+      "exit_code": 0,
+      "skipped_reason": null,
+      "stdout_tail": " pluggy-1.6.0 -- C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python313\\python.exe\ncachedir: .pytest_cache\nhypothesis profile 'default'\nrootdir: C:\\Dev library\\AaroneousAutomationSuite\\Merlin\nconfigfile: pytest.ini\nplugins: anyio-4.12.1, asyncio-1.3.0, hypothesis-6.150.2, langsmith-0.6.1, cov-7.0.0\nasyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function\ncollecting ... collected 3 items\n\ntests/test_discovery_contract_schemas.py::test_discovery_schema_examples_validate PASSED [ 33%]\ntests/test_discovery_contract_schemas.py::test_discovery_event_envelope_example_validates PASSED [ 66%]\ntests/test_discovery_contract_schemas.py::test_discovery_contract_registry_contains_all_discovery_entries PASSED [100%]\n\n============================== warnings summary ===============================\ntests/test_discovery_contract_schemas.py::test_discovery_schema_examples_validate\n  C:\\Users\\aarog\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\starlette\\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.\n    import multipart\n\ntests/test_discovery_contract_schemas.py::test_discovery_schema_examples_validate\ntests/test_discovery_contract_schemas.py::test_discovery_schema_examples_validate\ntests/test_discovery_contract_schemas.py::test_discovery_schema_examples_validate\ntests/test_discovery_contract_schemas.py::test_discovery_schema_examples_validate\ntests/test_discovery_contract_schemas.py::test_discovery_schema_examples_validate\ntests/test_discovery_contract_schemas.py::test_discovery_schema_examples_validate\n  <string>:4: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================== 3 passed, 7 warnings in 0.41s ========================\n",
+      "stderr_tail": "C:\\Users\\aarog\\AppData\\Roaming\\Python\\Python313\\site-packages\\pytest_asyncio\\plugin.py:247: PytestDeprecationWarning: The configuration option \"asyncio_default_fixture_loop_scope\" is unset.\nThe event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: \"function\", \"class\", \"module\", \"package\", \"session\"\n\n  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))\n"
+    },
+    {
+      "name": "Generate dependency audit report",
+      "command": [
+        "python",
+        "C:\\Dev library\\AaroneousAutomationSuite\\Merlin\\scripts\\generate_dependency_audit_report.py"
+      ],
+      "heavy": true,
+      "status": "failed",
+      "duration_sec": 0.053,
+      "exit_code": 2,
+      "skipped_reason": null,
+      "stdout_tail": "",
+      "stderr_tail": "usage: generate_dependency_audit_report.py [-h] --audit-json AUDIT_JSON\n                                           --output OUTPUT [--strict]\ngenerate_dependency_audit_report.py: error: the following arguments are required: --audit-json, --output\n"
+    }
+  ]
+}
