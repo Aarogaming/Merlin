@@ -10,6 +10,7 @@ repos:
         name: Secret hygiene guard
         entry: python3 scripts/check_secret_hygiene.py
         language: system
+        pass_filenames: false
         stages: [pre-commit, pre-push]
       - id: contract-schema-sync-guard
         name: Contract schema sync guard

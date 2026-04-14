@@ -49,6 +49,27 @@ def discover_packages():
     )
 
 
+def discover_plugin_data_files():
+    data_files = []
+    for plugin_dir in sorted(
+        path for path in (ROOT / "plugins").iterdir() if path.is_dir()
+    ):
+        files = []
+        for candidate in (
+            "plugin.py",
+            "manifest.json",
+            "aas-plugin.json",
+            "README.md",
+            "__init__.py",
+        ):
+            candidate_path = plugin_dir / candidate
+            if candidate_path.exists():
+                files.append(str(candidate_path.relative_to(ROOT)))
+        if files:
+            data_files.append((f"plugins/{plugin_dir.name}", files))
+    return data_files
+
+
 base_requirements = read_requirements(Path("requirements.txt"))
 dev_requirements = read_requirements(Path("requirements-dev.txt"))
 dev_only_requirements = sorted(
@@ -83,6 +104,7 @@ setup(
             "*/README.md",
         ]
     },
+    data_files=discover_plugin_data_files(),
     include_package_data=True,
     install_requires=base_requirements,
     extras_require={

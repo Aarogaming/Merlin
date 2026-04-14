@@ -196,7 +196,7 @@ def test_create_retrieval_profile_abtest_endpoint_contract_fixture(monkeypatch):
 
     response = client.post(
         "/abtest/retrieval-profile/create",
-        json=request_fixture,
+        json=request_fixture.get("payload", request_fixture),
         headers=auth_headers(),
     )
 
@@ -2485,9 +2485,9 @@ def test_operation_envelope_research_manager_create_rejects_invalid_traceability
             "planner_artifacts": [123],
         },
     )
-    bad_artifacts_request["operation"][
-        "idempotency_key"
-    ] = "research-manager-session-create-invalid-artifacts"
+    bad_artifacts_request["operation"]["idempotency_key"] = (
+        "research-manager-session-create-invalid-artifacts"
+    )
 
     bad_artifacts = client.post(
         "/merlin/operations",
@@ -2708,9 +2708,9 @@ def test_operation_envelope_discovery_operations(tmp_path):
             "publisher_mode": "stage_only",
         },
     )
-    run_request["operation"][
-        "idempotency_key"
-    ] = "merlin-discovery-run-contract-fixture-2026-02-24-0001"
+    run_request["operation"]["idempotency_key"] = (
+        "merlin-discovery-run-contract-fixture-2026-02-24-0001"
+    )
     run_response = client.post(
         "/merlin/operations",
         json=run_request,
@@ -2737,9 +2737,9 @@ def test_operation_envelope_discovery_operations(tmp_path):
         operation_name="merlin.discovery.queue.pause",
         payload={"out": str(out_root)},
     )
-    pause_request["operation"][
-        "idempotency_key"
-    ] = "merlin-discovery-queue-pause-contract-fixture-2026-02-24-0001"
+    pause_request["operation"]["idempotency_key"] = (
+        "merlin-discovery-queue-pause-contract-fixture-2026-02-24-0001"
+    )
     pause_response = client.post(
         "/merlin/operations",
         json=pause_request,
@@ -2752,9 +2752,9 @@ def test_operation_envelope_discovery_operations(tmp_path):
         operation_name="merlin.discovery.queue.resume",
         payload={"out": str(out_root)},
     )
-    resume_request["operation"][
-        "idempotency_key"
-    ] = "merlin-discovery-queue-resume-contract-fixture-2026-02-24-0001"
+    resume_request["operation"]["idempotency_key"] = (
+        "merlin-discovery-queue-resume-contract-fixture-2026-02-24-0001"
+    )
     resume_response = client.post(
         "/merlin/operations",
         json=resume_request,
@@ -2767,9 +2767,9 @@ def test_operation_envelope_discovery_operations(tmp_path):
         operation_name="merlin.discovery.queue.drain",
         payload={"out": str(out_root)},
     )
-    drain_request["operation"][
-        "idempotency_key"
-    ] = "merlin-discovery-queue-drain-contract-fixture-2026-02-24-0001"
+    drain_request["operation"]["idempotency_key"] = (
+        "merlin-discovery-queue-drain-contract-fixture-2026-02-24-0001"
+    )
     drain_response = client.post(
         "/merlin/operations",
         json=drain_request,
@@ -2785,9 +2785,9 @@ def test_operation_envelope_discovery_operations(tmp_path):
         operation_name="merlin.discovery.queue.purge_deadletter",
         payload={"out": str(out_root)},
     )
-    purge_request["operation"][
-        "idempotency_key"
-    ] = "merlin-discovery-queue-purge-contract-fixture-2026-02-24-0001"
+    purge_request["operation"]["idempotency_key"] = (
+        "merlin-discovery-queue-purge-contract-fixture-2026-02-24-0001"
+    )
     purge_response = client.post(
         "/merlin/operations",
         json=purge_request,
@@ -3403,7 +3403,9 @@ def test_operation_envelope_seed_watchdog_runtime_control_blocked_by_policy():
         headers=auth_headers(),
     )
     assert response.status_code == 403
-    assert response.json()["payload"]["error"]["code"] == "SEED_WATCHDOG_CONTROL_BLOCKED"
+    assert (
+        response.json()["payload"]["error"]["code"] == "SEED_WATCHDOG_CONTROL_BLOCKED"
+    )
 
 
 def test_operation_envelope_seed_watchdog_runtime_control_rejects_invalid_max_iterations():

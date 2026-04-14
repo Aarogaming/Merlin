@@ -5,6 +5,7 @@ import multiprocessing as mp
 import os
 import pickle
 import re
+import sys
 import threading
 from collections.abc import Callable
 from concurrent.futures import (
@@ -399,12 +400,14 @@ class PluginManager(LifecycleStateMixin):
             .with_health_status(
                 HealthStatus.HEALTHY if self.is_running() else HealthStatus.DEGRADED
             )
-            .with_metrics({
-                "plugins_loaded": len(self.plugins),
-                "load_failures": len(self._plugin_load_failures),
-                "execution_mode": str(self.execution_mode),
-                "process_pool_size": self.process_pool_size,
-            })
+            .with_metrics(
+                {
+                    "plugins_loaded": len(self.plugins),
+                    "load_failures": len(self._plugin_load_failures),
+                    "execution_mode": str(self.execution_mode),
+                    "process_pool_size": self.process_pool_size,
+                }
+            )
             .build()
         )
 
@@ -417,7 +420,11 @@ class PluginManager(LifecycleStateMixin):
         return HealthCheckResult(
             status=HealthStatus.HEALTHY if all_ok else HealthStatus.DEGRADED,
             is_healthy=all_ok,
-            message="PluginManager is operational" if all_ok else "One or more checks failed",
+            message=(
+                "PluginManager is operational"
+                if all_ok
+                else "One or more checks failed"
+            ),
             checks={
                 "lifecycle_running": is_running,
                 "plugin_directory_exists": plugin_dir_ok,
@@ -438,6 +445,10 @@ class PluginManager(LifecycleStateMixin):
         local_plugins_dir = Path(__file__).resolve().parent / "plugins"
         if local_plugins_dir.exists():
             candidates.append(local_plugins_dir)
+
+        sys_prefix_plugins_dir = Path(sys.prefix) / "plugins"
+        if sys_prefix_plugins_dir.exists():
+            candidates.append(sys_prefix_plugins_dir)
 
         spec = importlib.util.find_spec("plugins")
         if spec is not None and spec.submodule_search_locations:
@@ -486,7 +497,10 @@ class PluginManager(LifecycleStateMixin):
     def _iter_packaged_manifest_paths(self):
         seen: set[Path] = set()
         for plugin_dir in self._plugin_directories:
-            for manifest_path in sorted(plugin_dir.glob("*/manifest.json")):
+            manifest_candidates = list(plugin_dir.glob("*/manifest.json")) + list(
+                plugin_dir.glob("*/aas-plugin.json")
+            )
+            for manifest_path in sorted(manifest_candidates):
                 resolved = manifest_path.resolve()
                 if resolved in seen:
                     continue
@@ -909,7 +923,7 @@ class PluginManager(LifecycleStateMixin):
 
     def _read_and_validate_manifest(self, manifest_path: Path) -> dict[str, Any]:
         try:
-            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
         except json.JSONDecodeError as exc:
             raise ValueError(f"invalid JSON: {exc}") from exc
 

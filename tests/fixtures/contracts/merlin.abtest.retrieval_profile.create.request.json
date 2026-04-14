@@ -1,5 +1,31 @@
 {
-  "profile_a": "hybrid",
-  "profile_b": "vector",
-  "test_name": "retrieval_profile_abtest"
+  "schema_name": "AAS.OperationEnvelope",
+  "schema_version": "1.0.0",
+  "message_id": "7998d843-b63f-4b53-aa7f-bf4ca5f7a8f4",
+  "correlation_id": "8c2f9477-f12f-4306-8cff-0f6db6a84fcb",
+  "trace_id": "7901f33c-e61f-43a8-a67c-d93f63f149eb",
+  "timestamp_utc": "2026-02-13T02:30:00Z",
+  "source": {
+    "repo": "AaroneousAutomationSuite/Hub",
+    "component": "hub_orchestrator"
+  },
+  "target": {
+    "repo": "AaroneousAutomationSuite/Merlin",
+    "component": "merlin_api_server"
+  },
+  "operation": {
+    "name": "merlin.abtest.retrieval_profile.create",
+    "version": "1.0.0",
+    "timeout_ms": 30000,
+    "idempotency_key": "abtest-retrieval-profile-create-2026-02-13-0001",
+    "expects_ack": true,
+    "retry": {
+      "max_attempts": 1
+    }
+  },
+  "payload": {
+    "profile_a": "hybrid",
+    "profile_b": "vector",
+    "test_name": "retrieval_profile_abtest"
+  }
 }
