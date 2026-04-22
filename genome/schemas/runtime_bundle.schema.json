@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/genome/schemas/runtime_bundle.schema.json",
+  "title": "AAS Runtime Bundle Manifest",
+  "description": "Portable local runtime contract for mature and clonable AAS repos.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "runtime_version",
+    "repo",
+    "python",
+    "dependencies",
+    "services",
+    "spectrums",
+    "policy_clamps",
+    "security_ops_adapters",
+    "health_checks"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+$"
+    },
+    "runtime_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "repo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "python": {
+      "type": "object",
+      "required": ["strategy", "executable_relpath", "allow_system_fallback"],
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["embedded_preferred", "embedded_required", "system_only"]
+        },
+        "executable_relpath": { "type": "string", "minLength": 1 },
+        "allow_system_fallback": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "dependencies": {
+      "type": "object",
+      "required": ["requirements_file", "wheelhouse_dir", "install_target_dir", "install_mode"],
+      "properties": {
+        "requirements_file": { "type": "string", "minLength": 1 },
+        "wheelhouse_dir": { "type": "string", "minLength": 1 },
+        "install_target_dir": { "type": "string", "minLength": 1 },
+        "install_mode": {
+          "type": "string",
+          "enum": ["offline_required", "offline_prefer", "online_allowed"]
+        },
+        "constraints_file": { "type": "string" },
+        "wheelhouse_lock_file": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "services": {
+      "type": "object",
+      "required": ["nats_bin", "nats_data_dir"],
+      "properties": {
+        "nats_bin": { "type": "string", "minLength": 1 },
+        "nats_data_dir": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "spectrums": {
+      "type": "object",
+      "required": [
+        "portability_bias",
+        "isolation_strictness",
+        "dependency_trust",
+        "startup_aggression",
+        "security_hardening"
+      ],
+      "properties": {
+        "portability_bias": { "type": "number", "minimum": 0, "maximum": 1 },
+        "isolation_strictness": { "type": "number", "minimum": 0, "maximum": 1 },
+        "dependency_trust": { "type": "number", "minimum": 0, "maximum": 1 },
+        "startup_aggression": { "type": "number", "minimum": 0, "maximum": 1 },
+        "security_hardening": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "policy_clamps": {
+      "type": "object",
+      "required": [
+        "force_offline_when_wheelhouse_present",
+        "require_hashes_for_online_fallback",
+        "require_wheelhouse_lock_for_offline",
+        "allow_runtime_mutation"
+      ],
+      "properties": {
+        "force_offline_when_wheelhouse_present": { "type": "boolean" },
+        "require_hashes_for_online_fallback": { "type": "boolean" },
+        "require_wheelhouse_lock_for_offline": { "type": "boolean" },
+        "allow_runtime_mutation": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "security_ops_adapters": {
+      "type": "object",
+      "required": [
+        "myfortress_ready",
+        "policy_subject",
+        "secret_scan_subject",
+        "local_policy_fallback",
+        "fallback_security_hardening_max"
+      ],
+      "properties": {
+        "myfortress_ready": { "type": "boolean" },
+        "policy_subject": { "type": "string", "minLength": 1 },
+        "secret_scan_subject": { "type": "string", "minLength": 1 },
+        "local_policy_fallback": {
+          "type": "string",
+          "enum": ["deny", "allow", "adaptive"]
+        },
+        "fallback_security_hardening_max": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "health_checks": {
+      "type": "object",
+      "required": ["required_imports"],
+      "properties": {
+        "required_imports": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

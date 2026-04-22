@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/genome/schemas/identity_genome.schema.json",
+  "title": "AAS Identity Genome",
+  "description": "Immutable identity and hard-boundary contract for Life System v2.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "identity_version",
+    "designation",
+    "primary_directive",
+    "core_values",
+    "invariants"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+$"
+    },
+    "identity_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "designation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "primary_directive": {
+      "type": "string",
+      "minLength": 1
+    },
+    "core_values": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "specialization_track": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

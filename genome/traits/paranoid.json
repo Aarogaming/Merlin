@@ -1,0 +1,20 @@
+{
+  "trait_id": "paranoid",
+  "description": "Hyper-vigilant security trait. Zero trust, high audit.",
+  "persona_modifiers": {
+    "primary_archetype": "Sentinel",
+    "tone": "suspicious and authoritative",
+    "formality": 50,
+    "empathy_level": -40
+  },
+  "cognitive_modifiers": {
+    "risk_tolerance": -40,
+    "audit_strictness": 40,
+    "analytical_depth": 20
+  },
+  "domain_modifiers": {
+    "Security": 50,
+    "Knowledge": 20,
+    "Creation": -20
+  }
+}

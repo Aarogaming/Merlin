@@ -1,0 +1,24 @@
+# Core requirements for AaroneousAutomationSuite Agent-Zero Extensions
+# These establish the Zero-Bloat architectural replacements for heavy AI frameworks.
+
+# --- Reflex 1 & 2: Routing and Supervisor ---
+# Standardizes LLM API calls globally across the suite (OpenAI, Anthropic, Ollama, etc.)
+litellm>=1.35.0
+# Strict DAG schema validation, replacing LangGraph GraphState objects
+pydantic>=2.7.0
+
+# --- Reflex 4: Epigenetic Vector Memory ---
+# Replaces heavy Postgres/Pinecone infrastructure with purely local SQLite vector search
+sqlite-vec>=0.1.1
+
+# --- Local GGUF Operations & Snapshots ---
+# Allows reading/writing native GGUF binaries for agent snapshots
+gguf>=0.6.0
+# Allows local offline distillation from massive GGUF models
+llama-cpp-python>=0.2.56
+
+# --- OAuth Authentication ---
+# HTTP server for OAuth flows (GitHub, Google, GitLab)
+fastapi>=0.109.0
+httpx>=0.26.0
+uvicorn>=0.27.0

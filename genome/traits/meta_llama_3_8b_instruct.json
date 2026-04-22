@@ -1,0 +1,16 @@
+{
+  "trait_id": "meta_llama_3_8b_instruct",
+  "description": "Harvested live from meta-llama/Meta-Llama-3-8B-Instruct (7.0B params, 1371752 downloads).",
+  "persona_modifiers": {
+    "formality": 37.0,
+    "directive_authority": 20.0,
+    "verbosity": 90.0
+  },
+  "cognitive_modifiers": {
+    "analytical_depth": 10.0,
+    "creative_variance": 85.0
+  },
+  "domain_modifiers": {
+    "Creation": 80.0
+  }
+}

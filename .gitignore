@@ -1,0 +1,47 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# AAS User State & Research Data
+data/
+logs/
+artifacts/
+*.log
+*.err
+merlin_memory.json
+federation_registry.json
+
+# Large Binaries & Databases
+*.zip
+*.tar.gz
+*.exe
+*.dll
+*.so
+*.dylib
+neo4j*/
+neo4j-server/
+
+# Python / OS Cruft
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.suo
+
+# Federation Ghost folders
+AAS_Locked_Ghost/
+Archive/

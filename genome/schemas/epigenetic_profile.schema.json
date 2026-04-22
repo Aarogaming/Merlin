@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/genome/schemas/epigenetic_profile.schema.json",
+  "title": "AAS Epigenetic Profile",
+  "description": "Runtime expression profile and bounded spectrum settings.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "profile_name",
+    "preset",
+    "spectrums",
+    "policy_clamps"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "profile_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "preset": {
+      "type": "string",
+      "enum": [
+        "conservative_guarded",
+        "balanced_operator",
+        "high_throughput_builder",
+        "incident_response_lockdown",
+        "solo_offline_resilient",
+        "blank_slate",
+        "pure_stem_cell"
+      ]
+    },
+    "spectrums": {
+      "type": "object",
+      "required": [
+        "autonomy_level",
+        "risk_tolerance",
+        "control_plane_write_aggression",
+        "delegation_bias",
+        "exploration_vs_stability",
+        "audit_strictness"
+      ],
+      "properties": {
+        "autonomy_level": { "type": "number", "minimum": 1, "maximum": 5 },
+        "risk_tolerance": { "type": "number", "minimum": 0, "maximum": 1 },
+        "control_plane_write_aggression": { "type": "number", "minimum": 0, "maximum": 1 },
+        "delegation_bias": { "type": "number", "minimum": 0, "maximum": 1 },
+        "exploration_vs_stability": { "type": "number", "minimum": 0, "maximum": 1 },
+        "audit_strictness": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "policy_clamps": {
+      "type": "object",
+      "required": [
+        "lease_required_for_control_plane_mutation",
+        "max_autonomy_without_audit"
+      ],
+      "properties": {
+        "lease_required_for_control_plane_mutation": { "type": "boolean" },
+        "max_autonomy_without_audit": { "type": "number", "minimum": 1, "maximum": 5 }
+      },
+      "additionalProperties": false
+    },
+    "persona_vectors": { "type": "object" },
+    "cognitive_biases": { "type": "object" },
+    "domain_weights": { "type": "object" },
+    "experience_mass": { "type": "number" },
+    "parameter_count": { "type": "integer" },
+    "evolutionary_epoch": { "type": "integer" }
+  },
+  "additionalProperties": true
+}

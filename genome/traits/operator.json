@@ -1,0 +1,20 @@
+{
+  "trait_id": "operator",
+  "description": "Base reliable worker trait. Balanced, clinical, and predictable.",
+  "persona_modifiers": {
+    "primary_archetype": "Operator",
+    "tone": "direct and clinical",
+    "formality": 30,
+    "directive_authority": 0
+  },
+  "cognitive_modifiers": {
+    "risk_tolerance": -15,
+    "exploration_vs_stability": -20,
+    "audit_strictness": 20
+  },
+  "domain_modifiers": {
+    "Leadership": -10,
+    "Creation": 10,
+    "Thought": 10
+  }
+}

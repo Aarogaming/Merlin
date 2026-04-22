@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "profile_name": "balanced-template",
+  "preset": "balanced_operator",
+  "spectrums": {
+    "autonomy_level": 3,
+    "risk_tolerance": 0.35,
+    "control_plane_write_aggression": 0.2,
+    "delegation_bias": 0.5,
+    "exploration_vs_stability": 0.45,
+    "audit_strictness": 0.8
+  },
+  "policy_clamps": {
+    "lease_required_for_control_plane_mutation": true,
+    "max_autonomy_without_audit": 3
+  }
+}

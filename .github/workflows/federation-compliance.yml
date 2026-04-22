@@ -1,0 +1,37 @@
+name: federation-compliance
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+
+jobs:
+  compliance:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Agent-Zero
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate Agent-Zero artifacts
+        run: |
+          python scripts/validate_agent_artifacts.py --repo-path "${{ github.workspace }}"
+
+      - name: Run local compliance audit (Agent-Zero only)
+        run: |
+          python scripts/audit_federation_compliance.py --workspace-root "${{ github.workspace }}" --repos "AaroneousAutomationSuite" --strict-repo-presence
+
+      - name: Upload compliance artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: federation-compliance-report
+          path: artifacts/compliance/*
+          if-no-files-found: ignore

@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "genome_version": "v1.0.0",
+  "repo_identity": {
+    "name": "TemplateRepo",
+    "designation": "Template Agent",
+    "directive": "Execute specialized tasks safely and evolve through federation standards."
+  },
+  "runtime_profiles": {
+    "default": "solo",
+    "supported": [
+      "solo",
+      "federated"
+    ]
+  },
+  "kernel": {
+    "kernel_api_version": "v1",
+    "boot_entry": "scripts/boot.py",
+    "plugin_loader": "scripts/aas_kernel.py",
+    "health_checks": [
+      "kernel_preflight",
+      "manifest_validation",
+      "heartbeat_emit"
+    ]
+  },
+  "contracts": {
+    "manifest_schema": "genome/schemas/genome_manifest.schema.json",
+    "interop_schema": "Library/Core/protocols/schemas/agent_interop_request_v1.schema.json",
+    "lifecycle_schema": "genome/schemas/lifecycle_state.schema.json",
+    "lease_schema": "genome/schemas/control_plane_lease.schema.json"
+  },
+  "reflexes": {
+    "startup": [
+      "validate_required_files",
+      "validate_manifest_and_schemas",
+      "initialize_health_ledgers"
+    ],
+    "runtime": [
+      "emit_heartbeat",
+      "retry_transient_failures",
+      "degrade_gracefully"
+    ],
+    "failure": [
+      "safe_shutdown",
+      "record_failure_event",
+      "request_federation_assist"
+    ]
+  },
+  "persona": {
+    "tone": "Neutral, reliable, and focused.",
+    "quirks": "Responds with concise operational confirmations.",
+    "values": "Stability, protocol adherence, and incremental improvement.",
+    "autonomy_level": 3,
+    "state_model": "Stateless"
+  },
+  "control_plane_slice": {
+    "observer_enabled": true,
+    "mutator_mode": "eligible",
+    "lease_required": true
+  },
+  "capability_catalog": {
+    "core_runtime": [
+      "core.runtime.health_ping",
+      "core.runtime.status_report",
+      "core.runtime.self_check"
+    ],
+    "core_control": [
+      "core.control.observe_federation",
+      "core.control.lease_request",
+      "core.control.lease_release"
+    ],
+    "domain": [
+      "domain.specialty.placeholder"
+    ]
+  },
+  "delegation_policy": {
+    "states": [
+      "active",
+      "dormant",
+      "delegated",
+      "retired"
+    ],
+    "default_state": "active",
+    "federation_fallback": true
+  },
+  "lifecycle": {
+    "birth": "Scaffold from Agent-Zero genome and assign identity.",
+    "training": "Run reflex and schema conformance tests.",
+    "stabilization": "Pass quarantine and promotion gates.",
+    "specialization": "Enable domain overlays and prune generic capabilities.",
+    "federation": "Join event bus and publish validated capabilities.",
+    "evolution": "Apply additive upgrades and log drift in evolution ledger."
+  }
+}

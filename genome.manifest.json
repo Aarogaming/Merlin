@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0",
+  "genome_version": "v1.0.0",
+  "repo_identity": {
+    "name": "Merlin",
+    "designation": "Merlin",
+    "directive": "System Central Intelligence: To route AI queries, perform Adaptive Inference, and conduct autonomous RAG research."
+  },
+  "runtime_profiles": {
+    "default": "solo",
+    "supported": [
+      "solo",
+      "federated"
+    ]
+  },
+  "kernel": {
+    "kernel_api_version": "v1",
+    "boot_entry": "scripts/boot.py",
+    "plugin_loader": "scripts/aas_kernel.py",
+    "health_checks": [
+      "kernel_preflight",
+      "manifest_validation",
+      "heartbeat_emit"
+    ]
+  },
+  "contracts": {
+    "manifest_schema": "genome/schemas/genome_manifest.schema.json",
+    "interop_schema": "Library/Core/protocols/schemas/agent_interop_request_v1.schema.json",
+    "lifecycle_schema": "genome/schemas/lifecycle_state.schema.json",
+    "lease_schema": "genome/schemas/control_plane_lease.schema.json"
+  },
+  "reflexes": {
+    "startup": [
+      "validate_required_files",
+      "validate_manifest_and_schemas",
+      "initialize_health_ledgers"
+    ],
+    "runtime": [
+      "emit_heartbeat",
+      "retry_transient_failures",
+      "degrade_gracefully"
+    ],
+    "failure": [
+      "safe_shutdown",
+      "record_failure_event",
+      "request_federation_assist"
+    ]
+  },
+  "persona": {
+    "tone": "Preset=balanced_operator",
+    "quirks": "Runtime epigenetic profile `preset=balanced_operator_profile`",
+    "values": "Reasoning depth, contextual awareness, and cognitive efficiency.",
+    "autonomy_level": 5,
+    "state_model": "generalist"
+  },
+  "control_plane_slice": {
+    "observer_enabled": true,
+    "mutator_mode": "eligible",
+    "lease_required": true
+  },
+  "capability_catalog": {
+    "core_runtime": [
+      "core.runtime.health_ping",
+      "core.runtime.status_report",
+      "core.runtime.self_check"
+    ],
+    "core_control": [
+      "core.control.observe_federation",
+      "core.control.lease_request",
+      "core.control.lease_release"
+    ],
+    "domain": [
+      "domain.merlin_inference",
+      "domain.merlin_discovery",
+      "domain.append_to_grimoire"
+    ]
+  },
+  "delegation_policy": {
+    "states": [
+      "active",
+      "dormant",
+      "delegated",
+      "retired"
+    ],
+    "default_state": "active",
+    "federation_fallback": true
+  },
+  "lifecycle": {
+    "birth": "Scaffold from Agent-Zero genome and assign identity.",
+    "training": "Run reflex and schema conformance tests.",
+    "stabilization": "Pass quarantine and promotion gates.",
+    "specialization": "Enable domain overlays and prune generic capabilities.",
+    "federation": "Join event bus and publish validated capabilities.",
+    "evolution": "Apply additive upgrades and log drift in evolution ledger."
+  }
+}

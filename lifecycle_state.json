@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "repo": "Merlin",
+  "genome_version": "v1.0.0",
+  "current_stage": "federation",
+  "status": "active",
+  "mode": "federated",
+  "promotion": {
+    "gates_required": [
+      "manifest_schema_valid",
+      "capability_entrypoints_valid",
+      "heartbeat_check_passed",
+      "security_hooks_passed"
+    ],
+    "gates_passed": [
+      "manifest_schema_valid",
+      "capability_entrypoints_valid",
+      "heartbeat_check_passed",
+      "security_hooks_passed"
+    ],
+    "auditor": "MyFortress"
+  },
+  "updated_at_utc": "2026-04-21T21:42:38Z"
+}

@@ -1,0 +1,1 @@
+{"schema_version": "1.0", "event_id": "evt-backfill-20260421214238", "repo": "Merlin", "event_type": "evolution", "from_stage": "stabilization", "to_stage": "federation", "actor": "AaroneousAutomationSuite", "timestamp_utc": "2026-04-21T21:42:38Z", "reason": "Backfilled Life System v2 identity artifacts", "metadata": {"source": "backfill_genome_artifacts.py"}}

@@ -1,0 +1,28 @@
+﻿{
+    "schemaName":  "PluginManifest",
+    "schemaVersion":  "1.0.0",
+    "name":  "resource_indexer",
+    "version":  "2.0.0",
+    "description":  "Index resources for the Merlin resource catalog",
+    "entry":  "plugin.py",
+    "type":  "plugin",
+    "capabilities":  [
+                         {
+                             "schemaName":  "Capability",
+                             "schemaVersion":  "1.0.0",
+                             "name":  "merlin.resource.index",
+                             "version":  "0.1.0"
+                         }
+                     ],
+    "extensions":  {
+                       "aas":  {
+                                   "hive":  "merlin",
+                                   "visibility":  "global",
+                                   "exports":  [
+                                                   "merlin.resource.index"
+                                               ],
+                                   "kernel":  "merlin"
+                               }
+                   },
+    "python_version":  "\u003e=3.12"
+}

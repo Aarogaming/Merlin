@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/genome/schemas/lifecycle_event.schema.json",
+  "title": "AAS Lifecycle Event",
+  "description": "Event record for lifecycle transitions and identity evolution.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "repo",
+    "event_type",
+    "from_stage",
+    "to_stage",
+    "actor",
+    "timestamp_utc",
+    "reason"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+$"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "birth",
+        "training_pass",
+        "stabilization_pass",
+        "promotion",
+        "specialization_update",
+        "evolution"
+      ]
+    },
+    "from_stage": {
+      "type": "string",
+      "enum": ["birth", "training", "stabilization", "specialization", "federation", "evolution"]
+    },
+    "to_stage": {
+      "type": "string",
+      "enum": ["birth", "training", "stabilization", "specialization", "federation", "evolution"]
+    },
+    "actor": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

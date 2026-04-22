@@ -1,0 +1,45 @@
+{
+  "repo": "Merlin",
+  "description": "System Central Intelligence: To route AI queries, perform Adaptive Inference, and conduct autonomous RAG research.",
+  "capabilities": [
+    {
+      "schema_version": "1.0",
+      "governing_body": "Merlin",
+      "capability_id": "merlin_merlin_inference",
+      "name": "MerlinInference",
+      "description": "merlin_inference execution capability for Merlin.",
+      "mcp_type": "event_trigger",
+      "entry_point": "merlin.merlin_inference",
+      "version": "v1.0.0",
+      "confirmed_conditions": [
+        "active"
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "governing_body": "Merlin",
+      "capability_id": "merlin_merlin_discovery",
+      "name": "MerlinDiscovery",
+      "description": "merlin_discovery execution capability for Merlin.",
+      "mcp_type": "event_trigger",
+      "entry_point": "merlin.merlin_discovery",
+      "version": "v1.0.0",
+      "confirmed_conditions": [
+        "active"
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "governing_body": "Merlin",
+      "capability_id": "merlin_append_to_grimoire",
+      "name": "AppendToGrimoire",
+      "description": "Records synthesized knowledge or research into The Grimoire. Use this to permanently document findings.",
+      "mcp_type": "event_trigger",
+      "entry_point": "merlin.append_to_grimoire",
+      "version": "v1.0.0",
+      "confirmed_conditions": [
+        "active"
+      ]
+    }
+  ]
+}

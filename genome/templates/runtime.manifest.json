@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "runtime_version": "v1.0.0",
+  "repo": "AaroneousAutomationSuite",
+  "python": {
+    "strategy": "embedded_preferred",
+    "executable_relpath": "runtime/python/python.exe",
+    "allow_system_fallback": true
+  },
+  "dependencies": {
+    "requirements_file": "requirements.txt",
+    "wheelhouse_dir": "runtime/wheelhouse",
+    "wheelhouse_lock_file": "runtime/wheelhouse.lock.json",
+    "install_target_dir": "runtime/site-packages",
+    "install_mode": "offline_prefer",
+    "constraints_file": "runtime/constraints.txt"
+  },
+  "services": {
+    "nats_bin": "nats/bin/nats-server.exe",
+    "nats_data_dir": "nats/data"
+  },
+  "spectrums": {
+    "portability_bias": 0.85,
+    "isolation_strictness": 0.55,
+    "dependency_trust": 0.3,
+    "startup_aggression": 0.4,
+    "security_hardening": 0.75
+  },
+  "policy_clamps": {
+    "force_offline_when_wheelhouse_present": true,
+    "require_hashes_for_online_fallback": true,
+    "require_wheelhouse_lock_for_offline": true,
+    "allow_runtime_mutation": true
+  },
+  "security_ops_adapters": {
+    "myfortress_ready": true,
+    "policy_subject": "aaroneousautomationsuite.fortress_policy_evaluate",
+    "secret_scan_subject": "aaroneousautomationsuite.fortress_scan_for_secrets",
+    "local_policy_fallback": "adaptive",
+    "fallback_security_hardening_max": 0.8
+  },
+  "health_checks": {
+    "required_imports": [
+      "json",
+      "asyncio",
+      "pathlib",
+      "nats"
+    ]
+  }
+}

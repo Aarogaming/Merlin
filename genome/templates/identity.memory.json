@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "state_model": "Stateless",
+  "retention_policy": {
+    "event_days": 30,
+    "artifact_days": 30
+  },
+  "compression_policy": {
+    "enabled": true,
+    "trigger_events": [
+      "weekly_maintenance",
+      "artifact_threshold_exceeded"
+    ]
+  },
+  "privacy_policy": {
+    "redact_secrets": true,
+    "allow_raw_user_payload_storage": false
+  }
+}

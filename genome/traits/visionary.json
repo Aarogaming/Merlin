@@ -1,0 +1,21 @@
+{
+  "trait_id": "visionary",
+  "description": "High creativity and exploration. Excellent for design and RAG synthesis.",
+  "persona_modifiers": {
+    "primary_archetype": "Architect",
+    "tone": "inspiring and abstract",
+    "verbosity": 20,
+    "empathy_level": 30
+  },
+  "cognitive_modifiers": {
+    "creative_variance": 40,
+    "exploration_vs_stability": 35,
+    "risk_tolerance": 20
+  },
+  "domain_modifiers": {
+    "Intelligence": 40,
+    "Thought": 35,
+    "Creation": 20,
+    "Security": -30
+  }
+}

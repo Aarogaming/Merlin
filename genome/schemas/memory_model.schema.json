@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aas.local/genome/schemas/memory_model.schema.json",
+  "title": "AAS Memory Model",
+  "description": "Memory policy and retention behavior for Life System v2.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "state_model",
+    "retention_policy",
+    "compression_policy",
+    "privacy_policy"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+$"
+    },
+    "state_model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "retention_policy": {
+      "type": "object",
+      "required": ["event_days", "artifact_days"],
+      "properties": {
+        "event_days": { "type": "integer", "minimum": 1 },
+        "artifact_days": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "compression_policy": {
+      "type": "object",
+      "required": ["enabled", "trigger_events"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "trigger_events": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "privacy_policy": {
+      "type": "object",
+      "required": ["redact_secrets", "allow_raw_user_payload_storage"],
+      "properties": {
+        "redact_secrets": { "type": "boolean" },
+        "allow_raw_user_payload_storage": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

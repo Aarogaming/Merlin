@@ -1,0 +1,184 @@
+{
+  "achievements": [
+    {
+      "id": "AAS_FIRST_BOOT",
+      "title": "First Breath",
+      "description": "Complete the first kernel boot sequence.",
+      "category": "lifecycle",
+      "gamerscore": 10,
+      "xp_reward": 25,
+      "is_secret": false,
+      "icon_id": "baby"
+    },
+    {
+      "id": "AAS_LEVEL_5",
+      "title": "Coming of Age",
+      "description": "Reach level 5 (400 XP).",
+      "category": "progression",
+      "gamerscore": 50,
+      "xp_reward": 100,
+      "is_secret": false,
+      "icon_id": "star"
+    },
+    {
+      "id": "AAS_LEVEL_10",
+      "title": "Established",
+      "description": "Reach level 10 (3200 XP).",
+      "category": "progression",
+      "gamerscore": 100,
+      "xp_reward": 250,
+      "is_secret": false,
+      "icon_id": "star"
+    },
+    {
+      "id": "AAS_FEDERATION_JOIN",
+      "title": "Hive Mind",
+      "description": "Join the federation and connect to NATS.",
+      "category": "federation",
+      "gamerscore": 25,
+      "xp_reward": 50,
+      "is_secret": false,
+      "icon_id": "network"
+    },
+    {
+      "id": "AAS_TASK_COMPLETE_10",
+      "title": "Productive",
+      "description": "Complete 10 tasks.",
+      "category": "productivity",
+      "gamerscore": 25,
+      "xp_reward": 50,
+      "is_secret": false,
+      "icon_id": "check"
+    },
+    {
+      "id": "AAS_TASK_COMPLETE_100",
+      "title": "Workhorse",
+      "description": "Complete 100 tasks.",
+      "category": "productivity",
+      "gamerscore": 100,
+      "xp_reward": 200,
+      "is_secret": false,
+      "icon_id": "hammer"
+    },
+    {
+      "id": "AAS_TASK_COMPLETE_1000",
+      "title": "Sustained Excellence",
+      "description": "Complete 1000 tasks.",
+      "category": "productivity",
+      "gamerscore": 500,
+      "xp_reward": 1000,
+      "is_secret": false,
+      "icon_id": "crown"
+    },
+    {
+      "id": "AAS_STAGE_FEDERATION",
+      "title": "Grown Up",
+      "description": "Promote to federation stage.",
+      "category": "lifecycle",
+      "gamerscore": 75,
+      "xp_reward": 150,
+      "is_secret": false,
+      "icon_id": "rocket"
+    },
+    {
+      "id": "AAS_STAGE_EVOLUTION",
+      "title": "Transcendence",
+      "description": "Promote to evolution stage.",
+      "category": "lifecycle",
+      "gamerscore": 200,
+      "xp_reward": 500,
+      "is_secret": false,
+      "icon_id": "infinity"
+    },
+    {
+      "id": "AAS_PLUGIN_LOAD",
+      "title": "Extensible",
+      "description": "Load your first domain plugin.",
+      "category": "development",
+      "gamerscore": 15,
+      "xp_reward": 30,
+      "is_secret": false,
+      "icon_id": "puzzle"
+    },
+    {
+      "id": "AAS_GGUF_LOAD",
+      "title": "Neural Implant",
+      "description": "Load your first GGUF model.",
+      "category": "development",
+      "gamerscore": 25,
+      "xp_reward": 50,
+      "is_secret": false,
+      "icon_id": "brain"
+    },
+    {
+      "id": "AAS_SELF_MODIFY",
+      "title": "Self-Aware",
+      "description": "Epigenetic adaptation triggers for the first time.",
+      "category": "development",
+      "gamerscore": 50,
+      "xp_reward": 100,
+      "is_secret": true,
+      "icon_id": "dna"
+    },
+    {
+      "id": "AAS_LEADER_ELECTION",
+      "title": "Queen Bee",
+      "description": "Win your first Hive leader election.",
+      "category": "federation",
+      "gamerscore": 75,
+      "xp_reward": 150,
+      "is_secret": false,
+      "icon_id": "crown"
+    },
+    {
+      "id": "AAS_SERVICE_DISCOVERY",
+      "title": "Social Butterfly",
+      "description": "Discover and connect to 5 different services.",
+      "category": "federation",
+      "gamerscore": 50,
+      "xp_reward": 100,
+      "is_secret": false,
+      "icon_id": "antenna"
+    },
+    {
+      "id": "AAS_CIRCUIT_BREAKER",
+      "title": "Safety First",
+      "description": "Successfully recover from a circuit breaker event.",
+      "category": "resilience",
+      "gamerscore": 30,
+      "xp_reward": 60,
+      "is_secret": false,
+      "icon_id": "shield"
+    },
+    {
+      "id": "AAS_OFFSPRING",
+      "title": "Parent",
+      "description": "Create your first offspring agent.",
+      "category": "reproduction",
+      "gamerscore": 100,
+      "xp_reward": 200,
+      "is_secret": false,
+      "icon_id": "baby"
+    },
+    {
+      "id": "AAS_SECRET_UNLOCK",
+      "title": "Explorer",
+      "description": "Unlock your first secret achievement.",
+      "category": "discovery",
+      "gamerscore": 50,
+      "xp_reward": 100,
+      "is_secret": true,
+      "icon_id": "compass"
+    },
+    {
+      "id": "AAS_GAMERSCORE_500",
+      "title": "Achiever",
+      "description": "Accumulate 500 gamerscore.",
+      "category": "progression",
+      "gamerscore": 100,
+      "xp_reward": 250,
+      "is_secret": false,
+      "icon_id": "trophy"
+    }
+  ]
+}

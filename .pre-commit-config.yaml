@@ -1,0 +1,28 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=51200'] # 50MB Limit
+      - id: detect-private-key
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.1
+    hooks:
+      - id: gitleaks
+
+  - repo: local
+    hooks:
+      - id: aas-validate-agent-artifacts
+        name: Validate Agent-Zero artifacts
+        entry: python scripts/validate_agent_artifacts.py --repo-path .
+        language: system
+        pass_filenames: false
+      - id: aas-federation-compliance-audit
+        name: Audit local compliance report
+        entry: python scripts/audit_federation_compliance.py --workspace-root .. --repos AaroneousAutomationSuite --strict-repo-presence
+        language: system
+        pass_filenames: false
